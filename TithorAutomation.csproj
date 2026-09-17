@@ -116,6 +116,18 @@
     <Compile Include="frmPrincipal.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmPrincipal.Colores.cs">
+      <DependentUpon>frmPrincipal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmPrincipal.Catalogo.cs">
+      <DependentUpon>frmPrincipal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmPrincipal.Produccion.cs">
+      <DependentUpon>frmPrincipal.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frmPrincipal.Corel.cs">
+      <DependentUpon>frmPrincipal.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmPrincipal.Designer.cs">
       <DependentUpon>frmPrincipal.cs</DependentUpon>
     </Compile>
@@ -135,6 +147,10 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Servicios\AnalizadorMasterCorel.cs" />
+    <Compile Include="Servicios\EscaladorPowerClip.cs" />
+    <Compile Include="frmPrincipal.Escalar.cs">
+      <DependentUpon>frmPrincipal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Servicios\CopiadorMoldesCorel.cs" />
     <Compile Include="Servicios\ILectorPedidoProducto.cs" />
     <Compile Include="Servicios\IPlanificadorProducto.cs" />

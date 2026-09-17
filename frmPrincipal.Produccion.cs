@@ -1,0 +1,665 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
+using System.Text;
+using VGCore;
+using System.Diagnostics;
+using System.IO;
+using TithorAutomation.Datos;
+using TithorAutomation.Modelos;
+using TithorAutomation.Servicios;
+using System.Security.Cryptography;
+
+namespace TithorAutomation
+    {
+    public partial class frmPrincipal
+        {
+        private void CargarProductosProduccion()
+            {
+            try
+                {
+                List<Producto> productos = productoRepositorio.ListarActivos();
+
+                cboProductoProduccion.DataSource = null;
+                cboProductoProduccion.DisplayMember = "Nombre";
+                cboProductoProduccion.ValueMember = "Id";
+                cboProductoProduccion.DataSource = productos;
+                }
+            catch (Exception ex)
+                {
+                MessageBox.Show(
+                    "No se pudieron cargar los productos en Producción.\n\n" + ex.Message,
+                    "Tithor Automation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                }
+            }
+        private void LimpiarPedidoProduccion(bool limpiarRuta)
+            {
+            resultadoPedidoActual = null;
+            planProduccionActual = null;
+            pedidoAprobado = false;
+
+            cboProductoProduccion.Enabled = true;
+            btnCargarExcelProduccion.Enabled = true;
+            btnNuevoPedido.Enabled = true;
+            btnAprobarPedido.Text = "Aprobar pedido";
+            btnCopiarMoldesPedido.Text = "Copiar moldes";
+
+            if (limpiarRuta)
+                txtRutaExcelProduccion.Clear();
+
+            dgvPedidoProduccion.Rows.Clear();
+            dgvPedidoProduccion.Columns.Clear();
+            dgvPedidoProduccion.Visible = false;
+
+            lblFilasPedidoValor.Text = "0";
+            lblDisenosPedidoValor.Text = "0";
+            lblUnidadesPedidoValor.Text = "0";
+            lblAdvertenciasPedidoValor.Text = "0";
+
+            lblResultadoPedido.Text = "Pedido sin analizar";
+            lblEstadoExcelProduccion.Text = "Seleccione un producto y un archivo Excel.";
+
+            btnAnalizarExcelProduccion.Enabled =
+                !string.IsNullOrWhiteSpace(txtRutaExcelProduccion.Text);
+
+            btnAprobarPedido.Enabled = false;
+            btnCopiarMoldesPedido.Enabled = false;
+            }
+        private void cboProductoProduccion_SelectedIndexChanged(object sender, EventArgs e)
+            {
+            LimpiarPedidoProduccion(true);
+            }
+        private void btnCargarExcelProduccion_Click(object sender, EventArgs e)
+            {
+            Producto producto = cboProductoProduccion.SelectedItem as Producto;
+
+            if (producto == null)
+                {
+                MessageBox.Show(
+                    "Seleccione primero un producto.",
+                    "Tithor Automation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+
+                return;
+                }
+
+            using (OpenFileDialog dialogo = new OpenFileDialog())
+                {
+                dialogo.Title = "Seleccionar archivo del pedido";
+                dialogo.Filter = "Archivos Excel (*.xlsx;*.xlsm)|*.xlsx;*.xlsm";
+                dialogo.CheckFileExists = true;
+                dialogo.Multiselect = false;
+
+                if (dialogo.ShowDialog(this) != DialogResult.OK)
+                    return;
+
+                txtRutaExcelProduccion.Text = dialogo.FileName;
+
+                resultadoPedidoActual = null;
+                pedidoAprobado = false;
+
+                dgvPedidoProduccion.Rows.Clear();
+                dgvPedidoProduccion.Columns.Clear();
+                dgvPedidoProduccion.Visible = false;
+
+                btnAnalizarExcelProduccion.Enabled = true;
+                btnAprobarPedido.Enabled = false;
+                btnCopiarMoldesPedido.Enabled = false;
+
+                lblEstadoExcelProduccion.Text = "Archivo listo para analizar.";
+                lblResultadoPedido.Text = "Pedido pendiente de análisis.";
+                }
+            }
+        private ILectorPedidoProducto ObtenerLectorPedido(string codigoProducto)
+            {
+            foreach (ILectorPedidoProducto lector in lectoresPedido)
+                {
+                if (lector.PuedeLeer(codigoProducto))
+                    return lector;
+                }
+
+            return null;
+            }
+        private void btnAnalizarExcelProduccion_Click(object sender, EventArgs e)
+            {
+            Producto producto = cboProductoProduccion.SelectedItem as Producto;
+
+            if (producto == null)
+                {
+                MessageBox.Show(
+                    "Seleccione un producto.",
+                    "Tithor Automation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+
+                return;
+                }
+
+            if (!File.Exists(txtRutaExcelProduccion.Text))
+                {
+                MessageBox.Show(
+                    "Seleccione un archivo Excel válido.",
+                    "Tithor Automation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+                }
+
+            ILectorPedidoProducto lector = ObtenerLectorPedido(producto.Codigo);
+
+            if (lector == null)
+                {
+                MessageBox.Show(
+                    "Todavía no existe un lector de Excel para el producto \"" + producto.Nombre + "\".",
+                    "Producto no implementado",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+
+                return;
+                }
+
+            try
+                {
+                btnAnalizarExcelProduccion.Enabled = false;
+                lblEstadoExcelProduccion.Text = "Analizando archivo Excel...";
+
+                System.Windows.Forms.Application.DoEvents();
+
+                resultadoPedidoActual = lector.Analizar(
+                    producto.Id,
+                    producto.Codigo,
+                    txtRutaExcelProduccion.Text
+                );
+
+                pedidoAprobado = false;
+
+                MostrarResultadoPedido(resultadoPedidoActual);
+
+                btnAprobarPedido.Enabled = resultadoPedidoActual.PuedeAprobar;
+                btnCopiarMoldesPedido.Enabled = false;
+
+                lblEstadoExcelProduccion.Text = "Análisis terminado.";
+                btnNuevoPedido.Enabled = true;
+
+                MostrarAdvertenciasPedido(resultadoPedidoActual);
+                }
+            catch (Exception ex)
+                {
+                LimpiarPedidoProduccion(false);
+
+                lblEstadoExcelProduccion.Text = "Error durante el análisis.";
+
+                MessageBox.Show(
+                    "No se pudo analizar el archivo Excel.\n\n" + ex.Message,
+                    "Tithor Automation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                }
+            finally
+                {
+                btnAnalizarExcelProduccion.Enabled =
+                    File.Exists(txtRutaExcelProduccion.Text);
+                }
+            }
+        private void ConfigurarColumnasPedido()
+            {
+            dgvPedidoProduccion.Columns.Clear();
+            dgvPedidoProduccion.AutoGenerateColumns = false;
+            dgvPedidoProduccion.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            AgregarColumnaPedido("colEstadoPedido", "Estado", 75F, 90);
+            AgregarColumnaPedido("colFilaPedido", "Fila", 45F, 50);
+            AgregarColumnaPedido("colDisenoPedido", "Diseño", 150F, 140);
+            AgregarColumnaPedido("colTallaPedido", "Talla", 60F, 60);
+            AgregarColumnaPedido("colCantidadPedido", "Cantidad", 70F, 75);
+            AgregarColumnaPedido("colNotasPedido", "Notas", 140F, 120);
+            AgregarColumnaPedido("colObservacionesPedido", "Observaciones", 220F, 180);
+            }
+        private void AgregarColumnaPedido(string nombre, string titulo, float proporcion, int anchoMinimo)
+            {
+            DataGridViewTextBoxColumn columna = new DataGridViewTextBoxColumn();
+
+            columna.Name = nombre;
+            columna.HeaderText = titulo;
+            columna.ReadOnly = true;
+            columna.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            columna.FillWeight = proporcion;
+            columna.MinimumWidth = anchoMinimo;
+            columna.SortMode = DataGridViewColumnSortMode.NotSortable;
+
+            dgvPedidoProduccion.Columns.Add(columna);
+            }
+        private void MostrarResultadoPedido(ResultadoAnalisisPedido resultado)
+            {
+            ConfigurarColumnasPedido();
+
+            dgvPedidoProduccion.Rows.Clear();
+
+            foreach (LineaPedido linea in resultado.Lineas)
+                {
+                int indice = dgvPedidoProduccion.Rows.Add(
+                    linea.Estado,
+                    linea.NumeroFila,
+                    linea.Diseno,
+                    linea.Talla,
+                    linea.Cantidad > 0 ? linea.Cantidad.ToString() : "",
+                    linea.Notas,
+                    linea.MensajeCompleto
+                );
+
+                DataGridViewRow fila = dgvPedidoProduccion.Rows[indice];
+                fila.Tag = linea;
+
+                if (!linea.Procesable)
+                    {
+                    fila.DefaultCellStyle.BackColor = System.Drawing.Color.FromArgb(255, 235, 235);
+                    fila.Cells["colEstadoPedido"].Style.ForeColor = System.Drawing.Color.FromArgb(200, 45, 45);
+                    }
+                else
+                    {
+                    fila.Cells["colEstadoPedido"].Style.ForeColor = System.Drawing.Color.FromArgb(30, 150, 70);
+                    }
+                }
+
+            int advertencias = resultado.TotalFilasOmitidas + resultado.AdvertenciasGenerales.Count;
+
+            lblFilasPedidoValor.Text = resultado.TotalFilasProcesables.ToString();
+            lblDisenosPedidoValor.Text = resultado.ObtenerDisenos().Count.ToString();
+            lblUnidadesPedidoValor.Text = resultado.TotalUnidades.ToString();
+            lblAdvertenciasPedidoValor.Text = advertencias.ToString();
+
+            lblResultadoPedido.Text =
+                resultado.TotalFilasProcesables + " filas listas, " +
+                resultado.TotalFilasOmitidas + " filas serán omitidas.";
+
+            dgvPedidoProduccion.Visible = true;
+            }
+        private void MostrarAdvertenciasPedido(ResultadoAnalisisPedido resultado)
+            {
+            if (resultado.AdvertenciasGenerales.Count == 0 && resultado.TotalFilasOmitidas == 0)
+                return;
+
+            StringBuilder mensaje = new StringBuilder();
+
+            foreach (string advertencia in resultado.AdvertenciasGenerales)
+                mensaje.AppendLine("• " + advertencia);
+
+            foreach (LineaPedido linea in resultado.Lineas)
+                {
+                if (!linea.Procesable)
+                    mensaje.AppendLine("• Fila " + linea.NumeroFila + ": " + linea.MensajeCompleto);
+                }
+
+            MessageBox.Show(
+                "El Excel se analizó con advertencias:\n\n" + mensaje,
+                "Revisar pedido",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Warning
+            );
+            }
+        private void btnAprobarPedido_Click(object sender, EventArgs e)
+            {
+            if (resultadoPedidoActual == null || !resultadoPedidoActual.PuedeAprobar)
+                return;
+
+            DialogResult respuesta = MessageBox.Show(
+                "Se aprobarán " + resultadoPedidoActual.TotalUnidades + " unidades válidas.\n\nLas filas con advertencias serán omitidas.\n\n¿Desea continuar?",
+                "Aprobar pedido",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2
+            );
+
+            if (respuesta != DialogResult.Yes)
+                return;
+
+            pedidoAprobado = true;
+
+            btnAprobarPedido.Enabled = false;
+            btnCopiarMoldesPedido.Enabled = true;
+
+            cboProductoProduccion.Enabled = false;
+            btnCargarExcelProduccion.Enabled = false;
+            btnAnalizarExcelProduccion.Enabled = false;
+
+            lblEstadoExcelProduccion.Text = "Pedido aprobado.";
+            lblResultadoPedido.Text = "Pedido aprobado y listo para copiar moldes.";
+            }
+        private IPlanificadorProducto ObtenerPlanificadorProducto(string codigoProducto)
+            {
+            foreach (IPlanificadorProducto planificador in planificadoresProducto)
+                {
+                if (planificador.PuedeProcesar(codigoProducto))
+                    return planificador;
+                }
+
+            return null;
+            }
+        private void btnCopiarMoldesPedido_Click(object sender, EventArgs e)
+            {
+            bool copiaTerminada = false;
+
+            try
+                {
+                if (!pedidoAprobado || resultadoPedidoActual == null)
+                    {
+                    MessageBox.Show(
+                        "Primero debe analizar y aprobar el archivo Excel.",
+                        "Producción",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                    }
+
+                Producto producto = cboProductoProduccion.SelectedItem as Producto;
+
+                if (producto == null)
+                    {
+                    MessageBox.Show(
+                        "Seleccione el producto que desea producir.",
+                        "Producción",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                    }
+
+                IPlanificadorProducto planificador = ObtenerPlanificadorProducto(producto.Codigo);
+
+                if (planificador == null)
+                    {
+                    MessageBox.Show(
+                        $"El producto '{producto.Nombre}' todavía no tiene un planificador de producción.",
+                        "Producción",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                    }
+
+                ArchivoMaster master = archivoMasterRepositorio.ObtenerPrincipalPorProducto(producto.Id);
+
+                if (master == null)
+                    {
+                    MessageBox.Show(
+                        "Este producto no tiene un archivo Master configurado.",
+                        "Producción",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                    }
+
+                if (!System.IO.File.Exists(master.RutaArchivo))
+                    {
+                    MessageBox.Show(
+                        $"No se encontró el archivo Master:\n\n{master.RutaArchivo}",
+                        "Producción",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                    }
+
+                if (!master.FechaUltimoAnalisis.HasValue)
+                    {
+                    MessageBox.Show(
+                        "El archivo Master todavía no ha sido analizado.\n\nAnalícelo desde Configuración antes de continuar.",
+                        "Producción",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                    }
+
+                List<Molde> catalogo = moldeRepositorio.ListarPorMaster(master.Id);
+
+                if (catalogo == null || catalogo.Count == 0)
+                    {
+                    MessageBox.Show(
+                        "El catálogo de moldes está vacío.\n\nAnalice y sincronice el Master desde Configuración.",
+                        "Producción",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                    }
+
+                PlanProduccion plan = planificador.CrearPlan(resultadoPedidoActual, catalogo);
+
+                if (plan == null)
+                    {
+                    MessageBox.Show(
+                        "No se pudo crear el plan de producción.",
+                        "Producción",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+
+                    return;
+                    }
+
+                if (!plan.EsValido)
+                    {
+                    string detalleAdvertencias = plan.Advertencias.Count > 0
+                        ? string.Join("\n• ", plan.Advertencias)
+                        : "El plan contiene errores sin especificar.";
+
+                    MessageBox.Show(
+                        "No se pueden copiar los moldes:\n\n• " + detalleAdvertencias,
+                        "Revisar producción",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                    }
+
+                if (plan.TotalMoldes == 0)
+                    {
+                    MessageBox.Show(
+                        "El plan de producción no contiene moldes para copiar.",
+                        "Producción",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+
+                    return;
+                    }
+
+                VGCore.Application corel = ObtenerCorel();
+
+                if (corel == null || corel.Documents.Count == 0)
+                    {
+                    MessageBox.Show(
+                        "Abra el documento de producción en CorelDRAW antes de copiar los moldes.",
+                        "Producción",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning
+                    );
+
+                    return;
+                    }
+
+                VGCore.Document documentoDestino = corel.ActiveDocument;
+
+                DialogResult confirmacion = MessageBox.Show(
+                    $"Se copiarán {plan.TotalMoldes} moldes.\n\n" +
+                    $"Producto: {producto.Nombre}\n" +
+                    $"Documento destino: {documentoDestino.Name}\n" +
+                    $"Master: {master.NombreArchivo}\n\n" +
+                    "¿Desea continuar?",
+                    "Copiar moldes",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
+
+                if (confirmacion != DialogResult.Yes)
+                    return;
+
+                btnCopiarMoldesPedido.Enabled = false;
+                btnAprobarPedido.Enabled = false;
+                lblResultadoPedido.Text = $"Preparando {plan.TotalMoldes} moldes...";
+
+                int totalCopiado = copiadorMoldesCorel.Copiar(
+                    corel,
+                    documentoDestino,
+                    master.RutaArchivo,
+                    plan,
+                    delegate (int actual, int total)
+                        {
+                            lblResultadoPedido.Text = $"Copiando molde {actual} de {total}...";
+
+                            if (actual % 5 == 0 || actual == total)
+                                System.Windows.Forms.Application.DoEvents();
+                            }
+                );
+
+                planProduccionActual = plan;
+                copiaTerminada = true;
+
+                lblResultadoPedido.Text =
+                    $"Producción preparada: {totalCopiado} conjuntos copiados en {documentoDestino.Name}.";
+
+                btnCopiarMoldesPedido.Text = "Copiar nuevamente";
+                btnCopiarMoldesPedido.Enabled = true;
+                btnNuevoPedido.Enabled = true;
+
+                MessageBox.Show(
+                    $"Se copiaron correctamente {totalCopiado} moldes.\n\n" +
+                    $"Documento: {documentoDestino.Name}\n" +
+                    "Capa creada: TITHOR_PRODUCCION\n\n" +
+                    "Puede usar Ctrl+Z una sola vez para deshacer toda la copia.",
+                    "Producción preparada",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+                }
+            catch (Exception ex)
+                {
+                lblResultadoPedido.Text = "No se pudieron copiar los moldes.";
+
+                MessageBox.Show(
+                    $"No se pudieron copiar los moldes.\n\n" +
+                    $"Tipo: {ex.GetType().FullName}\n" +
+                    $"Código: 0x{ex.HResult:X8}\n\n" +
+                    ex.Message,
+                    "Error de producción",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+                }
+            finally
+                {
+                btnCopiarMoldesPedido.Enabled = pedidoAprobado;
+                btnNuevoPedido.Enabled = resultadoPedidoActual != null;
+                btnAprobarPedido.Enabled = resultadoPedidoActual != null && !pedidoAprobado;
+                }
+            }
+        private void AplicarEstiloGridProduccion()
+            {
+            dgvPedidoProduccion.EnableHeadersVisualStyles = false;
+            dgvPedidoProduccion.BackgroundColor = System.Drawing.Color.White;
+            dgvPedidoProduccion.BorderStyle = BorderStyle.None;
+            dgvPedidoProduccion.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+            dgvPedidoProduccion.GridColor = System.Drawing.Color.FromArgb(220, 222, 230);
+
+            dgvPedidoProduccion.AllowUserToAddRows = false;
+            dgvPedidoProduccion.AllowUserToDeleteRows = false;
+            dgvPedidoProduccion.AllowUserToResizeRows = false;
+            dgvPedidoProduccion.RowHeadersVisible = false;
+            dgvPedidoProduccion.MultiSelect = false;
+            dgvPedidoProduccion.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+
+            dgvPedidoProduccion.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
+            dgvPedidoProduccion.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            dgvPedidoProduccion.ColumnHeadersHeight = 42;
+
+            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.BackColor =
+                System.Drawing.Color.FromArgb(44, 49, 82);
+
+            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.ForeColor =
+                System.Drawing.Color.White;
+
+            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.SelectionBackColor =
+                System.Drawing.Color.FromArgb(44, 49, 82);
+
+            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.SelectionForeColor =
+                System.Drawing.Color.White;
+
+            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.Font =
+                new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular);
+
+            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.Alignment =
+                DataGridViewContentAlignment.MiddleLeft;
+
+            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.Padding =
+                new Padding(8, 0, 6, 0);
+
+            dgvPedidoProduccion.DefaultCellStyle.BackColor =
+                System.Drawing.Color.White;
+
+            dgvPedidoProduccion.DefaultCellStyle.ForeColor =
+                System.Drawing.Color.FromArgb(35, 38, 55);
+
+            dgvPedidoProduccion.DefaultCellStyle.SelectionBackColor =
+                System.Drawing.Color.FromArgb(255, 241, 178);
+
+            dgvPedidoProduccion.DefaultCellStyle.SelectionForeColor =
+                System.Drawing.Color.FromArgb(35, 38, 55);
+
+            dgvPedidoProduccion.DefaultCellStyle.Font =
+                new System.Drawing.Font("Segoe UI", 9F);
+
+            dgvPedidoProduccion.DefaultCellStyle.Padding =
+                new Padding(8, 0, 6, 0);
+
+            dgvPedidoProduccion.AlternatingRowsDefaultCellStyle.BackColor =
+                System.Drawing.Color.FromArgb(247, 248, 252);
+
+            dgvPedidoProduccion.RowTemplate.Height = 34;
+            }
+
+        private void btnNuevoPedido_Click(object sender, EventArgs e)
+            {
+            if (resultadoPedidoActual != null)
+                {
+                DialogResult respuesta = MessageBox.Show(
+                    "Se limpiará el pedido actual para comenzar uno nuevo.\n\n" +
+                    "Los moldes que ya fueron copiados en CorelDRAW no se eliminarán.\n\n" +
+                    "¿Desea continuar?",
+                    "Nuevo pedido",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
+
+                if (respuesta != DialogResult.Yes)
+                    return;
+                }
+
+            LimpiarPedidoProduccion(true);
+            lblResultadoPedido.Text = "Listo para cargar un nuevo pedido";
+
+            txtRutaExcelProduccion.Focus();
+            }
+        }
+    }
