@@ -39,7 +39,14 @@ namespace TithorAutomation
         private void LimpiarPedidoProduccion(bool limpiarRuta)
             {
             resultadoPedidoActual = null;
+            planProduccionActual = null;
             pedidoAprobado = false;
+
+            cboProductoProduccion.Enabled = true;
+            btnCargarExcelProduccion.Enabled = true;
+            btnNuevoPedido.Enabled = true;
+            btnAprobarPedido.Text = "Aprobar pedido";
+            btnCopiarMoldesPedido.Text = "Copiar moldes";
 
             if (limpiarRuta)
                 txtRutaExcelProduccion.Clear();
@@ -533,7 +540,7 @@ namespace TithorAutomation
                 lblResultadoPedido.Text =
                     $"Producción preparada: {totalCopiado} conjuntos copiados en {documentoDestino.Name}.";
 
-                btnCopiarMoldesPedido.Text = "COPIAR NUEVAMENTE";
+                btnCopiarMoldesPedido.Text = "Copiar nuevamente";
                 btnCopiarMoldesPedido.Enabled = true;
                 btnNuevoPedido.Enabled = true;
 
@@ -649,28 +656,8 @@ namespace TithorAutomation
                     return;
                 }
 
-            resultadoPedidoActual = null;
-            planProduccionActual = null;
-            pedidoAprobado = false;
-
-            txtRutaExcelProduccion.Clear();
-            dgvPedidoProduccion.Rows.Clear();
-
-            lblFilasPedidoValor.Text = "0";
-            lblDisenosPedidoValor.Text = "0";
-            lblUnidadesPedidoValor.Text = "0";
-            lblAdvertenciasPedidoValor.Text = "0";
-
-            lblEstadoExcelProduccion.Text = "Seleccione un archivo Excel";
+            LimpiarPedidoProduccion(true);
             lblResultadoPedido.Text = "Listo para cargar un nuevo pedido";
-
-            btnAnalizarExcelProduccion.Enabled = false;
-            btnAprobarPedido.Enabled = false;
-            btnCopiarMoldesPedido.Enabled = false;
-            btnNuevoPedido.Enabled = false;
-
-            btnAprobarPedido.Text = "APROBAR PEDIDO";
-            btnCopiarMoldesPedido.Text = "COPIAR MOLDES";
 
             txtRutaExcelProduccion.Focus();
             }
