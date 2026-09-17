@@ -47,6 +47,25 @@ namespace TithorAutomation.Servicios
 
         private static bool Positivo(double valor) => valor > 0 && !double.IsNaN(valor) && !double.IsInfinity(valor);
 
+        public static string TallaDelGrupo(string nombre)
+        {
+            string codigo = AnalizadorMasterCorel.NormalizarCodigo(nombre ?? "");
+            // Compatibilidad con documentos copiados antes de conservar los nombres originales.
+            Match match = Regex.Match(codigo, @"^(?:prod_.+_)?molde_(s|m|l)$");
+            return match.Success ? match.Groups[1].Value.ToUpperInvariant() : null;
+        }
+
+        public static bool InterpretarPiezaEnGrupo(string nombre, string tallaGrupo, out string pieza, out string talla)
+        {
+            if (InterpretarNombre(nombre, out pieza, out talla))
+                return tallaGrupo == null || talla == tallaGrupo;
+            if (tallaGrupo == null) return false;
+            string codigo = AnalizadorMasterCorel.NormalizarCodigo(nombre ?? "");
+            if (codigo == "lado_derecho") codigo = "lateral_derecho";
+            if (codigo == "lado_izquierdo") codigo = "lateral_izquierdo";
+            return InterpretarNombre("funda_" + tallaGrupo.ToLowerInvariant() + "_" + codigo, out pieza, out talla);
+        }
+
         public static bool MismoDocumento(Document a, Document b)
         {
             if (a == null || b == null) return false;
@@ -81,14 +100,20 @@ namespace TithorAutomation.Servicios
             return resultado;
         }
 
-        private void Recorrer(Shapes objetos, List<PiezaEscalable> resultado, int pagina, bool bloqueado)
+        private void Recorrer(Shapes objetos, List<PiezaEscalable> resultado, int pagina, bool bloqueado, string tallaGrupo = null)
         {
             for (int i = 1; i <= objetos.Count; i++)
             {
                 Shape objeto = objetos[i];
                 bool noEditable = bloqueado || objeto.Locked;
                 string pieza, talla;
-                if (InterpretarNombre(objeto.Name, out pieza, out talla))
+                string tallaPropia = objeto.Type == cdrShapeType.cdrGroupShape ? TallaDelGrupo(objeto.Name) : null;
+                if (tallaPropia != null)
+                {
+                    Recorrer(objeto.Shapes, resultado, pagina, noEditable, tallaPropia);
+                    continue;
+                }
+                if (InterpretarPiezaEnGrupo(objeto.Name, tallaGrupo, out pieza, out talla))
                 {
                     var entrada = new PiezaEscalable { Pieza = pieza, Talla = talla };
                     Shape contenedor = ResolverContenedor(objeto);
@@ -103,7 +128,7 @@ namespace TithorAutomation.Servicios
                 }
                 // No se recorren los diseños dentro de los PowerClips.
                 if (objeto.Type == cdrShapeType.cdrGroupShape && objeto.PowerClip == null)
-                    Recorrer(objeto.Shapes, resultado, pagina, noEditable);
+                    Recorrer(objeto.Shapes, resultado, pagina, noEditable, tallaGrupo);
             }
         }
 

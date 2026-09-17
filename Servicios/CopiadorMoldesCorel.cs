@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using TithorAutomation.Modelos;
@@ -110,8 +110,8 @@ namespace TithorAutomation.Servicios
                     if (copia == null)
                         throw new InvalidOperationException($"CorelDRAW no pudo pegar el molde '{solicitud.CodigoMolde}'.");
 
-                    if (!string.IsNullOrWhiteSpace(solicitud.NombreDestino))
-                        copia.Name = solicitud.NombreDestino;
+                    // Cada unidad conserva el nombre del grupo del master, aunque se repita.
+                    copia.Name = moldeOrigen.Name;
 
                     gruposCopiados.Add(copia);
 

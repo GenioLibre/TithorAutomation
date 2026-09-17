@@ -29,6 +29,20 @@ internal static class EscaladorPowerClipTests
         Nombre("FUNDA_M_ESPALDA", "Espalda", "M");
         Nombre(" funda-l-lateral-derecho ", "Lateral derecho", "L");
         Nombre("funda_s_lateral_izquierdo", "Lateral izquierdo", "S");
+        foreach (string grupo in new[] { "molde_l", "molde_l", "MOLDE_L", "prod_f3_u1_gatos_molde_l" })
+        {
+            string piezaGrupo, tallaGrupo;
+            string talla = EscaladorPowerClip.TallaDelGrupo(grupo);
+            Exigir(talla == "L", "Talla de grupo incorrecta");
+            Exigir(EscaladorPowerClip.InterpretarPiezaEnGrupo("Frente", talla, out piezaGrupo, out tallaGrupo)
+                && piezaGrupo == "Frente" && tallaGrupo == "L", "No reconoce Frente dentro del grupo");
+        }
+        string piezaLocal, tallaLocal;
+        Exigir(EscaladorPowerClip.InterpretarPiezaEnGrupo("Lado derecho", "S", out piezaLocal, out tallaLocal)
+            && piezaLocal == "Lateral derecho", "No reconoce lado derecho");
+        Exigir(!EscaladorPowerClip.InterpretarPiezaEnGrupo("Frente", null, out piezaLocal, out tallaLocal), "Pieza sin talla aceptada");
+        Exigir(!EscaladorPowerClip.InterpretarPiezaEnGrupo("funda_s_frente", "L", out piezaLocal, out tallaLocal), "Acepta talla contradictoria");
+        Exigir(EscaladorPowerClip.TallaDelGrupo("molde_xl") == null, "Acepta talla no soportada");
         foreach (string nombre in new[] { null, "", "molde_s", "funda_xl_frente", "funda_s_frente_extra", "prod_f2_u1_diseno_molde_s", "funda_m_manga" })
         {
             string pieza, talla;
