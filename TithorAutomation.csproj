@@ -147,6 +147,10 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Servicios\AnalizadorMasterCorel.cs" />
+    <Compile Include="Servicios\EscaladorPowerClip.cs" />
+    <Compile Include="frmPrincipal.Escalar.cs">
+      <DependentUpon>frmPrincipal.cs</DependentUpon>
+    </Compile>
     <Compile Include="Servicios\CopiadorMoldesCorel.cs" />
     <Compile Include="Servicios\ILectorPedidoProducto.cs" />
     <Compile Include="Servicios\IPlanificadorProducto.cs" />

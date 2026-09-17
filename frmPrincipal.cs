@@ -44,6 +44,7 @@ namespace TithorAutomation
         public frmPrincipal()
             {
             InitializeComponent();
+            InicializarEscalar();
             ConfigurarFiltrosCatalogo();
             CargarProductosConfiguracion();
 
@@ -122,6 +123,7 @@ namespace TithorAutomation
             pnlPantonear.Visible = false;
             pnlProduccion.Visible = false;
             pnlConfiguracion.Visible = false;
+            pnlEscalar.Visible = false;
 
             panelSeleccionado.Visible = true;
             panelSeleccionado.BringToFront();
@@ -129,6 +131,7 @@ namespace TithorAutomation
             ActualizarBotonNavegacion(btnPantonear, panelSeleccionado == pnlPantonear);
             ActualizarBotonNavegacion(btnProduccion, panelSeleccionado == pnlProduccion);
             ActualizarBotonNavegacion(btnConfiguracion, panelSeleccionado == pnlConfiguracion);
+            ActualizarBotonNavegacion(btnEscalar, panelSeleccionado == pnlEscalar);
 
             pnlEstadoCorelGlobal.Visible = true;
             pnlEstadoCorelGlobal.BringToFront();
