@@ -35,6 +35,7 @@ namespace TithorAutomation.Servicios
 
             bool masterAbiertoPorServicio = false;
             bool grupoComandosAbierto = false;
+            bool comunicacionFallida = false;
 
             int totalCopiado = 0;
             string etapa = "Preparando la copia";
@@ -113,22 +114,16 @@ namespace TithorAutomation.Servicios
                         }
                     else
                         {
-                        etapa = "Activando el Master para " + detalle;
-                        documentoMaster.Activate();
-                        moldeOrigen.Page.Activate();
-                        etapa = "Copiando al portapapeles " + detalle;
-                        moldeOrigen.Copy();
-
                         etapa = "Activando el destino para " + detalle;
                         documentoDestino.Activate();
                         capaDestino.Activate();
-                        etapa = "Pegando desde el portapapeles " + detalle;
-                        copia = capaDestino.Paste();
+                        etapa = "Copiando directamente a la capa " + detalle;
+                        copia = moldeOrigen.CopyToLayer(capaDestino);
                         if (copia != null) primerasCopias.Add(solicitud.CodigoMolde, copia);
                         }
 
                     if (copia == null)
-                        throw new InvalidOperationException($"CorelDRAW no pudo pegar el molde '{solicitud.CodigoMolde}'.");
+                        throw new InvalidOperationException($"CorelDRAW no devolvió la copia del molde '{solicitud.CodigoMolde}'.");
 
                     etapa = "Conservando el nombre de " + detalle;
                     // Cada unidad conserva el nombre del grupo del master, aunque se repita.
@@ -162,7 +157,11 @@ namespace TithorAutomation.Servicios
             catch (Exception ex)
                 {
                 string estadoReversion = "";
-                if (grupoComandosAbierto)
+                comunicacionFallida = EsFalloDeComunicacion(ex);
+                if (comunicacionFallida)
+                    estadoReversion = "\nCorelDRAW notificó un fallo del servidor. No se pudo confirmar la reversión." +
+                        "\nRevise o recupere el documento y reinicie CorelDRAW antes de volver a copiar.";
+                if (grupoComandosAbierto && !comunicacionFallida)
                     {
                     try
                         {
@@ -176,6 +175,7 @@ namespace TithorAutomation.Servicios
                         }
                     catch (Exception errorReversion)
                         {
+                        comunicacionFallida = EsFalloDeComunicacion(errorReversion);
                         estadoReversion = "\nNo se pudo confirmar la reversión: " + errorReversion.Message +
                             "\nRevise el documento antes de repetir la copia.";
                         }
@@ -192,7 +192,7 @@ namespace TithorAutomation.Servicios
                 }
             finally
                 {
-                if (grupoComandosAbierto)
+                if (grupoComandosAbierto && !comunicacionFallida)
                     {
                     try
                         {
@@ -204,7 +204,7 @@ namespace TithorAutomation.Servicios
                         }
                     }
 
-                if (masterAbiertoPorServicio && documentoMaster != null)
+                if (!comunicacionFallida && masterAbiertoPorServicio && documentoMaster != null)
                     {
                     try
                         {
@@ -217,12 +217,24 @@ namespace TithorAutomation.Servicios
 
                 try
                     {
-                    documentoDestino.Activate();
+                    if (!comunicacionFallida) documentoDestino.Activate();
                     }
                 catch
                     {
                     }
                 }
+            }
+
+        public static bool EsFalloDeComunicacion(Exception error)
+            {
+            for (Exception actual = error; actual != null; actual = actual.InnerException)
+                {
+                uint codigo = unchecked((uint)actual.HResult);
+                if (codigo == 0x80010105 || codigo == 0x800706BE || codigo == 0x800706BA ||
+                    codigo == 0x80010108 || codigo == 0x80010007)
+                    return true;
+                }
+            return false;
             }
 
         private VGCore.Document BuscarDocumentoAbierto(VGCore.Application corelApp, string rutaMaster)
