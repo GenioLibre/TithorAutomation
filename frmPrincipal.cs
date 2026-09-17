@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -126,8 +126,24 @@ namespace TithorAutomation
             panelSeleccionado.Visible = true;
             panelSeleccionado.BringToFront();
 
+            ActualizarBotonNavegacion(btnPantonear, panelSeleccionado == pnlPantonear);
+            ActualizarBotonNavegacion(btnProduccion, panelSeleccionado == pnlProduccion);
+            ActualizarBotonNavegacion(btnConfiguracion, panelSeleccionado == pnlConfiguracion);
+
             pnlEstadoCorelGlobal.Visible = true;
             pnlEstadoCorelGlobal.BringToFront();
+            }
+        private void ActualizarBotonNavegacion(System.Windows.Forms.Button boton, bool seleccionado)
+            {
+            System.Drawing.Color fondo = seleccionado
+                ? System.Drawing.Color.FromArgb(250, 216, 68)
+                : boton.Parent.BackColor;
+
+            boton.UseVisualStyleBackColor = false;
+            boton.BackColor = fondo;
+            boton.ForeColor = seleccionado ? System.Drawing.Color.Black : System.Drawing.Color.White;
+            boton.FlatAppearance.MouseOverBackColor = seleccionado ? fondo : System.Drawing.Color.FromArgb(55, 65, 81);
+            boton.FlatAppearance.MouseDownBackColor = seleccionado ? fondo : System.Drawing.Color.FromArgb(75, 85, 99);
             }
         private void btnPantonear_Click(object sender, EventArgs e)
             {
