@@ -40,12 +40,10 @@ namespace TithorAutomation
             {
             resultadoPedidoActual = null;
             planProduccionActual = null;
-            pedidoAprobado = false;
 
             cboProductoProduccion.Enabled = true;
             btnCargarExcelProduccion.Enabled = true;
             btnNuevoPedido.Enabled = true;
-            btnAprobarPedido.Text = "Aprobar pedido";
             btnCopiarMoldesPedido.Text = "Copiar moldes";
 
             if (limpiarRuta)
@@ -66,7 +64,6 @@ namespace TithorAutomation
             btnAnalizarExcelProduccion.Enabled =
                 !string.IsNullOrWhiteSpace(txtRutaExcelProduccion.Text);
 
-            btnAprobarPedido.Enabled = false;
             btnCopiarMoldesPedido.Enabled = false;
             }
         private void cboProductoProduccion_SelectedIndexChanged(object sender, EventArgs e)
@@ -102,14 +99,12 @@ namespace TithorAutomation
                 txtRutaExcelProduccion.Text = dialogo.FileName;
 
                 resultadoPedidoActual = null;
-                pedidoAprobado = false;
 
                 dgvPedidoProduccion.Rows.Clear();
                 dgvPedidoProduccion.Columns.Clear();
                 dgvPedidoProduccion.Visible = false;
 
                 btnAnalizarExcelProduccion.Enabled = true;
-                btnAprobarPedido.Enabled = false;
                 btnCopiarMoldesPedido.Enabled = false;
 
                 lblEstadoExcelProduccion.Text = "Archivo listo para analizar.";
@@ -173,7 +168,7 @@ namespace TithorAutomation
                 btnAnalizarExcelProduccion.Enabled = false;
                 lblEstadoExcelProduccion.Text = "Analizando archivo Excel...";
 
-                System.Windows.Forms.Application.DoEvents();
+                lblEstadoExcelProduccion.Refresh();
 
                 resultadoPedidoActual = lector.Analizar(
                     producto.Id,
@@ -181,12 +176,10 @@ namespace TithorAutomation
                     txtRutaExcelProduccion.Text
                 );
 
-                pedidoAprobado = false;
 
                 MostrarResultadoPedido(resultadoPedidoActual);
 
-                btnAprobarPedido.Enabled = resultadoPedidoActual.PuedeAprobar;
-                btnCopiarMoldesPedido.Enabled = false;
+                btnCopiarMoldesPedido.Enabled = resultadoPedidoActual.PuedeAprobar;
 
                 lblEstadoExcelProduccion.Text = "Análisis terminado.";
                 btnNuevoPedido.Enabled = true;
@@ -308,34 +301,6 @@ namespace TithorAutomation
                 MessageBoxIcon.Warning
             );
             }
-        private void btnAprobarPedido_Click(object sender, EventArgs e)
-            {
-            if (resultadoPedidoActual == null || !resultadoPedidoActual.PuedeAprobar)
-                return;
-
-            DialogResult respuesta = MessageBox.Show(
-                "Se aprobarán " + resultadoPedidoActual.TotalUnidades + " unidades válidas.\n\nLas filas con advertencias serán omitidas.\n\n¿Desea continuar?",
-                "Aprobar pedido",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Question,
-                MessageBoxDefaultButton.Button2
-            );
-
-            if (respuesta != DialogResult.Yes)
-                return;
-
-            pedidoAprobado = true;
-
-            btnAprobarPedido.Enabled = false;
-            btnCopiarMoldesPedido.Enabled = true;
-
-            cboProductoProduccion.Enabled = false;
-            btnCargarExcelProduccion.Enabled = false;
-            btnAnalizarExcelProduccion.Enabled = false;
-
-            lblEstadoExcelProduccion.Text = "Pedido aprobado.";
-            lblResultadoPedido.Text = "Pedido aprobado y listo para copiar moldes.";
-            }
         private IPlanificadorProducto ObtenerPlanificadorProducto(string codigoProducto)
             {
             foreach (IPlanificadorProducto planificador in planificadoresProducto)
@@ -348,15 +313,14 @@ namespace TithorAutomation
             }
         private void btnCopiarMoldesPedido_Click(object sender, EventArgs e)
             {
-            bool copiaTerminada = false;
             bool temporizadorActivo = tmrConexionCorel.Enabled;
 
             try
                 {
-                if (!pedidoAprobado || resultadoPedidoActual == null)
+                if (resultadoPedidoActual == null || !resultadoPedidoActual.PuedeAprobar)
                     {
                     MessageBox.Show(
-                        "Primero debe analizar y aprobar el archivo Excel.",
+                        "Primero debe analizar un archivo Excel con filas válidas.",
                         "Producción",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
@@ -518,9 +482,11 @@ namespace TithorAutomation
                     return;
 
                 btnCopiarMoldesPedido.Enabled = false;
-                btnAprobarPedido.Enabled = false;
                 btnNuevoPedido.Enabled = false;
                 tmrConexionCorel.Stop();
+                cboProductoProduccion.Enabled = false;
+                btnCargarExcelProduccion.Enabled = false;
+                btnAnalizarExcelProduccion.Enabled = false;
                 lblResultadoPedido.Text = $"Preparando {plan.TotalMoldes} moldes...";
 
                 int totalCopiado = copiadorMoldesCorel.Copiar(
@@ -538,7 +504,6 @@ namespace TithorAutomation
                 );
 
                 planProduccionActual = plan;
-                copiaTerminada = true;
 
                 lblResultadoPedido.Text =
                     $"Producción preparada: {totalCopiado} conjuntos copiados en {documentoDestino.Name}.";
@@ -574,9 +539,11 @@ namespace TithorAutomation
             finally
                 {
                 if (temporizadorActivo) tmrConexionCorel.Start();
-                btnCopiarMoldesPedido.Enabled = pedidoAprobado;
+                cboProductoProduccion.Enabled = true;
+                btnCargarExcelProduccion.Enabled = true;
+                btnAnalizarExcelProduccion.Enabled = File.Exists(txtRutaExcelProduccion.Text);
+                btnCopiarMoldesPedido.Enabled = resultadoPedidoActual != null && resultadoPedidoActual.PuedeAprobar;
                 btnNuevoPedido.Enabled = resultadoPedidoActual != null;
-                btnAprobarPedido.Enabled = resultadoPedidoActual != null && !pedidoAprobado;
                 }
             }
         private void AplicarEstiloGridProduccion()

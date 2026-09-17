@@ -22,7 +22,6 @@ namespace TithorAutomation
             new LectorPedidoFundas()
         };
         private ResultadoAnalisisPedido resultadoPedidoActual;
-        private bool pedidoAprobado;
         private long tamanoMasterAnalizado;
         private DateTime fechaMasterAnalizadoUtc;
         private readonly MoldeRepositorio moldeRepositorio = new MoldeRepositorio();

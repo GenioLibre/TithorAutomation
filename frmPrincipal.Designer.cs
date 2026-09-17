@@ -1,4 +1,4 @@
-﻿namespace TithorAutomation
+namespace TithorAutomation
 {
     partial class frmPrincipal
     {
@@ -138,7 +138,6 @@
             this.panel8 = new System.Windows.Forms.Panel();
             this.dgvPedidoProduccion = new System.Windows.Forms.DataGridView();
             this.lblResultadoPedido = new System.Windows.Forms.Label();
-            this.btnAprobarPedido = new System.Windows.Forms.Button();
             this.btnCopiarMoldesPedido = new System.Windows.Forms.Button();
             this.grpPedidoProduccion = new System.Windows.Forms.GroupBox();
             this.lblEstadoExcelProduccion = new System.Windows.Forms.Label();
@@ -1444,7 +1443,6 @@
             this.panel8.Controls.Add(this.btnNuevoPedido);
             this.panel8.Controls.Add(this.dgvPedidoProduccion);
             this.panel8.Controls.Add(this.lblResultadoPedido);
-            this.panel8.Controls.Add(this.btnAprobarPedido);
             this.panel8.Controls.Add(this.btnCopiarMoldesPedido);
             this.panel8.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel8.Location = new System.Drawing.Point(0, 268);
@@ -1471,22 +1469,6 @@
             this.lblResultadoPedido.Size = new System.Drawing.Size(118, 17);
             this.lblResultadoPedido.TabIndex = 37;
             this.lblResultadoPedido.Text = "Pedido sin analizar";
-            // 
-            // btnAprobarPedido
-            // 
-            this.btnAprobarPedido.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAprobarPedido.BackColor = System.Drawing.Color.White;
-            this.btnAprobarPedido.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnAprobarPedido.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.btnAprobarPedido.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAprobarPedido.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.btnAprobarPedido.Location = new System.Drawing.Point(588, 273);
-            this.btnAprobarPedido.Name = "btnAprobarPedido";
-            this.btnAprobarPedido.Size = new System.Drawing.Size(130, 40);
-            this.btnAprobarPedido.TabIndex = 35;
-            this.btnAprobarPedido.Text = "Aprobar pedido";
-            this.btnAprobarPedido.UseVisualStyleBackColor = false;
-            this.btnAprobarPedido.Click += new System.EventHandler(this.btnAprobarPedido_Click);
             // 
             // btnCopiarMoldesPedido
             // 
@@ -1979,7 +1961,7 @@
             this.btnNuevoPedido.FlatAppearance.BorderSize = 0;
             this.btnNuevoPedido.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNuevoPedido.ForeColor = System.Drawing.Color.White;
-            this.btnNuevoPedido.Location = new System.Drawing.Point(450, 273);
+            this.btnNuevoPedido.Location = new System.Drawing.Point(588, 273);
             this.btnNuevoPedido.Name = "btnNuevoPedido";
             this.btnNuevoPedido.Size = new System.Drawing.Size(130, 40);
             this.btnNuevoPedido.TabIndex = 37;
@@ -2185,7 +2167,6 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label lblTituloProduccion;
         private System.Windows.Forms.Label lblSubtituloProduccion;
-        private System.Windows.Forms.Button btnAprobarPedido;
         private System.Windows.Forms.Button btnCopiarMoldesPedido;
         private System.Windows.Forms.ComboBox cboProductoProduccion;
         private System.Windows.Forms.Button btnCargarExcelProduccion;
@@ -2211,4 +2192,3 @@
         private System.Windows.Forms.Button btnNuevoPedido;
         }
 }
-

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -23,6 +23,7 @@ namespace TithorAutomation
             {
             try
                 {
+                ConectarCorelAbierto();
                 if (corelApp == null)
                     {
                     lblEstadoCorel.Text =
@@ -107,31 +108,39 @@ namespace TithorAutomation
                     );
                 }
             }
-        private VGCore.Application ObtenerCorel()
+        private void ConectarCorelAbierto()
             {
-            try
+            VGCore.Application anterior = corelApp;
+            foreach (string progId in new[] { "CorelDRAW.Application.27", "CorelDRAW.Application" })
                 {
-                if (corelApp != null)
+                try
                     {
-                    int documentos = corelApp.Documents.Count;
-                    return corelApp;
+                    var abierta = (VGCore.Application)System.Runtime.InteropServices.Marshal.GetActiveObject(progId);
+                    if (abierta.Documents.Count > 0)
+                        {
+                        corelApp = abierta;
+                        return;
+                        }
+                    if (anterior == null) anterior = abierta;
+                    }
+                catch (System.Runtime.InteropServices.COMException)
+                    {
+                    // No hay una instancia registrada con este identificador.
                     }
                 }
-            catch
+            try
                 {
-                corelApp = null;
+                if (anterior != null) { int cantidad = anterior.Documents.Count; }
+                corelApp = anterior;
                 }
+            catch { corelApp = null; }
+            }
 
-            Type tipoCorel = Type.GetTypeFromProgID(
-                "CorelDRAW.Application.27",
-                true
-            );
-
-            corelApp = (VGCore.Application)
-                Activator.CreateInstance(tipoCorel);
-
-            corelApp.Visible = true;
-
+        private VGCore.Application ObtenerCorel()
+            {
+            ConectarCorelAbierto();
+            if (corelApp == null)
+                throw new InvalidOperationException("Abra CorelDRAW y el documento de destino. Ejecute ambas aplicaciones con el mismo nivel de permisos.");
             return corelApp;
             }
         }

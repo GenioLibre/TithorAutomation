@@ -33,9 +33,10 @@ namespace TithorAutomation.Servicios
             VGCore.Document documentoMaster = null;
             VGCore.Layer capaDestino = null;
 
-            bool masterAbiertoPorServicio = false;
+            VGCore.Layer capaTemporal = null;
             bool grupoComandosAbierto = false;
             bool comunicacionFallida = false;
+            bool huboCambios = false;
 
             int totalCopiado = 0;
             string etapa = "Preparando la copia";
@@ -45,55 +46,42 @@ namespace TithorAutomation.Servicios
 
             try
                 {
-                etapa = "Buscando el archivo Master abierto";
-
+                etapa = "Validando el documento de destino";
                 documentoMaster = BuscarDocumentoAbierto(corelApp, rutaMaster);
-
-                if (documentoMaster == null)
-                    {
-                    etapa = "Abriendo el archivo Master";
-
-                    documentoMaster = corelApp.OpenDocument(rutaMaster, 0);
-                    masterAbiertoPorServicio = true;
-                    }
-
-                if (documentoMaster == null)
-                    throw new InvalidOperationException("CorelDRAW no pudo abrir el archivo Master.");
-
-                if (EsMismoDocumento(documentoDestino, documentoMaster))
-                    throw new InvalidOperationException("El documento destino no puede ser el mismo archivo Master.");
-
-                etapa = "Leyendo los moldes del Master";
-
-                documentoMaster.Activate();
-
-                Dictionary<string, VGCore.Shape> indiceMoldes = CrearIndiceMoldes(documentoMaster);
-
-                if (indiceMoldes.Count == 0)
-                    throw new InvalidOperationException("No se encontraron grupos con códigos 'molde_' dentro del Master.");
-
-                etapa = "Validando los moldes solicitados";
-
-                ValidarMoldesSolicitados(plan, indiceMoldes);
-
-                etapa = "Creando la capa de producción";
+                if (documentoMaster != null && EsMismoDocumento(documentoDestino, documentoMaster))
+                    throw new InvalidOperationException("El documento destino no puede ser el archivo Master.");
+                if (documentoMaster != null && documentoMaster.Dirty)
+                    throw new InvalidOperationException("El Master tiene cambios sin guardar. Guárdelo antes de copiar los moldes.");
 
                 documentoDestino.Activate();
+                VGCore.Page paginaDestino = documentoDestino.ActivePage;
+                documentoDestino.BeginCommandGroup("Tithor - Copiar moldes");
+                grupoComandosAbierto = true;
 
+                etapa = "Creando la capa temporal";
+                capaTemporal = paginaDestino.CreateLayer("TITHOR_TEMP_" + Guid.NewGuid().ToString("N"));
+                huboCambios = true;
+
+                etapa = "Creando la capa de producción";
                 capaDestino = ObtenerOCrearCapa(documentoDestino, NombreCapaProduccion);
-
-                if (capaDestino == null)
-                    throw new InvalidOperationException($"No se pudo crear la capa '{NombreCapaProduccion}'.");
-
                 if (!capaDestino.Editable || !capaDestino.Visible)
                     throw new InvalidOperationException("La capa TITHOR_PRODUCCION debe estar visible y desbloqueada.");
 
+                etapa = "Importando el Master guardado al documento de destino";
+                capaTemporal.Activate();
+                var opciones = new VGCore.StructImportOptions();
+                opciones.MaintainLayers = false;
+                opciones.Mode = VGCore.cdrImportMode.cdrImportFull;
+                var importador = capaTemporal.ImportEx(rutaMaster, VGCore.cdrFilter.cdrCDR, opciones);
+                importador.Finish();
+
+                etapa = "Buscando los moldes importados";
+                var indiceMoldes = new Dictionary<string, VGCore.Shape>(StringComparer.OrdinalIgnoreCase);
+                for (int n = 1; n <= capaTemporal.Shapes.Count; n++)
+                    AgregarGrupoMoldeAlIndice(capaTemporal.Shapes[n], indiceMoldes);
+                ValidarMoldesSolicitados(plan, indiceMoldes);
+                paginaDestino.Activate();
                 capaDestino.Activate();
-
-                etapa = "Iniciando el grupo de comandos";
-
-                documentoDestino.BeginCommandGroup("Tithor - Copiar moldes");
-                grupoComandosAbierto = true;
 
                 for (int i = 0; i < plan.Moldes.Count; i++)
                     {
@@ -136,6 +124,10 @@ namespace TithorAutomation.Servicios
                     progreso?.Invoke(totalCopiado, plan.Moldes.Count);
                     }
 
+                etapa = "Retirando los objetos temporales del Master";
+                capaTemporal.Delete();
+                capaTemporal = null;
+
                 etapa = "Ordenando los moldes en formato grid";
 
                 documentoDestino.Activate();
@@ -170,8 +162,8 @@ namespace TithorAutomation.Servicios
 
                         grupoComandosAbierto = false;
 
-                        documentoDestino.Undo();
-                        estadoReversion = "\nLa operación se deshizo.";
+                        if (huboCambios) documentoDestino.Undo();
+                        estadoReversion = huboCambios ? "\nLa operación se deshizo." : "\nNo se registraron cambios en el destino.";
                         }
                     catch (Exception errorReversion)
                         {
@@ -198,17 +190,6 @@ namespace TithorAutomation.Servicios
                         {
                         documentoDestino.Activate();
                         documentoDestino.EndCommandGroup();
-                        }
-                    catch
-                        {
-                        }
-                    }
-
-                if (!comunicacionFallida && masterAbiertoPorServicio && documentoMaster != null)
-                    {
-                    try
-                        {
-                        documentoMaster.Close();
                         }
                     catch
                         {
@@ -390,13 +371,14 @@ namespace TithorAutomation.Servicios
                 return;
                 }
 
-            if (string.IsNullOrWhiteSpace(nombre))
-                return;
-
-            nombre = nombre.Trim();
+            nombre = (nombre ?? "").Trim();
 
             if (!nombre.StartsWith("molde_", StringComparison.OrdinalIgnoreCase))
+                {
+                for (int i = 1; i <= objeto.Shapes.Count; i++)
+                    AgregarGrupoMoldeAlIndice(objeto.Shapes[i], indice);
                 return;
+                }
 
             if (indice.ContainsKey(nombre))
                 throw new InvalidOperationException($"El grupo de molde '{nombre}' está duplicado dentro del Master.");
