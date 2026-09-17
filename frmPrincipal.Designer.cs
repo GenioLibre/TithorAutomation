@@ -1962,7 +1962,7 @@
             this.btnNuevoPedido.Name = "btnNuevoPedido";
             this.btnNuevoPedido.Size = new System.Drawing.Size(130, 40);
             this.btnNuevoPedido.TabIndex = 37;
-            this.btnNuevoPedido.Text = "NUEVO PEDIDO";
+            this.btnNuevoPedido.Text = "Nuevo Pedido";
             this.btnNuevoPedido.UseVisualStyleBackColor = false;
             this.btnNuevoPedido.Click += new System.EventHandler(this.btnNuevoPedido_Click);
             // 
