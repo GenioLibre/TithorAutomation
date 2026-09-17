@@ -48,6 +48,7 @@
             this.pnlMenuLateral = new System.Windows.Forms.Panel();
             this.btnRegistro = new System.Windows.Forms.Button();
             this.btnConfiguracion = new System.Windows.Forms.Button();
+            this.btnEscalar = new System.Windows.Forms.Button();
             this.btnAcomodar = new System.Windows.Forms.Button();
             this.btnProduccion = new System.Windows.Forms.Button();
             this.btnPantonear = new System.Windows.Forms.Button();
@@ -309,6 +310,7 @@
             this.pnlMenuLateral.Controls.Add(this.btnRegistro);
             this.pnlMenuLateral.Controls.Add(this.btnConfiguracion);
             this.pnlMenuLateral.Controls.Add(this.btnAcomodar);
+            this.pnlMenuLateral.Controls.Add(this.btnEscalar);
             this.pnlMenuLateral.Controls.Add(this.btnProduccion);
             this.pnlMenuLateral.Controls.Add(this.btnPantonear);
             this.pnlMenuLateral.Dock = System.Windows.Forms.DockStyle.Left;
@@ -326,11 +328,11 @@
             this.btnRegistro.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRegistro.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnRegistro.ForeColor = System.Drawing.Color.White;
-            this.btnRegistro.Location = new System.Drawing.Point(0, 337);
+            this.btnRegistro.Location = new System.Drawing.Point(0, 391);
             this.btnRegistro.Name = "btnRegistro";
             this.btnRegistro.Padding = new System.Windows.Forms.Padding(18, 0, 0, 0);
             this.btnRegistro.Size = new System.Drawing.Size(225, 48);
-            this.btnRegistro.TabIndex = 4;
+            this.btnRegistro.TabIndex = 5;
             this.btnRegistro.Text = "REGISTRO";
             this.btnRegistro.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnRegistro.UseVisualStyleBackColor = true;
@@ -342,15 +344,32 @@
             this.btnConfiguracion.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnConfiguracion.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnConfiguracion.ForeColor = System.Drawing.Color.White;
-            this.btnConfiguracion.Location = new System.Drawing.Point(0, 283);
+            this.btnConfiguracion.Location = new System.Drawing.Point(0, 337);
             this.btnConfiguracion.Name = "btnConfiguracion";
             this.btnConfiguracion.Padding = new System.Windows.Forms.Padding(18, 0, 0, 0);
             this.btnConfiguracion.Size = new System.Drawing.Size(225, 48);
-            this.btnConfiguracion.TabIndex = 3;
+            this.btnConfiguracion.TabIndex = 4;
             this.btnConfiguracion.Text = "CONFIGURACIÓN";
             this.btnConfiguracion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnConfiguracion.UseVisualStyleBackColor = true;
             this.btnConfiguracion.Click += new System.EventHandler(this.btnConfiguracion_Click);
+            // 
+            // btnEscalar
+            // 
+            this.btnEscalar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnEscalar.Enabled = false;
+            this.btnEscalar.FlatAppearance.BorderSize = 0;
+            this.btnEscalar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnEscalar.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnEscalar.ForeColor = System.Drawing.Color.White;
+            this.btnEscalar.Location = new System.Drawing.Point(0, 229);
+            this.btnEscalar.Name = "btnEscalar";
+            this.btnEscalar.Padding = new System.Windows.Forms.Padding(18, 0, 0, 0);
+            this.btnEscalar.Size = new System.Drawing.Size(225, 48);
+            this.btnEscalar.TabIndex = 2;
+            this.btnEscalar.Text = "ESCALAR";
+            this.btnEscalar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnEscalar.UseVisualStyleBackColor = true;
             // 
             // btnAcomodar
             // 
@@ -360,11 +379,11 @@
             this.btnAcomodar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAcomodar.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnAcomodar.ForeColor = System.Drawing.Color.White;
-            this.btnAcomodar.Location = new System.Drawing.Point(0, 229);
+            this.btnAcomodar.Location = new System.Drawing.Point(0, 283);
             this.btnAcomodar.Name = "btnAcomodar";
             this.btnAcomodar.Padding = new System.Windows.Forms.Padding(18, 0, 0, 0);
             this.btnAcomodar.Size = new System.Drawing.Size(225, 48);
-            this.btnAcomodar.TabIndex = 2;
+            this.btnAcomodar.TabIndex = 3;
             this.btnAcomodar.Text = "ACOMODAR";
             this.btnAcomodar.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnAcomodar.UseVisualStyleBackColor = true;
@@ -381,7 +400,7 @@
             this.btnProduccion.Padding = new System.Windows.Forms.Padding(18, 0, 0, 0);
             this.btnProduccion.Size = new System.Drawing.Size(225, 48);
             this.btnProduccion.TabIndex = 1;
-            this.btnProduccion.Text = "PRODUCCIÓN";
+            this.btnProduccion.Text = "MOLDES";
             this.btnProduccion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnProduccion.UseVisualStyleBackColor = true;
             this.btnProduccion.Click += new System.EventHandler(this.btnProduccion_Click);
@@ -2049,6 +2068,7 @@
         private System.Windows.Forms.Panel pnlMenuLateral;
         private System.Windows.Forms.Button btnRegistro;
         private System.Windows.Forms.Button btnConfiguracion;
+        private System.Windows.Forms.Button btnEscalar;
         private System.Windows.Forms.Button btnAcomodar;
         private System.Windows.Forms.Button btnProduccion;
         private System.Windows.Forms.Button btnPantonear;
