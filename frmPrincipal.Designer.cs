@@ -646,11 +646,13 @@
             this.btnAnalizar.FlatAppearance.BorderSize = 0;
             this.btnAnalizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAnalizar.ForeColor = System.Drawing.Color.White;
-            this.btnAnalizar.Location = new System.Drawing.Point(478, 43);
+            this.btnAnalizar.Location = new System.Drawing.Point(448, 43);
             this.btnAnalizar.Name = "btnAnalizar";
-            this.btnAnalizar.Size = new System.Drawing.Size(130, 40);
+            this.btnAnalizar.Size = new System.Drawing.Size(160, 40);
             this.btnAnalizar.TabIndex = 14;
             this.btnAnalizar.Text = "Analizar Documento";
+            this.btnAnalizar.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.btnAnalizar.Padding = new System.Windows.Forms.Padding(0);
             this.btnAnalizar.UseVisualStyleBackColor = false;
             this.btnAnalizar.Click += new System.EventHandler(this.btnAnalizar_Click);
             // 
@@ -679,7 +681,7 @@
             this.prgProceso.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(216)))), ((int)(((byte)(68)))));
             this.prgProceso.Location = new System.Drawing.Point(8, 52);
             this.prgProceso.Name = "prgProceso";
-            this.prgProceso.Size = new System.Drawing.Size(464, 23);
+            this.prgProceso.Size = new System.Drawing.Size(434, 23);
             this.prgProceso.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.prgProceso.TabIndex = 19;
             // 
