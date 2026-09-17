@@ -40,6 +40,7 @@ namespace TithorAutomation.Servicios
             string etapa = "Preparando la copia";
 
             List<VGCore.Shape> gruposCopiados = new List<VGCore.Shape>();
+            var primerasCopias = new Dictionary<string, VGCore.Shape>(StringComparer.OrdinalIgnoreCase);
 
             try
                 {
@@ -83,6 +84,9 @@ namespace TithorAutomation.Servicios
                 if (capaDestino == null)
                     throw new InvalidOperationException($"No se pudo crear la capa '{NombreCapaProduccion}'.");
 
+                if (!capaDestino.Editable || !capaDestino.Visible)
+                    throw new InvalidOperationException("La capa TITHOR_PRODUCCION debe estar visible y desbloqueada.");
+
                 capaDestino.Activate();
 
                 etapa = "Iniciando el grupo de comandos";
@@ -99,17 +103,34 @@ namespace TithorAutomation.Servicios
                     if (!indiceMoldes.TryGetValue(solicitud.CodigoMolde, out VGCore.Shape moldeOrigen))
                         throw new InvalidOperationException($"No se encontró el molde '{solicitud.CodigoMolde}' dentro del Master.");
 
-                    documentoMaster.Activate();
-                    moldeOrigen.Copy();
+                    string detalle = $"'{solicitud.CodigoMolde}', unidad {i + 1} de {plan.Moldes.Count}";
+                    VGCore.Shape copia;
+                    if (primerasCopias.TryGetValue(solicitud.CodigoMolde, out VGCore.Shape primeraCopia))
+                        {
+                        etapa = "Duplicando en el destino " + detalle;
+                        documentoDestino.Activate();
+                        copia = primeraCopia.Duplicate(0, 0);
+                        }
+                    else
+                        {
+                        etapa = "Activando el Master para " + detalle;
+                        documentoMaster.Activate();
+                        moldeOrigen.Page.Activate();
+                        etapa = "Copiando al portapapeles " + detalle;
+                        moldeOrigen.Copy();
 
-                    documentoDestino.Activate();
-                    capaDestino.Activate();
-
-                    VGCore.Shape copia = capaDestino.Paste();
+                        etapa = "Activando el destino para " + detalle;
+                        documentoDestino.Activate();
+                        capaDestino.Activate();
+                        etapa = "Pegando desde el portapapeles " + detalle;
+                        copia = capaDestino.Paste();
+                        if (copia != null) primerasCopias.Add(solicitud.CodigoMolde, copia);
+                        }
 
                     if (copia == null)
                         throw new InvalidOperationException($"CorelDRAW no pudo pegar el molde '{solicitud.CodigoMolde}'.");
 
+                    etapa = "Conservando el nombre de " + detalle;
                     // Cada unidad conserva el nombre del grupo del master, aunque se repita.
                     copia.Name = moldeOrigen.Name;
 
@@ -140,6 +161,7 @@ namespace TithorAutomation.Servicios
                 }
             catch (Exception ex)
                 {
+                string estadoReversion = "";
                 if (grupoComandosAbierto)
                     {
                     try
@@ -150,10 +172,12 @@ namespace TithorAutomation.Servicios
                         grupoComandosAbierto = false;
 
                         documentoDestino.Undo();
+                        estadoReversion = "\nLa operación se deshizo.";
                         }
-                    catch
+                    catch (Exception errorReversion)
                         {
-                        grupoComandosAbierto = false;
+                        estadoReversion = "\nNo se pudo confirmar la reversión: " + errorReversion.Message +
+                            "\nRevise el documento antes de repetir la copia.";
                         }
                     }
 
@@ -162,7 +186,7 @@ namespace TithorAutomation.Servicios
                 throw new InvalidOperationException(
                     $"Error durante la etapa: {etapa}.\n" +
                     $"Código original: {codigo}\n\n" +
-                    ex.Message,
+                    ex.Message + estadoReversion,
                     ex
                 );
                 }
