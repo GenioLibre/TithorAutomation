@@ -631,7 +631,7 @@
             this.btnAnalizar.Name = "btnAnalizar";
             this.btnAnalizar.Size = new System.Drawing.Size(130, 40);
             this.btnAnalizar.TabIndex = 14;
-            this.btnAnalizar.Text = "Analizar selección";
+            this.btnAnalizar.Text = "Analizar Documento";
             this.btnAnalizar.UseVisualStyleBackColor = false;
             this.btnAnalizar.Click += new System.EventHandler(this.btnAnalizar_Click);
             // 
