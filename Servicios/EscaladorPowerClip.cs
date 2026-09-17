@@ -36,14 +36,27 @@ namespace TithorAutomation.Servicios
             return true;
         }
 
-        public static double AnchoProporcional(double ancho, double alto, double alturaDestino)
-        {
-            if (!Positivo(ancho) || !Positivo(alto) || !Positivo(alturaDestino))
+        public static void CalcularTamanoCobertura(double anchoDiseno, double altoDiseno, double anchoDestino, double altoDestino, out double anchoFinal, out double altoFinal)
+            {
+            if (!Positivo(anchoDiseno) || !Positivo(altoDiseno) || !Positivo(anchoDestino) || !Positivo(altoDestino))
                 throw new InvalidOperationException("El diseño y el molde deben tener dimensiones mayores que cero.");
-            double resultado = ancho * (alturaDestino / alto);
-            if (!Positivo(resultado)) throw new InvalidOperationException("Las dimensiones resultantes no son válidas.");
-            return resultado;
-        }
+
+            double escalaPorAlto = altoDestino / altoDiseno;
+
+            anchoFinal = anchoDiseno * escalaPorAlto;
+            altoFinal = altoDestino;
+
+            if (anchoFinal < anchoDestino)
+                {
+                double escalaPorAncho = anchoDestino / anchoDiseno;
+
+                anchoFinal = anchoDestino;
+                altoFinal = altoDiseno * escalaPorAncho;
+                }
+
+            if (!Positivo(anchoFinal) || !Positivo(altoFinal))
+                throw new InvalidOperationException("Las dimensiones resultantes no son válidas.");
+            }
 
         private static bool Positivo(double valor) => valor > 0 && !double.IsNaN(valor) && !double.IsInfinity(valor);
 
@@ -191,60 +204,100 @@ namespace TithorAutomation.Servicios
                     throw new InvalidOperationException("El diseño debe estar separado de los moldes de destino.");
                 if (destino.TieneContenido && !reemplazar)
                     throw new InvalidOperationException("Hay PowerClips con contenido. Active Reemplazar contenido existente si desea sustituirlo.");
-                AnchoProporcional(diseno.SizeWidth, diseno.SizeHeight, contenedor.SizeHeight);
-            }
+                double anchoFinal;
+                double altoFinal;
+                CalcularTamanoCobertura(diseno.SizeWidth, diseno.SizeHeight, contenedor.SizeWidth, contenedor.SizeHeight, out anchoFinal, out altoFinal);
+                }
             if (destinos.Select(x => x.Contenedor.StaticID).Distinct().Count() != destinos.Count)
                 throw new InvalidOperationException("Se detectaron contenedores duplicados. Revise los grupos del documento.");
         }
 
         public int Aplicar(Document documento, Shape diseno, IList<PiezaEscalable> destinos, bool reemplazar)
-        {
-            Validar(diseno, destinos, reemplazar);
-            double ancho = diseno.SizeWidth, alto = diseno.SizeHeight;
-            bool abierto = false, huboCambios = false;
-            try
             {
+            Validar(diseno, destinos, reemplazar);
+
+            double anchoDiseno = diseno.SizeWidth;
+            double altoDiseno = diseno.SizeHeight;
+
+            bool abierto = false;
+            bool huboCambios = false;
+
+            try
+                {
                 documento.BeginCommandGroup("Tithor - Escalar diseños en PowerClip");
                 abierto = true;
+
                 foreach (PiezaEscalable destino in destinos)
-                {
+                    {
                     Shape contenedor = destino.Contenedor;
-                    double altura = contenedor.SizeHeight;
-                    double centroX = contenedor.CenterX, centroY = contenedor.CenterY;
+
+                    double anchoContenedor = contenedor.SizeWidth;
+                    double altoContenedor = contenedor.SizeHeight;
+                    double centroX = contenedor.CenterX;
+                    double centroY = contenedor.CenterY;
+
+                    double anchoFinal;
+                    double altoFinal;
+
+                    CalcularTamanoCobertura(anchoDiseno, altoDiseno, anchoContenedor, altoContenedor, out anchoFinal, out altoFinal);
+
                     Shape copia = diseno.CopyToLayer(contenedor.Layer);
+
                     huboCambios = true;
-                    copia.SetSize(AnchoProporcional(ancho, alto, altura), altura);
+
+                    copia.SetSize(anchoFinal, altoFinal);
                     copia.CenterX = centroX;
                     copia.CenterY = centroY;
                     copia.Name = "TITHOR_DISENO_" + destino.Pieza.Replace(' ', '_');
+
                     if (reemplazar && contenedor.PowerClip != null)
-                    {
+                        {
                         Shapes anteriores = contenedor.PowerClip.Shapes;
-                        for (int i = anteriores.Count; i >= 1; i--) anteriores[i].Delete();
-                    }
+
+                        for (int i = anteriores.Count; i >= 1; i--)
+                            anteriores[i].Delete();
+                        }
+
                     copia.AddToPowerClip(contenedor, cdrTriState.cdrTrue);
-                    // Reafirma el tamaño después de insertar, independientemente del ajuste automático de CorelDRAW.
-                    copia.SetSize(AnchoProporcional(ancho, alto, altura), altura);
+
+                    copia.SetSize(anchoFinal, altoFinal);
                     copia.CenterX = centroX;
                     copia.CenterY = centroY;
-                }
+                    }
+
                 documento.EndCommandGroup();
                 abierto = false;
+
                 return destinos.Count;
-            }
+                }
             catch (Exception error)
-            {
+                {
                 try
-                {
-                    if (abierto) { documento.EndCommandGroup(); abierto = false; }
-                    if (huboCambios) documento.Undo();
-                }
+                    {
+                    if (abierto)
+                        {
+                        documento.EndCommandGroup();
+                        abierto = false;
+                        }
+
+                    if (huboCambios)
+                        documento.Undo();
+                    }
                 catch (Exception errorReversion)
-                {
-                    throw new InvalidOperationException("Falló la aplicación y no se pudo confirmar la reversión. Revise el documento antes de guardar. " + errorReversion.Message, error);
+                    {
+                    throw new InvalidOperationException(
+                        "Falló la aplicación y no se pudo confirmar la reversión. Revise el documento antes de guardar. " +
+                        errorReversion.Message,
+                        error
+                    );
+                    }
+
+                throw new InvalidOperationException(
+                    "No se completó la aplicación. Los cambios realizados se deshicieron. " +
+                    error.Message,
+                    error
+                );
                 }
-                throw new InvalidOperationException("No se completó la aplicación. Los cambios realizados se deshicieron. " + error.Message, error);
             }
         }
-    }
 }

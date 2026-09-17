@@ -43,10 +43,11 @@ namespace TithorAutomation
         public frmPrincipal()
             {
             InitializeComponent();
-            InicializarEscalar();
-            ConfigurarFiltrosCatalogo();
-            CargarProductosConfiguracion();
 
+            ConfigurarFiltrosCatalogo();
+            ConfigurarModuloAcomodar();
+            ConfigurarModuloEscalar();
+            CargarProductosConfiguracion();
             ConfigurarTabla();
             AplicarEstiloGridProduccion();
 
@@ -121,8 +122,9 @@ namespace TithorAutomation
             {
             pnlPantonear.Visible = false;
             pnlProduccion.Visible = false;
-            pnlConfiguracion.Visible = false;
             pnlEscalar.Visible = false;
+            pnlAcomodar.Visible = false;
+            pnlConfiguracion.Visible = false;
 
             panelSeleccionado.Visible = true;
             panelSeleccionado.BringToFront();
@@ -161,6 +163,10 @@ namespace TithorAutomation
 
             if (cboProductoProduccion.Items.Count == 0)
                 CargarProductosProduccion();
+            }
+        private void btnAcomodar_Click_1(object sender, EventArgs e)
+            {
+            MostrarPanel(pnlAcomodar);
             }
         }
 

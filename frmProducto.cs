@@ -230,5 +230,9 @@ namespace TithorAutomation
         {
         }
 
-    }
+        private void frmProducto_Load(object sender, EventArgs e)
+            {
+
+            }
+        }
 }
