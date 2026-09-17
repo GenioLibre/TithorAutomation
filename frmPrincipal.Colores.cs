@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -154,23 +154,6 @@ namespace TithorAutomation
                 30F,
                 140
             );
-
-            // Encabezados
-            dgvColores.EnableHeadersVisualStyles = false;
-
-            dgvColores.ColumnHeadersHeightSizeMode =
-                DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-
-            dgvColores.ColumnHeadersHeight = 42;
-
-            dgvColores.ColumnHeadersDefaultCellStyle.WrapMode =
-                DataGridViewTriState.False;
-
-            dgvColores.ColumnHeadersDefaultCellStyle.Alignment =
-                DataGridViewContentAlignment.MiddleLeft;
-
-            dgvColores.ColumnHeadersDefaultCellStyle.Padding =
-                new System.Windows.Forms.Padding(6, 0, 6, 0);
 
             // Encabezados centrados
             colMuestra.HeaderCell.Style.Alignment =

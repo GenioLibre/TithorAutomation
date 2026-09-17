@@ -49,7 +49,7 @@ namespace TithorAutomation
             ConfigurarModuloEscalar();
             CargarProductosConfiguracion();
             ConfigurarTabla();
-            AplicarEstiloGridProduccion();
+            ConfigurarGridProduccion();
 
             btnProduccion.Enabled = true;
             btnProduccion.Visible = true;
@@ -60,20 +60,6 @@ namespace TithorAutomation
             ActualizarEstadoCorel();
 
             
-
-            dgvCatalogoMoldes.ColumnHeadersHeightSizeMode =
-            DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-
-            dgvCatalogoMoldes.ColumnHeadersHeight = 30;
-
-            dgvCatalogoMoldes.ColumnHeadersDefaultCellStyle.Alignment =
-                DataGridViewContentAlignment.MiddleLeft;
-
-            dgvCatalogoMoldes.ColumnHeadersDefaultCellStyle.Padding =
-                new System.Windows.Forms.Padding(6, 0, 6, 0);
-
-            dgvCatalogoMoldes.ColumnHeadersDefaultCellStyle.WrapMode =
-                DataGridViewTriState.False;
 
             btnVistaPrevia.Enabled = false;
             btnAplicar.Enabled = false;

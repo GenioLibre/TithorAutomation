@@ -546,68 +546,13 @@ namespace TithorAutomation
                 btnNuevoPedido.Enabled = resultadoPedidoActual != null;
                 }
             }
-        private void AplicarEstiloGridProduccion()
+        private void ConfigurarGridProduccion()
             {
-            dgvPedidoProduccion.EnableHeadersVisualStyles = false;
-            dgvPedidoProduccion.BackgroundColor = System.Drawing.Color.White;
-            dgvPedidoProduccion.BorderStyle = BorderStyle.None;
-            dgvPedidoProduccion.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            dgvPedidoProduccion.GridColor = System.Drawing.Color.FromArgb(220, 222, 230);
-
             dgvPedidoProduccion.AllowUserToAddRows = false;
             dgvPedidoProduccion.AllowUserToDeleteRows = false;
             dgvPedidoProduccion.AllowUserToResizeRows = false;
-            dgvPedidoProduccion.RowHeadersVisible = false;
             dgvPedidoProduccion.MultiSelect = false;
             dgvPedidoProduccion.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-
-            dgvPedidoProduccion.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single;
-            dgvPedidoProduccion.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dgvPedidoProduccion.ColumnHeadersHeight = 42;
-
-            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.BackColor =
-                System.Drawing.Color.FromArgb(44, 49, 82);
-
-            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.ForeColor =
-                System.Drawing.Color.White;
-
-            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.SelectionBackColor =
-                System.Drawing.Color.FromArgb(44, 49, 82);
-
-            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.SelectionForeColor =
-                System.Drawing.Color.White;
-
-            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.Font =
-                new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular);
-
-            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.Alignment =
-                DataGridViewContentAlignment.MiddleLeft;
-
-            dgvPedidoProduccion.ColumnHeadersDefaultCellStyle.Padding =
-                new Padding(8, 0, 6, 0);
-
-            dgvPedidoProduccion.DefaultCellStyle.BackColor =
-                System.Drawing.Color.White;
-
-            dgvPedidoProduccion.DefaultCellStyle.ForeColor =
-                System.Drawing.Color.FromArgb(35, 38, 55);
-
-            dgvPedidoProduccion.DefaultCellStyle.SelectionBackColor =
-                System.Drawing.Color.FromArgb(255, 241, 178);
-
-            dgvPedidoProduccion.DefaultCellStyle.SelectionForeColor =
-                System.Drawing.Color.FromArgb(35, 38, 55);
-
-            dgvPedidoProduccion.DefaultCellStyle.Font =
-                new System.Drawing.Font("Segoe UI", 9F);
-
-            dgvPedidoProduccion.DefaultCellStyle.Padding =
-                new Padding(8, 0, 6, 0);
-
-            dgvPedidoProduccion.AlternatingRowsDefaultCellStyle.BackColor =
-                System.Drawing.Color.FromArgb(247, 248, 252);
-
-            dgvPedidoProduccion.RowTemplate.Height = 34;
             }
 
         private void btnNuevoPedido_Click(object sender, EventArgs e)
