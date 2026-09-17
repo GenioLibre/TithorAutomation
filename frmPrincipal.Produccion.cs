@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -349,6 +349,7 @@ namespace TithorAutomation
         private void btnCopiarMoldesPedido_Click(object sender, EventArgs e)
             {
             bool copiaTerminada = false;
+            bool temporizadorActivo = tmrConexionCorel.Enabled;
 
             try
                 {
@@ -518,6 +519,8 @@ namespace TithorAutomation
 
                 btnCopiarMoldesPedido.Enabled = false;
                 btnAprobarPedido.Enabled = false;
+                btnNuevoPedido.Enabled = false;
+                tmrConexionCorel.Stop();
                 lblResultadoPedido.Text = $"Preparando {plan.TotalMoldes} moldes...";
 
                 int totalCopiado = copiadorMoldesCorel.Copiar(
@@ -530,7 +533,7 @@ namespace TithorAutomation
                             lblResultadoPedido.Text = $"Copiando molde {actual} de {total}...";
 
                             if (actual % 5 == 0 || actual == total)
-                                System.Windows.Forms.Application.DoEvents();
+                                lblResultadoPedido.Refresh();
                             }
                 );
 
@@ -570,6 +573,7 @@ namespace TithorAutomation
                 }
             finally
                 {
+                if (temporizadorActivo) tmrConexionCorel.Start();
                 btnCopiarMoldesPedido.Enabled = pedidoAprobado;
                 btnNuevoPedido.Enabled = resultadoPedidoActual != null;
                 btnAprobarPedido.Enabled = resultadoPedidoActual != null && !pedidoAprobado;
