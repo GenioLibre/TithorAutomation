@@ -1906,7 +1906,7 @@ namespace TithorAutomation
             this.lblTituloProduccion.Name = "lblTituloProduccion";
             this.lblTituloProduccion.Size = new System.Drawing.Size(195, 37);
             this.lblTituloProduccion.TabIndex = 6;
-            this.lblTituloProduccion.Text = "PRODUCCIÓN";
+            this.lblTituloProduccion.Text = "MOLDES";
             // 
             // lblSubtituloProduccion
             // 
@@ -1916,7 +1916,7 @@ namespace TithorAutomation
             this.lblSubtituloProduccion.Name = "lblSubtituloProduccion";
             this.lblSubtituloProduccion.Size = new System.Drawing.Size(337, 17);
             this.lblSubtituloProduccion.TabIndex = 7;
-            this.lblSubtituloProduccion.Text = "Carga el pedido, genera los moldes y aplica los diseños";
+            this.lblSubtituloProduccion.Text = "Carga el pedido, analiza el Excel y copia los moldes necesarios";
             // 
             // pnlAcomodar
             // 
