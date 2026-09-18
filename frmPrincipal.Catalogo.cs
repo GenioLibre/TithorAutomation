@@ -260,9 +260,8 @@ namespace TithorAutomation
             try
                 {
                 List<Molde> moldesGuardados = moldeRepositorio.ListarPorMaster(archivoMasterActual.Id);
-                Producto producto = ObtenerProductoSeleccionado();
 
-                ConfigurarColumnasCatalogo(producto);
+                ConfigurarColumnasCatalogo(moldesGuardados);
 
                 dgvCatalogoMoldes.Rows.Clear();
 
@@ -850,9 +849,7 @@ namespace TithorAutomation
             }
         private void MostrarCatalogoAnalizado(List<Molde> encontrados, List<Molde> guardados)
             {
-            Producto producto = ObtenerProductoSeleccionado();
-
-            ConfigurarColumnasCatalogo(producto);
+            ConfigurarColumnasCatalogo(encontrados);
 
             dgvCatalogoMoldes.Rows.Clear();
             dgvCatalogoMoldes.Visible = true;
@@ -1013,59 +1010,19 @@ namespace TithorAutomation
             }
         private void ValidarPiezasRequeridas(List<Molde> moldes, StringBuilder advertencias)
             {
-            Producto producto = ObtenerProductoSeleccionado();
-            string codigoProducto =
-                producto == null
-                    ? string.Empty
-                    : (producto.Codigo ?? string.Empty).Trim().ToUpperInvariant();
-
-            if (codigoProducto == "CAMISETAS")
+            if (moldes == null || moldes.Count == 0)
                 {
-                ValidarPiezasRequeridasCamisetas(moldes, advertencias);
+                advertencias.AppendLine("• No se encontraron grupos superiores con nombres que comiencen por molde_.");
                 return;
                 }
 
-            if (codigoProducto == "FUNDAS" || codigoProducto.Contains("FUNDA"))
-                {
-                ValidarPiezasRequeridasFundas(moldes, advertencias);
-                }
-            }
-        private void ValidarPiezasRequeridasFundas(List<Molde> moldes, StringBuilder advertencias)
-            {
-            string[] tallas = { "S", "M", "L" };
-            string[] piezas =
-                {
-                "Frente",
-                "Espalda",
-                "Lateral izquierdo",
-                "Lateral derecho"
-                };
-
-            foreach (string talla in tallas)
-                {
-                foreach (string pieza in piezas)
-                    {
-                    if (!ExisteMoldeValido(moldes, talla, pieza, string.Empty))
-                        {
-                        advertencias.AppendLine(
-                            "• Falta " +
-                            pieza +
-                            " de la talla " +
-                            talla +
-                            "."
-                        );
-                        }
-                    }
-                }
-            }
-        private void ValidarPiezasRequeridasCamisetas(List<Molde> moldes, StringBuilder advertencias)
-            {
-            Dictionary<string, List<Molde>> grupos =
-                new Dictionary<string, List<Molde>>(StringComparer.OrdinalIgnoreCase);
+            HashSet<string> grupos =
+                new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             foreach (Molde molde in moldes)
                 {
-                if (molde.Estado == "Inválido" ||
+                if (molde == null ||
+                    molde.Estado == "Inválido" ||
                     molde.Estado == "Duplicado" ||
                     string.IsNullOrWhiteSpace(molde.Codigo))
                     {
@@ -1075,130 +1032,66 @@ namespace TithorAutomation
                 int separador = molde.Codigo.IndexOf("__", StringComparison.Ordinal);
 
                 if (separador <= 0)
+                    {
+                    advertencias.AppendLine(
+                        "• El elemento \"" +
+                        molde.NombreObjeto +
+                        "\" no tiene un grupo de origen válido."
+                    );
+
                     continue;
+                    }
 
-                string codigoGrupo = molde.Codigo.Substring(0, separador);
-
-                if (!grupos.ContainsKey(codigoGrupo))
-                    grupos.Add(codigoGrupo, new List<Molde>());
-
-                grupos[codigoGrupo].Add(molde);
+                grupos.Add(molde.Codigo.Substring(0, separador));
                 }
 
-            foreach (KeyValuePair<string, List<Molde>> grupo in grupos)
+            if (grupos.Count == 0)
                 {
-                bool tieneFrente = ExistePiezaValida(grupo.Value, "Frente", string.Empty);
-                bool tieneEspalda = ExistePiezaValida(grupo.Value, "Espalda", string.Empty);
-
-                if (!tieneFrente)
-                    advertencias.AppendLine("• Falta Frente en el grupo " + grupo.Key + ".");
-
-                if (!tieneEspalda)
-                    advertencias.AppendLine("• Falta Espalda en el grupo " + grupo.Key + ".");
-
-                bool requiereMangas =
-                    grupo.Key.Contains("_clasico_") ||
-                    grupo.Key.Contains("_raglan_");
-
-                bool cortaIzquierda = ExistePiezaValida(grupo.Value, "Manga izquierda", "Corta");
-                bool cortaDerecha = ExistePiezaValida(grupo.Value, "Manga derecha", "Corta");
-                bool largaIzquierda = ExistePiezaValida(grupo.Value, "Manga izquierda", "Larga");
-                bool largaDerecha = ExistePiezaValida(grupo.Value, "Manga derecha", "Larga");
-
-                if (cortaIzquierda != cortaDerecha)
-                    advertencias.AppendLine("• El grupo " + grupo.Key + " tiene incompleto el par de mangas cortas.");
-
-                if (largaIzquierda != largaDerecha)
-                    advertencias.AppendLine("• El grupo " + grupo.Key + " tiene incompleto el par de mangas largas.");
-
-                if (requiereMangas &&
-                    !cortaIzquierda &&
-                    !cortaDerecha &&
-                    !largaIzquierda &&
-                    !largaDerecha)
-                    {
-                    advertencias.AppendLine("• Falta al menos un par de mangas en el grupo " + grupo.Key + ".");
-                    }
+                advertencias.AppendLine("• No existe ningún grupo de moldes válido para sincronizar.");
                 }
             }
-        private bool ExisteMoldeValido(List<Molde> moldes, string talla, string pieza, string manga)
+        private void ConfigurarColumnasCatalogo(List<Molde> moldes)
             {
-            foreach (Molde molde in moldes)
-                {
-                if (molde.Estado == "Inválido" || molde.Estado == "Duplicado")
-                    continue;
+            bool mostrarCorte = false;
+            bool mostrarManga = false;
+            bool mostrarCuello = false;
 
-                if (TextoIgual(molde.Talla, talla) &&
-                    TextoIgual(molde.Pieza, pieza) &&
-                    (string.IsNullOrWhiteSpace(manga) || TextoIgual(molde.Manga, manga)))
+            if (moldes != null)
+                {
+                foreach (Molde molde in moldes)
                     {
-                    return true;
+                    if (molde == null)
+                        continue;
+
+                    mostrarCorte = mostrarCorte || !string.IsNullOrWhiteSpace(molde.Corte);
+                    mostrarManga = mostrarManga || !string.IsNullOrWhiteSpace(molde.Manga);
+                    mostrarCuello = mostrarCuello || !string.IsNullOrWhiteSpace(molde.Cuello);
                     }
                 }
-
-            return false;
-            }
-        private bool ExistePiezaValida(List<Molde> moldes, string pieza, string manga)
-            {
-            foreach (Molde molde in moldes)
-                {
-                if (molde.Estado == "Inválido" || molde.Estado == "Duplicado")
-                    continue;
-
-                if (TextoIgual(molde.Pieza, pieza) &&
-                    (string.IsNullOrWhiteSpace(manga) || TextoIgual(molde.Manga, manga)))
-                    {
-                    return true;
-                    }
-                }
-
-            return false;
-            }
-        private void ConfigurarColumnasCatalogo(Producto producto)
-            {
-            string codigoProducto = producto == null
-                ? string.Empty
-                : (producto.Codigo ?? string.Empty).Trim().ToUpperInvariant();
-
-            bool esCamiseta = codigoProducto == "CAMISETAS";
-            bool esFunda = codigoProducto == "FUNDAS" ||
-                           codigoProducto.Contains("FUNDA");
 
             colEstadoMolde.Visible = true;
             colCodigoMolde.Visible = true;
             colPiezaMolde.Visible = true;
             colTallaMolde.Visible = true;
-            colPaginaMolde.Visible = true;
+            colCorteMolde.Visible = mostrarCorte;
+            colMangaMolde.Visible = mostrarManga;
+            colCuelloMolde.Visible = mostrarCuello;
+            colPaginaMolde.Visible = false;
             colCapaMolde.Visible = true;
 
-            colCorteMolde.Visible = esCamiseta;
-            colMangaMolde.Visible = esCamiseta;
-            colCuelloMolde.Visible = esCamiseta;
+            colPiezaMolde.HeaderText = "Elemento";
+            colTallaMolde.HeaderText = "Talla / variante";
 
             dgvCatalogoMoldes.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
-            if (esCamiseta)
-                {
-                colEstadoMolde.FillWeight = 75;
-                colCodigoMolde.FillWeight = 180;
-                colPiezaMolde.FillWeight = 100;
-                colTallaMolde.FillWeight = 55;
-                colCorteMolde.FillWeight = 75;
-                colMangaMolde.FillWeight = 75;
-                colCuelloMolde.FillWeight = 80;
-                colPaginaMolde.FillWeight = 60;
-                colCapaMolde.FillWeight = 80;
-                }
-            else
-                {
-                // Distribución para Fundas.
-                colEstadoMolde.FillWeight = 70;
-                colCodigoMolde.FillWeight = 210;
-                colPiezaMolde.FillWeight = 130;
-                colTallaMolde.FillWeight = 60;
-                colPaginaMolde.FillWeight = 60;
-                colCapaMolde.FillWeight = 90;
-                }
+            colEstadoMolde.FillWeight = 65;
+            colCodigoMolde.FillWeight = 190;
+            colPiezaMolde.FillWeight = 125;
+            colTallaMolde.FillWeight = 65;
+            colCorteMolde.FillWeight = 70;
+            colMangaMolde.FillWeight = 70;
+            colCuelloMolde.FillWeight = 70;
+            colCapaMolde.FillWeight = 80;
             }
         private void btnSincronizarMaster_Click(object sender, EventArgs e)
             {
