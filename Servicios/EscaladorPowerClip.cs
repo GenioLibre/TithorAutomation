@@ -291,8 +291,8 @@ namespace TithorAutomation.Servicios
             if (codigo == "espalda") return "Espalda";
             if (codigo.Contains("manga") && codigo.EndsWith("izquierda")) return "Manga izquierda";
             if (codigo.Contains("manga") && codigo.EndsWith("derecha")) return "Manga derecha";
-            if ((codigo.Contains("short") || codigo.Contains("pierna")) && codigo.EndsWith("izquierdo") || codigo.EndsWith("izquierda")) return "Short izquierdo";
-            if ((codigo.Contains("short") || codigo.Contains("pierna")) && codigo.EndsWith("derecho") || codigo.EndsWith("derecha")) return "Short derecho";
+            if ((codigo.Contains("short") || codigo.Contains("pierna")) && (codigo.EndsWith("izquierdo") || codigo.EndsWith("izquierda"))) return "Short izquierdo";
+            if ((codigo.Contains("short") || codigo.Contains("pierna")) && (codigo.EndsWith("derecho") || codigo.EndsWith("derecha"))) return "Short derecho";
 
             return nombre.Replace('_', ' ');
         }
