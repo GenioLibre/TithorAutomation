@@ -1013,39 +1013,39 @@ namespace TithorAutomation
             }
         private void ValidarPiezasRequeridas(List<Molde> moldes, StringBuilder advertencias)
             {
-            string[] tallas = { "S", "M", "L" };
+            Producto producto = ObtenerProductoSeleccionado();
+            string codigoProducto =
+                producto == null
+                    ? string.Empty
+                    : (producto.Codigo ?? string.Empty).Trim().ToUpperInvariant();
 
-            string[] piezas =
+            if (codigoProducto == "CAMISETAS")
+                {
+                ValidarPiezasRequeridasCamisetas(moldes, advertencias);
+                return;
+                }
+
+            if (codigoProducto == "FUNDAS" || codigoProducto.Contains("FUNDA"))
+                {
+                ValidarPiezasRequeridasFundas(moldes, advertencias);
+                }
+            }
+        private void ValidarPiezasRequeridasFundas(List<Molde> moldes, StringBuilder advertencias)
             {
-        "Frente",
-        "Espalda",
-        "Lateral izquierdo",
-        "Lateral derecho"
-    };
+            string[] tallas = { "S", "M", "L" };
+            string[] piezas =
+                {
+                "Frente",
+                "Espalda",
+                "Lateral izquierdo",
+                "Lateral derecho"
+                };
 
             foreach (string talla in tallas)
                 {
                 foreach (string pieza in piezas)
                     {
-                    bool encontrado = false;
-
-                    foreach (Molde molde in moldes)
-                        {
-                        if (molde.Estado == "Inválido" ||
-                            molde.Estado == "Duplicado")
-                            {
-                            continue;
-                            }
-
-                        if (TextoIgual(molde.Talla, talla) &&
-                            TextoIgual(molde.Pieza, pieza))
-                            {
-                            encontrado = true;
-                            break;
-                            }
-                        }
-
-                    if (!encontrado)
+                    if (!ExisteMoldeValido(moldes, talla, pieza, string.Empty))
                         {
                         advertencias.AppendLine(
                             "• Falta " +
@@ -1057,6 +1057,102 @@ namespace TithorAutomation
                         }
                     }
                 }
+            }
+        private void ValidarPiezasRequeridasCamisetas(List<Molde> moldes, StringBuilder advertencias)
+            {
+            Dictionary<string, List<Molde>> grupos =
+                new Dictionary<string, List<Molde>>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (Molde molde in moldes)
+                {
+                if (molde.Estado == "Inválido" ||
+                    molde.Estado == "Duplicado" ||
+                    string.IsNullOrWhiteSpace(molde.Codigo))
+                    {
+                    continue;
+                    }
+
+                int separador = molde.Codigo.IndexOf("__", StringComparison.Ordinal);
+
+                if (separador <= 0)
+                    continue;
+
+                string codigoGrupo = molde.Codigo.Substring(0, separador);
+
+                if (!grupos.ContainsKey(codigoGrupo))
+                    grupos.Add(codigoGrupo, new List<Molde>());
+
+                grupos[codigoGrupo].Add(molde);
+                }
+
+            foreach (KeyValuePair<string, List<Molde>> grupo in grupos)
+                {
+                bool tieneFrente = ExistePiezaValida(grupo.Value, "Frente", string.Empty);
+                bool tieneEspalda = ExistePiezaValida(grupo.Value, "Espalda", string.Empty);
+
+                if (!tieneFrente)
+                    advertencias.AppendLine("• Falta Frente en el grupo " + grupo.Key + ".");
+
+                if (!tieneEspalda)
+                    advertencias.AppendLine("• Falta Espalda en el grupo " + grupo.Key + ".");
+
+                bool requiereMangas =
+                    grupo.Key.Contains("_clasico_") ||
+                    grupo.Key.Contains("_raglan_");
+
+                bool cortaIzquierda = ExistePiezaValida(grupo.Value, "Manga izquierda", "Corta");
+                bool cortaDerecha = ExistePiezaValida(grupo.Value, "Manga derecha", "Corta");
+                bool largaIzquierda = ExistePiezaValida(grupo.Value, "Manga izquierda", "Larga");
+                bool largaDerecha = ExistePiezaValida(grupo.Value, "Manga derecha", "Larga");
+
+                if (cortaIzquierda != cortaDerecha)
+                    advertencias.AppendLine("• El grupo " + grupo.Key + " tiene incompleto el par de mangas cortas.");
+
+                if (largaIzquierda != largaDerecha)
+                    advertencias.AppendLine("• El grupo " + grupo.Key + " tiene incompleto el par de mangas largas.");
+
+                if (requiereMangas &&
+                    !cortaIzquierda &&
+                    !cortaDerecha &&
+                    !largaIzquierda &&
+                    !largaDerecha)
+                    {
+                    advertencias.AppendLine("• Falta al menos un par de mangas en el grupo " + grupo.Key + ".");
+                    }
+                }
+            }
+        private bool ExisteMoldeValido(List<Molde> moldes, string talla, string pieza, string manga)
+            {
+            foreach (Molde molde in moldes)
+                {
+                if (molde.Estado == "Inválido" || molde.Estado == "Duplicado")
+                    continue;
+
+                if (TextoIgual(molde.Talla, talla) &&
+                    TextoIgual(molde.Pieza, pieza) &&
+                    (string.IsNullOrWhiteSpace(manga) || TextoIgual(molde.Manga, manga)))
+                    {
+                    return true;
+                    }
+                }
+
+            return false;
+            }
+        private bool ExistePiezaValida(List<Molde> moldes, string pieza, string manga)
+            {
+            foreach (Molde molde in moldes)
+                {
+                if (molde.Estado == "Inválido" || molde.Estado == "Duplicado")
+                    continue;
+
+                if (TextoIgual(molde.Pieza, pieza) &&
+                    (string.IsNullOrWhiteSpace(manga) || TextoIgual(molde.Manga, manga)))
+                    {
+                    return true;
+                    }
+                }
+
+            return false;
             }
         private void ConfigurarColumnasCatalogo(Producto producto)
             {
