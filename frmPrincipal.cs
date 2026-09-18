@@ -18,9 +18,11 @@ namespace TithorAutomation
         private readonly List<IPlanificadorProducto> planificadoresProducto = new List<IPlanificadorProducto> { new PlanificadorFundas() };
         private readonly CopiadorMoldesCorel copiadorMoldesCorel = new CopiadorMoldesCorel();
         private PlanProduccion planProduccionActual;
-        private readonly List<ILectorPedidoProducto> lectoresPedido = new List<ILectorPedidoProducto> {
-            new LectorPedidoFundas()
-        };
+        private readonly List<ILectorPedidoProducto> lectoresPedido = new List<ILectorPedidoProducto>
+            {
+            new LectorPedidoFundas(),
+            new LectorPedidoCamisetas()
+            };
         private ResultadoAnalisisPedido resultadoPedidoActual;
         private long tamanoMasterAnalizado;
         private DateTime fechaMasterAnalizadoUtc;
