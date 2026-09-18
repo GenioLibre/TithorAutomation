@@ -223,9 +223,9 @@ namespace TithorAutomation.Servicios
 
         private int CopiarSeleccionDePiezas(VGCore.Application corelApp, VGCore.Document documentoDestino, string rutaMaster, PlanProduccion plan, Action<int, int> progreso)
             {
-            VGCore.Document documentoMaster = null;
             VGCore.Layer capaDestino = null;
-            bool cerrarMaster = false;
+            VGCore.Page paginaDestino = null;
+            VGCore.Page paginaTemporal = null;
             bool grupoComandosAbierto = false;
             bool comunicacionFallida = false;
             bool huboCambios = false;
@@ -236,33 +236,48 @@ namespace TithorAutomation.Servicios
 
             try
                 {
-                etapa = "Abriendo el archivo Master";
-                documentoMaster = BuscarDocumentoAbierto(corelApp, rutaMaster);
+                etapa = "Validando el documento de destino";
+                VGCore.Document documentoMasterAbierto = BuscarDocumentoAbierto(corelApp, rutaMaster);
 
-                if (documentoMaster == null)
-                    {
-                    documentoMaster = corelApp.OpenDocument(rutaMaster);
-                    cerrarMaster = true;
-                    }
-
-                if (EsMismoDocumento(documentoDestino, documentoMaster))
+                if (documentoMasterAbierto != null && EsMismoDocumento(documentoDestino, documentoMasterAbierto))
                     throw new InvalidOperationException("El documento destino no puede ser el archivo Master.");
 
-                if (documentoMaster.Dirty)
+                if (documentoMasterAbierto != null && documentoMasterAbierto.Dirty)
                     throw new InvalidOperationException("El Master tiene cambios sin guardar. Guárdelo antes de copiar los moldes.");
 
-                etapa = "Indexando capas y grupos del Master";
-                Dictionary<string, VGCore.Shape> indiceMoldes = CrearIndiceMoldesPorCapa(documentoMaster);
-                ValidarSeleccionesSolicitadas(plan, indiceMoldes);
-
                 documentoDestino.Activate();
+                paginaDestino = documentoDestino.ActivePage;
                 documentoDestino.BeginCommandGroup("Tithor - Copiar piezas de moldes");
                 grupoComandosAbierto = true;
 
+                etapa = "Creando la capa de producción";
                 capaDestino = ObtenerOCrearCapa(documentoDestino, NombreCapaProduccion);
 
                 if (!capaDestino.Editable || !capaDestino.Visible)
                     throw new InvalidOperationException("La capa TITHOR_PRODUCCION debe estar visible y desbloqueada.");
+
+                etapa = "Creando la página temporal";
+                paginaTemporal = documentoDestino.AddPages(1);
+                paginaTemporal.Activate();
+                huboCambios = true;
+
+                etapa = "Importando el Master al documento abierto";
+                VGCore.Layer capaImportacion = paginaTemporal.Layers[1];
+                capaImportacion.Activate();
+
+                VGCore.StructImportOptions opciones = new VGCore.StructImportOptions();
+                opciones.MaintainLayers = true;
+                opciones.Mode = VGCore.cdrImportMode.cdrImportFull;
+
+                VGCore.ImportFilter importador = capaImportacion.ImportEx(rutaMaster, VGCore.cdrFilter.cdrCDR, opciones);
+                importador.Finish();
+
+                etapa = "Indexando capas y grupos importados";
+                Dictionary<string, VGCore.Shape> indiceMoldes = CrearIndiceMoldesPorCapa(paginaTemporal);
+                ValidarSeleccionesSolicitadas(plan, indiceMoldes);
+
+                paginaDestino.Activate();
+                capaDestino.Activate();
 
                 for (int i = 0; i < plan.Moldes.Count; i++)
                     {
@@ -276,24 +291,19 @@ namespace TithorAutomation.Servicios
 
                     if (primerasCopias.TryGetValue(claveCopia, out VGCore.Shape primeraCopia))
                         {
-                        documentoDestino.Activate();
+                        paginaDestino.Activate();
+                        capaDestino.Activate();
                         copia = primeraCopia.Duplicate(0, 0);
                         }
                     else
                         {
-                        documentoMaster.Activate();
-                        moldeOrigen.Copy();
-
-                        documentoDestino.Activate();
-                        capaDestino.Activate();
-                        copia = capaDestino.Paste();
+                        copia = moldeOrigen.CopyToLayer(capaDestino);
 
                         if (copia == null)
                             throw new InvalidOperationException("CorelDRAW no devolvió la copia del grupo solicitado.");
 
                         etapa = "Conservando únicamente las piezas solicitadas";
                         ConservarPiezasSolicitadas(copia, solicitud);
-
                         primerasCopias.Add(claveCopia, copia);
                         }
 
@@ -302,13 +312,16 @@ namespace TithorAutomation.Servicios
 
                     copia.Name = moldeOrigen.Name;
                     gruposCopiados.Add(copia);
-                    huboCambios = true;
                     totalCopiado++;
                     progreso?.Invoke(totalCopiado, plan.Moldes.Count);
                     }
 
+                etapa = "Eliminando la página temporal";
+                paginaDestino.Activate();
+                paginaTemporal.Delete();
+                paginaTemporal = null;
+
                 etapa = "Ordenando los moldes en formato grid";
-                documentoDestino.Activate();
                 capaDestino.Activate();
                 OrdenarEnGrid(corelApp, documentoDestino, gruposCopiados);
 
@@ -376,17 +389,6 @@ namespace TithorAutomation.Servicios
                         }
                     }
 
-                if (cerrarMaster && documentoMaster != null && !comunicacionFallida)
-                    {
-                    try
-                        {
-                        documentoMaster.Close();
-                        }
-                    catch
-                        {
-                        }
-                    }
-
                 if (!comunicacionFallida)
                     {
                     try
@@ -400,37 +402,32 @@ namespace TithorAutomation.Servicios
                 }
             }
 
-        private Dictionary<string, VGCore.Shape> CrearIndiceMoldesPorCapa(VGCore.Document documentoMaster)
+        private Dictionary<string, VGCore.Shape> CrearIndiceMoldesPorCapa(VGCore.Page pagina)
             {
             Dictionary<string, VGCore.Shape> indice = new Dictionary<string, VGCore.Shape>(StringComparer.OrdinalIgnoreCase);
 
-            for (int paginaIndice = 1; paginaIndice <= documentoMaster.Pages.Count; paginaIndice++)
+            for (int capaIndice = 1; capaIndice <= pagina.Layers.Count; capaIndice++)
                 {
-                VGCore.Page pagina = documentoMaster.Pages[paginaIndice];
+                VGCore.Layer capa = pagina.Layers[capaIndice];
 
-                for (int capaIndice = 1; capaIndice <= pagina.Layers.Count; capaIndice++)
+                for (int objetoIndice = 1; objetoIndice <= capa.Shapes.Count; objetoIndice++)
                     {
-                    VGCore.Layer capa = pagina.Layers[capaIndice];
+                    VGCore.Shape objeto = capa.Shapes[objetoIndice];
 
-                    for (int objetoIndice = 1; objetoIndice <= capa.Shapes.Count; objetoIndice++)
-                        {
-                        VGCore.Shape objeto = capa.Shapes[objetoIndice];
+                    if (objeto.Type != VGCore.cdrShapeType.cdrGroupShape)
+                        continue;
 
-                        if (objeto.Type != VGCore.cdrShapeType.cdrGroupShape)
-                            continue;
+                    string nombre = ObtenerNombreSeguro(objeto);
 
-                        string nombre = ObtenerNombreSeguro(objeto);
+                    if (!nombre.StartsWith("molde_", StringComparison.OrdinalIgnoreCase))
+                        continue;
 
-                        if (!nombre.StartsWith("molde_", StringComparison.OrdinalIgnoreCase))
-                            continue;
+                    string clave = CrearClaveMolde(capa.Name, nombre);
 
-                        string clave = CrearClaveMolde(capa.Name, nombre);
+                    if (indice.ContainsKey(clave))
+                        throw new InvalidOperationException("El grupo '" + nombre + "' está duplicado en la capa '" + capa.Name + "'.");
 
-                        if (indice.ContainsKey(clave))
-                            throw new InvalidOperationException("El grupo '" + nombre + "' está duplicado en la capa '" + capa.Name + "'.");
-
-                        indice.Add(clave, objeto);
-                        }
+                    indice.Add(clave, objeto);
                     }
                 }
 
