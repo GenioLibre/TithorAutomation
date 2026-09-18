@@ -289,8 +289,10 @@ namespace TithorAutomation.Servicios
             if (codigo.EndsWith("lateral_derecho")) return "Lateral derecho";
             if (codigo.StartsWith("frente")) return "Frente";
             if (codigo == "espalda") return "Espalda";
-            if (codigo.Contains("manga") && codigo.EndsWith("izquierda")) return "Manga izquierda";
-            if (codigo.Contains("manga") && codigo.EndsWith("derecha")) return "Manga derecha";
+            if (codigo.Contains("manga_larga") && codigo.EndsWith("izquierda")) return "Manga larga izquierda";
+            if (codigo.Contains("manga_larga") && codigo.EndsWith("derecha")) return "Manga larga derecha";
+            if ((codigo.Contains("manga_corta") || codigo == "manga_izquierda") && codigo.EndsWith("izquierda")) return "Manga corta izquierda";
+            if ((codigo.Contains("manga_corta") || codigo == "manga_derecha") && codigo.EndsWith("derecha")) return "Manga corta derecha";
             if ((codigo.Contains("short") || codigo.Contains("pierna")) && (codigo.EndsWith("izquierdo") || codigo.EndsWith("izquierda"))) return "Short izquierdo";
             if ((codigo.Contains("short") || codigo.Contains("pierna")) && (codigo.EndsWith("derecho") || codigo.EndsWith("derecha"))) return "Short derecho";
 
