@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using VGCore;
+using TithorAutomation.Modelos;
 
 namespace TithorAutomation.Servicios
 {
@@ -15,6 +16,9 @@ namespace TithorAutomation.Servicios
         public string Estado { get; set; }
         public string Clave { get; set; }
         public bool TieneContenido { get; set; }
+        public string Diseno { get; set; }
+        public string NombreGrupo { get; set; }
+        public int FilaExcel { get; set; }
     }
 
     public sealed class EscaladorPowerClip
@@ -143,6 +147,160 @@ namespace TithorAutomation.Servicios
                 if (objeto.Type == cdrShapeType.cdrGroupShape && objeto.PowerClip == null)
                     Recorrer(objeto.Shapes, resultado, pagina, noEditable, tallaGrupo);
             }
+        }
+
+        public List<PiezaEscalable> AnalizarPedido(Document documento, PlanProduccion plan)
+        {
+            if (documento == null) throw new ArgumentNullException(nameof(documento));
+            if (plan == null || plan.Moldes == null || plan.Moldes.Count == 0)
+                throw new InvalidOperationException("No existe un pedido copiado para iniciar el escalado guiado.");
+
+            Dictionary<string, Shape> grupos = ObtenerGruposProduccion(documento);
+            List<PiezaEscalable> resultado = new List<PiezaEscalable>();
+
+            foreach (MoldeProduccion solicitud in plan.Moldes)
+            {
+                List<string> nombresPiezas = ObtenerPiezasSolicitud(solicitud);
+                Shape grupo = null;
+
+                if (!string.IsNullOrWhiteSpace(solicitud.NombreDestino))
+                    grupos.TryGetValue(solicitud.NombreDestino, out grupo);
+
+                foreach (string nombrePieza in nombresPiezas)
+                    resultado.Add(CrearPiezaPedido(grupo, solicitud, nombrePieza));
+            }
+
+            return resultado;
+        }
+
+        private Dictionary<string, Shape> ObtenerGruposProduccion(Document documento)
+        {
+            Dictionary<string, Shape> grupos = new Dictionary<string, Shape>(StringComparer.OrdinalIgnoreCase);
+
+            for (int p = 1; p <= documento.Pages.Count; p++)
+            {
+                Page pagina = documento.Pages[p];
+
+                for (int l = 1; l <= pagina.Layers.Count; l++)
+                {
+                    Layer capa = pagina.Layers[l];
+
+                    if (!string.Equals(capa.Name, "TITHOR_PRODUCCION", StringComparison.OrdinalIgnoreCase))
+                        continue;
+
+                    for (int i = 1; i <= capa.Shapes.Count; i++)
+                    {
+                        Shape objeto = capa.Shapes[i];
+                        string nombre = ObtenerNombreSeguro(objeto);
+
+                        if (!string.IsNullOrWhiteSpace(nombre) && !grupos.ContainsKey(nombre))
+                            grupos.Add(nombre, objeto);
+                    }
+                }
+            }
+
+            return grupos;
+        }
+
+        private List<string> ObtenerPiezasSolicitud(MoldeProduccion solicitud)
+        {
+            List<string> piezas = new List<string>();
+
+            if (solicitud.PiezasIncluidas != null && solicitud.PiezasIncluidas.Count > 0)
+            {
+                piezas.AddRange(solicitud.PiezasIncluidas);
+                return piezas;
+            }
+
+            if ((solicitud.CodigoProducto ?? string.Empty).IndexOf("FUNDA", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                string talla = (solicitud.Talla ?? string.Empty).Trim().ToLowerInvariant();
+                piezas.Add("funda_" + talla + "_frente");
+                piezas.Add("funda_" + talla + "_espalda");
+                piezas.Add("funda_" + talla + "_lateral_izquierdo");
+                piezas.Add("funda_" + talla + "_lateral_derecho");
+            }
+
+            return piezas;
+        }
+
+        private PiezaEscalable CrearPiezaPedido(Shape grupo, MoldeProduccion solicitud, string nombrePieza)
+        {
+            PiezaEscalable entrada = new PiezaEscalable
+            {
+                Diseno = solicitud.Diseno ?? string.Empty,
+                NombreGrupo = solicitud.NombreDestino ?? string.Empty,
+                FilaExcel = solicitud.FilaExcel,
+                Talla = (solicitud.Talla ?? string.Empty).ToUpperInvariant(),
+                Pieza = NombrePiezaVisible(nombrePieza)
+            };
+
+            if (grupo == null)
+            {
+                entrada.Clave = entrada.NombreGrupo + ":" + AnalizadorMasterCorel.NormalizarCodigo(nombrePieza);
+                entrada.Estado = "Grupo no encontrado";
+                return entrada;
+            }
+
+            Shape objeto = BuscarObjetoPorNombre(grupo, nombrePieza);
+
+            if (objeto == null)
+            {
+                entrada.Clave = grupo.StaticID + ":" + AnalizadorMasterCorel.NormalizarCodigo(nombrePieza);
+                entrada.Estado = "Pieza no encontrada";
+                return entrada;
+            }
+
+            Shape contenedor = ResolverContenedor(objeto);
+            entrada.Contenedor = contenedor;
+            entrada.Clave = grupo.StaticID + ":" + objeto.StaticID;
+            entrada.Estado = contenedor == null ? "Sin contenedor único" :
+                grupo.Locked || objeto.Locked || RutaBloqueada(objeto, contenedor, false) ? "Bloqueado u oculto" :
+                !Positivo(contenedor.SizeHeight) || !Positivo(contenedor.SizeWidth) ? "Dimensiones inválidas" : "Listo";
+            entrada.TieneContenido = contenedor != null && contenedor.PowerClip != null && contenedor.PowerClip.Shapes.Count > 0;
+            return entrada;
+        }
+
+        private Shape BuscarObjetoPorNombre(Shape raiz, string nombreBuscado)
+        {
+            string buscado = AnalizadorMasterCorel.NormalizarCodigo(nombreBuscado);
+            if (AnalizadorMasterCorel.NormalizarCodigo(ObtenerNombreSeguro(raiz)) == buscado)
+                return raiz;
+
+            if (raiz.Type != cdrShapeType.cdrGroupShape || raiz.PowerClip != null)
+                return null;
+
+            for (int i = 1; i <= raiz.Shapes.Count; i++)
+            {
+                Shape encontrado = BuscarObjetoPorNombre(raiz.Shapes[i], nombreBuscado);
+                if (encontrado != null) return encontrado;
+            }
+
+            return null;
+        }
+
+        private string NombrePiezaVisible(string nombre)
+        {
+            string codigo = AnalizadorMasterCorel.NormalizarCodigo(nombre);
+
+            if (codigo.StartsWith("funda_") && codigo.EndsWith("_frente")) return "Frente";
+            if (codigo.StartsWith("funda_") && codigo.EndsWith("_espalda")) return "Espalda";
+            if (codigo.EndsWith("lateral_izquierdo")) return "Lateral izquierdo";
+            if (codigo.EndsWith("lateral_derecho")) return "Lateral derecho";
+            if (codigo.StartsWith("frente")) return "Frente";
+            if (codigo == "espalda") return "Espalda";
+            if (codigo.Contains("manga") && codigo.EndsWith("izquierda")) return "Manga izquierda";
+            if (codigo.Contains("manga") && codigo.EndsWith("derecha")) return "Manga derecha";
+            if ((codigo.Contains("short") || codigo.Contains("pierna")) && codigo.EndsWith("izquierdo") || codigo.EndsWith("izquierda")) return "Short izquierdo";
+            if ((codigo.Contains("short") || codigo.Contains("pierna")) && codigo.EndsWith("derecho") || codigo.EndsWith("derecha")) return "Short derecho";
+
+            return nombre.Replace('_', ' ');
+        }
+
+        private string ObtenerNombreSeguro(Shape objeto)
+        {
+            try { return (objeto.Name ?? string.Empty).Trim(); }
+            catch { return string.Empty; }
         }
 
         private Shape ResolverContenedor(Shape objeto)
