@@ -218,6 +218,7 @@ namespace TithorAutomation
                 {
                 AgregarColumnaPedido("colNumeroOrdenPedido", "N°", 45F, 50);
                 AgregarColumnaPedido("colModeloPedido", "Modelo", 85F, 90);
+                AgregarColumnaPedido("colDisenoCamisetaPedido", "Diseño", 105F, 110);
                 AgregarColumnaPedido("colNombrePedido", "Nombre", 110F, 110);
                 AgregarColumnaPedido("colPrendaPedido", "Prenda", 105F, 110);
                 AgregarColumnaPedido("colNumeroPedido", "Número", 55F, 65);
@@ -289,7 +290,7 @@ namespace TithorAutomation
             int advertencias = resultado.TotalFilasOmitidas + resultado.AdvertenciasGenerales.Count;
 
             lblFilasPedidoValor.Text = resultado.TotalFilasProcesables.ToString();
-            lblDisenosPedidoTitulo.Text = pedidoCamisetas ? "Prendas" : "Diseños";
+            lblDisenosPedidoTitulo.Text = "Diseños";
             lblDisenosPedidoValor.Text = resultado.ObtenerDisenos().Count.ToString();
             lblUnidadesPedidoValor.Text = resultado.TotalUnidades.ToString();
             lblAdvertenciasPedidoValor.Text = advertencias.ToString();
@@ -309,6 +310,7 @@ namespace TithorAutomation
                 linea.NumeroFila,
                 linea.ObtenerCampo("n"),
                 linea.ObtenerCampo("modelo"),
+                linea.Diseno,
                 linea.ObtenerCampo("nombre"),
                 linea.ObtenerCampo("prenda"),
                 linea.ObtenerCampo("numero"),
