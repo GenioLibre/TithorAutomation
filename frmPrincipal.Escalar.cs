@@ -282,7 +282,32 @@ namespace TithorAutomation
                 btnAplicarEscalar.Enabled = false;
                 lblEstadoEscalar.Text = "Aplicando " + tarea.Diseno + " - " + tarea.Pieza + "...";
 
-                int total = escalador.Aplicar(documento, seleccion[1], destinos, chkReemplazarContenidoEscalar.Checked);
+                bool temporizadorActivo = tmrConexionCorel.Enabled;
+                tmrConexionCorel.Stop();
+
+                int total;
+
+                try
+                    {
+                    total = escalador.Aplicar(
+                        documento,
+                        seleccion[1],
+                        destinos,
+                        chkReemplazarContenidoEscalar.Checked,
+                        delegate (int actual, int cantidad)
+                            {
+                            lblEstadoEscalar.Text =
+                                "Aplicando " + tarea.Diseno + " - " + tarea.Pieza +
+                                ": " + actual + " de " + cantidad + "...";
+                            lblEstadoEscalar.Refresh();
+                            });
+                    }
+                finally
+                    {
+                    if (temporizadorActivo)
+                        tmrConexionCorel.Start();
+                    }
+
                 List<PiezaEscalable> resultado = escalador.AnalizarPedido(documento, planProduccionActual);
                 MostrarAnalisisEscalar(resultado);
 
