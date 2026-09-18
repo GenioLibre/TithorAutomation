@@ -282,8 +282,11 @@ namespace TithorAutomation.Servicios
                     else
                         {
                         documentoMaster.Activate();
-                        copia = moldeOrigen.CopyToLayer(capaDestino);
+                        moldeOrigen.Copy();
+
                         documentoDestino.Activate();
+                        capaDestino.Activate();
+                        copia = capaDestino.Paste();
 
                         if (copia == null)
                             throw new InvalidOperationException("CorelDRAW no devolvió la copia del grupo solicitado.");
