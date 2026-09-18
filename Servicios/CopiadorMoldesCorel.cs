@@ -116,9 +116,10 @@ namespace TithorAutomation.Servicios
                     if (copia == null)
                         throw new InvalidOperationException($"CorelDRAW no devolvió la copia del molde '{solicitud.CodigoMolde}'.");
 
-                    etapa = "Conservando el nombre de " + detalle;
-                    // Cada unidad conserva el nombre del grupo del master, aunque se repita.
-                    copia.Name = moldeOrigen.Name;
+                    etapa = "Identificando el molde copiado " + detalle;
+                    copia.Name = string.IsNullOrWhiteSpace(solicitud.NombreDestino)
+                        ? moldeOrigen.Name
+                        : solicitud.NombreDestino;
 
                     gruposCopiados.Add(copia);
 
@@ -310,7 +311,9 @@ namespace TithorAutomation.Servicios
                     if (copia == null)
                         throw new InvalidOperationException("No se pudo crear la copia de " + solicitud.CodigoMolde + ".");
 
-                    copia.Name = moldeOrigen.Name;
+                    copia.Name = string.IsNullOrWhiteSpace(solicitud.NombreDestino)
+                        ? moldeOrigen.Name
+                        : solicitud.NombreDestino;
                     gruposCopiados.Add(copia);
                     totalCopiado++;
                     progreso?.Invoke(totalCopiado, plan.Moldes.Count);
