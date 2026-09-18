@@ -269,7 +269,7 @@ namespace TithorAutomation.Servicios
                 opciones.MaintainLayers = true;
                 opciones.Mode = VGCore.cdrImportMode.cdrImportFull;
 
-                VGCore.ImportFilter importador = capaImportacion.ImportEx(rutaMaster, VGCore.cdrFilter.cdrCDR, opciones);
+                var importador = capaImportacion.ImportEx(rutaMaster, VGCore.cdrFilter.cdrCDR, opciones);
                 importador.Finish();
 
                 etapa = "Indexando capas y grupos importados";
