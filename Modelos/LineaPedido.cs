@@ -50,7 +50,11 @@ namespace TithorAutomation.Modelos
         public void MarcarNoProcesable(string mensaje)
             {
             Procesable = false;
-            AgregarAdvertencia(mensaje);
+
+            if (!string.IsNullOrWhiteSpace(mensaje))
+                Mensajes.Add(mensaje);
+
+            Estado = "Con error";
             }
 
         public void AgregarCampo(string nombre, string valor)
