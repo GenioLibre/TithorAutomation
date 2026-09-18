@@ -372,7 +372,7 @@ namespace TithorAutomation.Servicios
                 throw new InvalidOperationException("Se detectaron contenedores duplicados. Revise los grupos del documento.");
         }
 
-        public int Aplicar(Document documento, Shape diseno, IList<PiezaEscalable> destinos, bool reemplazar)
+        public int Aplicar(Document documento, Shape diseno, IList<PiezaEscalable> destinos, bool reemplazar, Action<int, int> progreso = null)
             {
             Validar(diseno, destinos, reemplazar);
 
@@ -387,42 +387,50 @@ namespace TithorAutomation.Servicios
                 documento.BeginCommandGroup("Tithor - Escalar diseños en PowerClip");
                 abierto = true;
 
-                foreach (PiezaEscalable destino in destinos)
+                for (int indiceDestino = 0; indiceDestino < destinos.Count; indiceDestino++)
                     {
-                    Shape contenedor = destino.Contenedor;
+                    PiezaEscalable destino = destinos[indiceDestino];
+                    progreso?.Invoke(indiceDestino, destinos.Count);
 
-                    double anchoContenedor = contenedor.SizeWidth;
-                    double altoContenedor = contenedor.SizeHeight;
-                    double centroX = contenedor.CenterX;
-                    double centroY = contenedor.CenterY;
-
-                    double anchoFinal;
-                    double altoFinal;
-
-                    CalcularTamanoCobertura(anchoDiseno, altoDiseno, anchoContenedor, altoContenedor, out anchoFinal, out altoFinal);
-
-                    Shape copia = diseno.CopyToLayer(contenedor.Layer);
-
-                    huboCambios = true;
-
-                    copia.SetSize(anchoFinal, altoFinal);
-                    copia.CenterX = centroX;
-                    copia.CenterY = centroY;
-                    copia.Name = "TITHOR_DISENO_" + destino.Pieza.Replace(' ', '_');
-
-                    if (reemplazar && contenedor.PowerClip != null)
+                    try
                         {
-                        Shapes anteriores = contenedor.PowerClip.Shapes;
+                        Shape contenedor = destino.Contenedor;
+                        double anchoContenedor = contenedor.SizeWidth;
+                        double altoContenedor = contenedor.SizeHeight;
+                        double centroX = contenedor.CenterX;
+                        double centroY = contenedor.CenterY;
+                        double anchoFinal;
+                        double altoFinal;
 
-                        for (int i = anteriores.Count; i >= 1; i--)
-                            anteriores[i].Delete();
+                        CalcularTamanoCobertura(anchoDiseno, altoDiseno, anchoContenedor, altoContenedor, out anchoFinal, out altoFinal);
+
+                        Shape copia = diseno.Duplicate(0, 0);
+                        huboCambios = true;
+
+                        if (reemplazar && contenedor.PowerClip != null)
+                            {
+                            Shapes anteriores = contenedor.PowerClip.Shapes;
+
+                            for (int i = anteriores.Count; i >= 1; i--)
+                                anteriores[i].Delete();
+                            }
+
+                        copia.AddToPowerClip(contenedor, cdrTriState.cdrTrue);
+                        copia.SetSize(anchoFinal, altoFinal);
+                        copia.CenterX = centroX;
+                        copia.CenterY = centroY;
+                        copia.Name = "TITHOR_DISENO_" + destino.Pieza.Replace(' ', '_');
+                        progreso?.Invoke(indiceDestino + 1, destinos.Count);
                         }
-
-                    copia.AddToPowerClip(contenedor, cdrTriState.cdrTrue);
-
-                    copia.SetSize(anchoFinal, altoFinal);
-                    copia.CenterX = centroX;
-                    copia.CenterY = centroY;
+                    catch (Exception errorDestino)
+                        {
+                        throw new InvalidOperationException(
+                            "Falló el destino " + (indiceDestino + 1) + " de " + destinos.Count +
+                            " (" + destino.Pieza + ", talla " + destino.Talla + ", fila Excel " + destino.FilaExcel + "). " +
+                            errorDestino.Message,
+                            errorDestino
+                        );
+                        }
                     }
 
                 documento.EndCommandGroup();
