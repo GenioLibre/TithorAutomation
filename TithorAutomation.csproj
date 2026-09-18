@@ -169,6 +169,7 @@
     <Compile Include="Servicios\LectorPedidoFundas.cs" />
     <Compile Include="Servicios\LectorPedidoCamisetas.cs" />
     <Compile Include="Servicios\PlanificadorFundas.cs" />
+    <Compile Include="Servicios\PlanificadorCamisetas.cs" />
     <EmbeddedResource Include="frmPrincipal.resx">
       <DependentUpon>frmPrincipal.cs</DependentUpon>
     </EmbeddedResource>
