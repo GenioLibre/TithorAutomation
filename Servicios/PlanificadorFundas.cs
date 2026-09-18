@@ -121,9 +121,30 @@ namespace TithorAutomation.Servicios
 
         private bool ExisteMolde(List<Molde> catalogo, string codigo)
             {
+            string sufijoCodigo = "__" + codigo;
+
             foreach (Molde molde in catalogo)
                 {
-                if (string.Equals(molde.Codigo, codigo, StringComparison.OrdinalIgnoreCase))
+                bool coincideCodigo =
+                    string.Equals(
+                        molde.Codigo,
+                        codigo,
+                        StringComparison.OrdinalIgnoreCase
+                    ) ||
+                    (!string.IsNullOrWhiteSpace(molde.Codigo) &&
+                     molde.Codigo.EndsWith(
+                         sufijoCodigo,
+                         StringComparison.OrdinalIgnoreCase
+                     ));
+
+                bool coincideNombre =
+                    string.Equals(
+                        molde.NombreObjeto,
+                        codigo,
+                        StringComparison.OrdinalIgnoreCase
+                    );
+
+                if (coincideCodigo || coincideNombre)
                     return true;
                 }
 
