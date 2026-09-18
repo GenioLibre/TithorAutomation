@@ -217,9 +217,17 @@ namespace TithorAutomation.Servicios
             if (prenda == "camiseta_short")
                 {
                 if (string.IsNullOrWhiteSpace(tallaShort))
-                    linea.MarcarNoProcesable("La talla de short está vacía.");
+                    linea.MarcarNoProcesable("La prenda camiseta_short requiere una talla de short.");
                 else if (!tallasPermitidas.Contains(tallaShort))
                     linea.MarcarNoProcesable("La talla de short \"" + tallaShort + "\" no está soportada.");
+                }
+            else if (!string.IsNullOrWhiteSpace(tallaShort))
+                {
+                linea.MarcarNoProcesable(
+                    "La prenda \"" + prenda + "\" no incluye short, pero Talla short contiene \"" +
+                    tallaShort.ToUpperInvariant() +
+                    "\". Use camiseta_short o elimine la talla de short."
+                );
                 }
 
             if (string.IsNullOrWhiteSpace(nombre))
