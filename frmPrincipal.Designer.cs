@@ -1592,7 +1592,7 @@ namespace TithorAutomation
             this.btnNuevoPedido.FlatAppearance.BorderSize = 0;
             this.btnNuevoPedido.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNuevoPedido.ForeColor = System.Drawing.Color.White;
-            this.btnNuevoPedido.Location = new System.Drawing.Point(671, 36);
+            this.btnNuevoPedido.Location = new System.Drawing.Point(561, 36);
             this.btnNuevoPedido.Name = "btnNuevoPedido";
             this.btnNuevoPedido.Size = new System.Drawing.Size(103, 40);
             this.btnNuevoPedido.TabIndex = 37;
@@ -1607,11 +1607,11 @@ namespace TithorAutomation
             this.btnCopiarMoldesPedido.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnCopiarMoldesPedido.FlatAppearance.BorderSize = 0;
             this.btnCopiarMoldesPedido.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCopiarMoldesPedido.Location = new System.Drawing.Point(780, 36);
+            this.btnCopiarMoldesPedido.Location = new System.Drawing.Point(670, 36);
             this.btnCopiarMoldesPedido.Name = "btnCopiarMoldesPedido";
-            this.btnCopiarMoldesPedido.Size = new System.Drawing.Size(105, 40);
+            this.btnCopiarMoldesPedido.Size = new System.Drawing.Size(215, 40);
             this.btnCopiarMoldesPedido.TabIndex = 36;
-            this.btnCopiarMoldesPedido.Text = "Copiar moldes";
+            this.btnCopiarMoldesPedido.Text = "Copiar al documento abierto";
             this.btnCopiarMoldesPedido.UseVisualStyleBackColor = false;
             this.btnCopiarMoldesPedido.Click += new System.EventHandler(this.btnCopiarMoldesPedido_Click);
             // 
