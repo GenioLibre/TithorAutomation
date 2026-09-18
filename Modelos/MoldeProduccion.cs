@@ -15,6 +15,10 @@ namespace TithorAutomation.Modelos
 
         public string CodigoMolde { get; set; }
 
+        public string CapaMaster { get; set; }
+
+        public List<string> PiezasIncluidas { get; private set; }
+
         public int FilaExcel { get; set; }
 
         public int NumeroUnidad { get; set; }
@@ -30,8 +34,10 @@ namespace TithorAutomation.Modelos
             Talla = string.Empty;
             Pieza = string.Empty;
             CodigoMolde = string.Empty;
+            CapaMaster = string.Empty;
             NombreDestino = string.Empty;
 
+            PiezasIncluidas = new List<string>();
             Campos = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
             }
 
