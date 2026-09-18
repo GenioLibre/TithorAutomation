@@ -15,6 +15,7 @@ namespace TithorAutomation
         private readonly EscaladorPowerClip escalador = new EscaladorPowerClip();
         private bool modoGuiadoEscalar;
         private List<TareaEscalar> tareasEscalar = new List<TareaEscalar>();
+        private ComboBox cboTareaEscalar;
 
         private sealed class TareaEscalar
             {
@@ -29,6 +30,11 @@ namespace TithorAutomation
                 Pieza = string.Empty;
                 Estado = "Pendiente";
                 Destinos = new List<PiezaEscalable>();
+                }
+
+            public override string ToString()
+                {
+                return "[" + Estado + "] " + Diseno + " - " + Pieza + " (" + Destinos.Count + ")";
                 }
             }
 
@@ -48,6 +54,18 @@ namespace TithorAutomation
             cboPiezaEscalar.SelectedIndex = 0;
             cboTallaEscalar.SelectedIndex = 0;
             chkReemplazarContenidoEscalar.Checked = false;
+
+            if (cboTareaEscalar == null)
+                {
+                cboTareaEscalar = new ComboBox();
+                cboTareaEscalar.Name = "cboTareaEscalar";
+                cboTareaEscalar.DropDownStyle = ComboBoxStyle.DropDownList;
+                cboTareaEscalar.Location = new System.Drawing.Point(61, 27);
+                cboTareaEscalar.Size = new System.Drawing.Size(330, 25);
+                cboTareaEscalar.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
+                cboTareaEscalar.SelectedIndexChanged += cboTareaEscalar_SelectedIndexChanged;
+                groupBox1.Controls.Add(cboTareaEscalar);
+                }
 
             modoGuiadoEscalar = false;
             tareasEscalar.Clear();
@@ -161,10 +179,12 @@ namespace TithorAutomation
                 }
 
             cboPiezaEscalar.Visible = !guiado;
-            lblPiezaEscalar.Visible = !guiado;
             cboTallaEscalar.Visible = !guiado;
             lblTallaEscalar.Visible = !guiado;
-            btnAplicarEscalar.Text = guiado ? "Aplicar y continuar" : "Aplicar diseño";
+            cboTareaEscalar.Visible = guiado;
+            lblPiezaEscalar.Visible = true;
+            lblPiezaEscalar.Text = guiado ? "Tarea:" : "Pieza:";
+            btnAplicarEscalar.Text = "Aplicar diseño";
             }
 
         private void AgregarColumnaEscalar(string nombre, string titulo, float proporcion, int anchoMinimo)
@@ -208,6 +228,16 @@ namespace TithorAutomation
                     }
                 }
 
+            cboTareaEscalar.DataSource = null;
+            cboTareaEscalar.DataSource = tareasEscalar;
+
+            TareaEscalar pendiente = tareasEscalar.FirstOrDefault(x => x.Estado == "Pendiente" || x.Estado == "Parcial");
+
+            if (pendiente != null)
+                cboTareaEscalar.SelectedItem = pendiente;
+            else if (tareasEscalar.Count > 0)
+                cboTareaEscalar.SelectedIndex = 0;
+
             TareaEscalar actual = ObtenerTareaEscalarActual();
 
             if (piezas.Count == 0)
@@ -238,7 +268,26 @@ namespace TithorAutomation
 
         private TareaEscalar ObtenerTareaEscalarActual()
             {
+            if (cboTareaEscalar != null && cboTareaEscalar.SelectedItem is TareaEscalar)
+                return (TareaEscalar)cboTareaEscalar.SelectedItem;
+
             return tareasEscalar.FirstOrDefault(x => x.Estado == "Pendiente" || x.Estado == "Parcial");
+            }
+
+        private void cboTareaEscalar_SelectedIndexChanged(object sender, EventArgs e)
+            {
+            if (!modoGuiadoEscalar) return;
+
+            TareaEscalar tarea = ObtenerTareaEscalarActual();
+
+            if (tarea == null)
+                {
+                btnAplicarEscalar.Enabled = false;
+                return;
+                }
+
+            lblEstadoEscalar.Text = "Seleccione en CorelDRAW: " + tarea.Diseno + " - " + tarea.Pieza + ".";
+            btnAplicarEscalar.Enabled = tarea.Estado != "Con error";
             }
 
         private void AplicarTareaGuiada()
@@ -324,7 +373,8 @@ namespace TithorAutomation
             finally
                 {
                 btnAnalizarEscalar.Enabled = true;
-                btnAplicarEscalar.Enabled = ObtenerTareaEscalarActual() != null;
+                TareaEscalar tareaActual = ObtenerTareaEscalarActual();
+                btnAplicarEscalar.Enabled = tareaActual != null && tareaActual.Estado != "Con error";
                 }
             }
 
