@@ -568,8 +568,23 @@ namespace TithorAutomation
                         StringComparison.OrdinalIgnoreCase
                     );
 
+                if (esMismoArchivo)
+                    {
+                    MessageBox.Show(
+                        "El Master \"" +
+                        informacion.Name +
+                        "\" ya está enlazado al producto \"" +
+                        producto.Nombre +
+                        "\".",
+                        "Master configurado",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information
+                    );
+
+                    return;
+                    }
+
                 if (masterPerteneceAlProducto &&
-                    !esMismoArchivo &&
                     !ConfirmarReemplazoMaster(producto, informacion.Name))
                     {
                     return;
