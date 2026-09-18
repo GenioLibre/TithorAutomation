@@ -45,7 +45,7 @@ namespace TithorAutomation.Servicios
                 if (hoja == null)
                     {
                     throw new InvalidOperationException(
-                        "No se encontró una hoja con las columnas Modelo, Nombre, Prenda, Talla Camiseta, Corte, Manga y Cuello."
+                        "No se encontró una hoja con las columnas Diseño, Modelo, Nombre, Prenda, Talla Camiseta, Corte, Manga y Cuello."
                     );
                     }
 
@@ -113,7 +113,8 @@ namespace TithorAutomation.Servicios
                 {
                 Dictionary<string, int> columnas = ObtenerColumnas(hoja);
 
-                if (columnas.ContainsKey("modelo") &&
+                if (columnas.ContainsKey("diseno") &&
+                    columnas.ContainsKey("modelo") &&
                     columnas.ContainsKey("nombre") &&
                     columnas.ContainsKey("prenda") &&
                     columnas.ContainsKey("talla_camiseta") &&
@@ -147,13 +148,15 @@ namespace TithorAutomation.Servicios
             }
         private bool FilaVacia(IXLWorksheet hoja, int numeroFila, Dictionary<string, int> columnas)
             {
-            return string.IsNullOrWhiteSpace(ObtenerTexto(hoja, numeroFila, columnas, "modelo")) &&
+            return string.IsNullOrWhiteSpace(ObtenerTexto(hoja, numeroFila, columnas, "diseno")) &&
+                   string.IsNullOrWhiteSpace(ObtenerTexto(hoja, numeroFila, columnas, "modelo")) &&
                    string.IsNullOrWhiteSpace(ObtenerTexto(hoja, numeroFila, columnas, "nombre")) &&
                    string.IsNullOrWhiteSpace(ObtenerTexto(hoja, numeroFila, columnas, "prenda")) &&
                    string.IsNullOrWhiteSpace(ObtenerTexto(hoja, numeroFila, columnas, "talla_camiseta"));
             }
         private LineaPedido LeerLinea(IXLWorksheet hoja, int numeroFila, Dictionary<string, int> columnas)
             {
+            string diseno = ObtenerTexto(hoja, numeroFila, columnas, "diseno");
             string modelo = Normalizar(ObtenerTexto(hoja, numeroFila, columnas, "modelo"));
             string nombre = ObtenerTexto(hoja, numeroFila, columnas, "nombre");
             string prenda = Normalizar(ObtenerTexto(hoja, numeroFila, columnas, "prenda"));
@@ -167,13 +170,14 @@ namespace TithorAutomation.Servicios
             LineaPedido linea = new LineaPedido
                 {
                 NumeroFila = numeroFila,
-                Diseno = prenda,
+                Diseno = diseno,
                 Talla = tallaCamiseta.ToUpperInvariant(),
                 Cantidad = 1,
                 Notas = CrearNotas(nombre, numero)
                 };
 
             GuardarTodosLosCampos(hoja, numeroFila, columnas, linea);
+            linea.AgregarCampo("diseno", diseno);
             linea.AgregarCampo("modelo", modelo);
             linea.AgregarCampo("nombre", nombre);
             linea.AgregarCampo("prenda", prenda);
@@ -184,6 +188,9 @@ namespace TithorAutomation.Servicios
             linea.AgregarCampo("manga", manga);
             linea.AgregarCampo("cuello", cuello);
             linea.AgregarCampo("cantidad", "1");
+
+            if (string.IsNullOrWhiteSpace(diseno))
+                linea.MarcarNoProcesable("La columna Diseño está vacía.");
 
             if (string.IsNullOrWhiteSpace(modelo))
                 linea.MarcarNoProcesable("El modelo está vacío.");
