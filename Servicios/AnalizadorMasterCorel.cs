@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -9,66 +9,38 @@ namespace TithorAutomation.Servicios
     {
     public class AnalizadorMasterCorel
         {
-        public List<Molde> Analizar(VGCore.Application corelApp,string rutaArchivo)
+        public List<Molde> Analizar(VGCore.Application corelApp, string rutaArchivo)
             {
             if (corelApp == null)
-                {
-                throw new InvalidOperationException(
-                    "No existe conexión con CorelDRAW."
-                );
-                }
+                throw new InvalidOperationException("No existe conexión con CorelDRAW.");
 
-            if (string.IsNullOrWhiteSpace(rutaArchivo) ||
-                !File.Exists(rutaArchivo))
-                {
-                throw new FileNotFoundException(
-                    "No se encontró el archivo Master.",
-                    rutaArchivo
-                );
-                }
+            if (string.IsNullOrWhiteSpace(rutaArchivo) || !File.Exists(rutaArchivo))
+                throw new FileNotFoundException("No se encontró el archivo Master.", rutaArchivo);
 
             List<Molde> moldes = new List<Molde>();
-
             VGCore.Document documento = null;
             bool cerrarAlFinal = false;
 
             try
                 {
-                documento = BuscarDocumentoAbierto(
-                    corelApp,
-                    rutaArchivo
-                );
+                documento = BuscarDocumentoAbierto(corelApp, rutaArchivo);
 
                 if (documento == null)
                     {
-                    documento =
-                        corelApp.OpenDocument(rutaArchivo);
-
+                    documento = corelApp.OpenDocument(rutaArchivo);
                     cerrarAlFinal = true;
                     }
 
-                for (int numeroPagina = 1;
-                     numeroPagina <= documento.Pages.Count;
-                     numeroPagina++)
+                for (int numeroPagina = 1; numeroPagina <= documento.Pages.Count; numeroPagina++)
                     {
-                    VGCore.Page pagina =
-                        documento.Pages[numeroPagina];
-
-                    AnalizarPagina(
-                        pagina,
-                        numeroPagina,
-                        moldes
-                    );
+                    AnalizarPagina(documento.Pages[numeroPagina], numeroPagina, moldes);
                     }
 
                 MarcarCodigosDuplicados(moldes);
-
                 return moldes;
                 }
             finally
                 {
-                // Solo cerramos el documento si el analizador lo abrió.
-                // Como no realizamos cambios, CorelDRAW no debe guardarlo.
                 if (cerrarAlFinal && documento != null)
                     {
                     try
@@ -77,70 +49,201 @@ namespace TithorAutomation.Servicios
                         }
                     catch
                         {
-                        // Evita ocultar el error principal del análisis.
                         }
                     }
                 }
             }
-        private void AnalizarPagina(VGCore.Page pagina,int numeroPagina,List<Molde> moldes)
+        private void AnalizarPagina(VGCore.Page pagina, int numeroPagina, List<Molde> moldes)
             {
-            for (int numeroCapa = 1;
-                 numeroCapa <= pagina.Layers.Count;
-                 numeroCapa++)
+            for (int numeroCapa = 1; numeroCapa <= pagina.Layers.Count; numeroCapa++)
                 {
-                VGCore.Layer capa =
-                    pagina.Layers[numeroCapa];
+                AnalizarCapa(pagina.Layers[numeroCapa], numeroPagina, moldes);
+                }
+            }
+        private void AnalizarCapa(VGCore.Layer capa, int numeroPagina, List<Molde> moldes)
+            {
+            for (int indice = 1; indice <= capa.Shapes.Count; indice++)
+                {
+                VGCore.Shape objetoSuperior = capa.Shapes[indice];
+                string nombreGrupo = ObtenerNombreSeguro(objetoSuperior);
 
-                AnalizarCapa(
-                    capa,
+                if (!EsGrupoMolde(objetoSuperior, nombreGrupo))
+                    continue;
+
+                AnalizarGrupoMolde(
+                    objetoSuperior,
+                    nombreGrupo,
                     numeroPagina,
+                    capa.Name,
                     moldes
                 );
                 }
             }
-        private void AnalizarCapa(VGCore.Layer capa,int numeroPagina,List<Molde> moldes)
+        private bool EsGrupoMolde(VGCore.Shape objeto, string nombre)
             {
-            for (int indice = 1;
-                 indice <= capa.Shapes.Count;
-                 indice++)
+            if (objeto == null)
+                return false;
+
+            string codigo = NormalizarCodigo(nombre);
+
+            if (!codigo.StartsWith("molde_", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            try
                 {
-                VGCore.Shape objetoSuperior =
-                    capa.Shapes[indice];
+                return objeto.Shapes != null;
+                }
+            catch
+                {
+                return false;
+                }
+            }
+        private void AnalizarGrupoMolde(VGCore.Shape grupo, string nombreGrupo, int numeroPagina, string nombreCapa, List<Molde> moldes)
+            {
+            string codigoGrupo = NormalizarCodigo(nombreGrupo);
+            string talla = ObtenerUltimoSegmento(codigoGrupo).ToUpperInvariant();
+            int cantidadElementos = 0;
 
-                string nombreSuperior =
-                    ObtenerNombreSeguro(objetoSuperior);
+            try
+                {
+                cantidadElementos = grupo.Shapes.Count;
+                }
+            catch
+                {
+                cantidadElementos = 0;
+                }
 
-                if (EsGrupoDeTalla(
-                    objetoSuperior,
-                    nombreSuperior))
+            if (cantidadElementos == 0)
+                {
+                moldes.Add(CrearMoldeInvalido(
+                    codigoGrupo + "__sin_elementos",
+                    nombreGrupo,
+                    talla,
+                    numeroPagina,
+                    nombreCapa,
+                    0,
+                    "El grupo \"" + nombreGrupo + "\" no contiene elementos."
+                ));
+
+                return;
+                }
+
+            for (int indice = 1; indice <= cantidadElementos; indice++)
+                {
+                moldes.Add(CrearMoldeDesdeElemento(
+                    grupo.Shapes[indice],
+                    codigoGrupo,
+                    nombreGrupo,
+                    talla,
+                    numeroPagina,
+                    nombreCapa,
+                    indice
+                ));
+                }
+            }
+        private Molde CrearMoldeDesdeElemento(VGCore.Shape objeto, string codigoGrupo, string nombreGrupo, string talla, int numeroPagina, string nombreCapa, int indiceObjeto)
+            {
+            string nombreElemento = ObtenerNombreSeguro(objeto);
+            string codigoElemento = NormalizarCodigo(nombreElemento);
+
+            if (string.IsNullOrWhiteSpace(codigoElemento))
+                {
+                string codigoTemporal =
+                    codigoGrupo +
+                    "__" +
+                    CrearCodigoTemporal(numeroPagina, nombreCapa, indiceObjeto);
+
+                return CrearMoldeInvalido(
+                    codigoTemporal,
+                    nombreElemento,
+                    talla,
+                    numeroPagina,
+                    nombreCapa,
+                    indiceObjeto,
+                    "El elemento " + indiceObjeto + " del grupo \"" + nombreGrupo + "\" no tiene nombre."
+                );
+                }
+
+            string codigoPieza = ObtenerCodigoPieza(codigoElemento, talla);
+
+            return new Molde
+                {
+                Codigo = codigoGrupo + "__" + codigoElemento,
+                NombreObjeto = nombreElemento,
+                Pieza = ConvertirCodigoATexto(codigoPieza),
+                Talla = talla,
+                Corte = string.Empty,
+                Manga = string.Empty,
+                Cuello = string.Empty,
+                Pagina = numeroPagina,
+                Capa = nombreCapa,
+                Estado = "Nuevo",
+                FechaAnalisis = DateTime.Now,
+                IndiceObjeto = indiceObjeto,
+                Observacion = "Elemento válido del grupo " + nombreGrupo + "."
+                };
+            }
+        private Molde CrearMoldeInvalido(string codigo, string nombreObjeto, string talla, int pagina, string capa, int indice, string observacion)
+            {
+            return new Molde
+                {
+                Codigo = codigo,
+                NombreObjeto = nombreObjeto,
+                Pieza = string.Empty,
+                Talla = talla,
+                Corte = string.Empty,
+                Manga = string.Empty,
+                Cuello = string.Empty,
+                Pagina = pagina,
+                Capa = capa,
+                Estado = "Inválido",
+                FechaAnalisis = DateTime.Now,
+                IndiceObjeto = indice,
+                Observacion = observacion
+                };
+            }
+        private string ObtenerCodigoPieza(string codigoElemento, string talla)
+            {
+            if (string.IsNullOrWhiteSpace(codigoElemento))
+                return string.Empty;
+
+            string tallaNormalizada = NormalizarCodigo(talla);
+
+            if (!string.IsNullOrWhiteSpace(tallaNormalizada))
+                {
+                string marcador = "_" + tallaNormalizada + "_";
+                int posicion = codigoElemento.IndexOf(marcador, StringComparison.OrdinalIgnoreCase);
+
+                if (posicion >= 0)
                     {
-                    AnalizarGrupoDeTalla(
-                        objetoSuperior,
-                        numeroPagina,
-                        capa.Name,
-                        moldes
-                    );
+                    string resultado = codigoElemento.Substring(posicion + marcador.Length);
 
-                    continue;
-                    }
-
-                // También admite un molde nombrado directamente
-                // en la capa, fuera de model_s/model_m/model_l.
-                if (nombreSuperior.StartsWith(
-                    "funda_",
-                    StringComparison.OrdinalIgnoreCase))
-                    {
-                    Molde molde = CrearMoldeFunda(
-                        objetoSuperior,
-                        numeroPagina,
-                        capa.Name,
-                        indice,
-                        null
-                    );
-
-                    moldes.Add(molde);
+                    if (!string.IsNullOrWhiteSpace(resultado))
+                        return resultado;
                     }
                 }
+
+            return codigoElemento;
+            }
+        private string ObtenerUltimoSegmento(string codigoGrupo)
+            {
+            if (string.IsNullOrWhiteSpace(codigoGrupo))
+                return string.Empty;
+
+            string[] partes = codigoGrupo.Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
+
+            return partes.Length == 0
+                ? string.Empty
+                : partes[partes.Length - 1];
+            }
+        private string ConvertirCodigoATexto(string codigo)
+            {
+            if (string.IsNullOrWhiteSpace(codigo))
+                return string.Empty;
+
+            string texto = codigo.Replace('_', ' ').Trim();
+
+            return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(texto);
             }
         private string ObtenerNombreSeguro(VGCore.Shape objeto)
             {
@@ -153,31 +256,10 @@ namespace TithorAutomation.Servicios
                 return string.Empty;
                 }
             }
-        private bool EsNombreDefinidoPorUsuario(string nombre)
-            {
-            if (string.IsNullOrWhiteSpace(nombre))
-                return false;
-
-            string texto =
-                nombre.Trim().ToLowerInvariant();
-
-            // Nombres automáticos que Corel puede mostrar.
-            if (texto.StartsWith("group of ") ||
-                texto.StartsWith("grupo de ") ||
-                texto.StartsWith("curve ") ||
-                texto.StartsWith("curva "))
-                {
-                return false;
-                }
-
-            return true;
-            }
         private void MarcarCodigosDuplicados(List<Molde> moldes)
             {
             Dictionary<string, List<Molde>> agrupados =
-                new Dictionary<string, List<Molde>>(
-                    StringComparer.OrdinalIgnoreCase
-                );
+                new Dictionary<string, List<Molde>>(StringComparer.OrdinalIgnoreCase);
 
             foreach (Molde molde in moldes)
                 {
@@ -185,18 +267,12 @@ namespace TithorAutomation.Servicios
                     continue;
 
                 if (!agrupados.ContainsKey(molde.Codigo))
-                    {
-                    agrupados.Add(
-                        molde.Codigo,
-                        new List<Molde>()
-                    );
-                    }
+                    agrupados.Add(molde.Codigo, new List<Molde>());
 
                 agrupados[molde.Codigo].Add(molde);
                 }
 
-            foreach (KeyValuePair<string, List<Molde>> grupo
-                     in agrupados)
+            foreach (KeyValuePair<string, List<Molde>> grupo in agrupados)
                 {
                 if (grupo.Value.Count <= 1)
                     continue;
@@ -205,7 +281,7 @@ namespace TithorAutomation.Servicios
                     {
                     molde.Estado = "Duplicado";
                     molde.Observacion =
-                        "Existen varios objetos con el código \"" +
+                        "Existen varios elementos con el código \"" +
                         molde.Codigo +
                         "\".";
                     }
@@ -213,26 +289,18 @@ namespace TithorAutomation.Servicios
             }
         private VGCore.Document BuscarDocumentoAbierto(VGCore.Application corelApp, string rutaArchivo)
             {
-            string rutaBuscada =
-                Path.GetFullPath(rutaArchivo);
+            string rutaBuscada = Path.GetFullPath(rutaArchivo);
 
-            for (int i = 1;
-                 i <= corelApp.Documents.Count;
-                 i++)
+            for (int i = 1; i <= corelApp.Documents.Count; i++)
                 {
-                VGCore.Document documento =
-                    corelApp.Documents[i];
+                VGCore.Document documento = corelApp.Documents[i];
 
                 try
                     {
-                    string rutaDocumento =
-                        documento.FullFileName;
+                    string rutaDocumento = documento.FullFileName;
 
-                    if (string.IsNullOrWhiteSpace(
-                        rutaDocumento))
-                        {
+                    if (string.IsNullOrWhiteSpace(rutaDocumento))
                         continue;
-                        }
 
                     if (string.Equals(
                         Path.GetFullPath(rutaDocumento),
@@ -244,7 +312,6 @@ namespace TithorAutomation.Servicios
                     }
                 catch
                     {
-                    // Documento nuevo o sin ruta guardada.
                     }
                 }
 
@@ -258,534 +325,40 @@ namespace TithorAutomation.Servicios
             string normalizado =
                 texto.Trim()
                      .ToLowerInvariant()
-                     .Normalize(
-                         NormalizationForm.FormD
-                     );
+                     .Normalize(NormalizationForm.FormD);
 
-            StringBuilder resultado =
-                new StringBuilder();
-
+            StringBuilder resultado = new StringBuilder();
             bool ultimoFueSeparador = false;
 
             foreach (char caracter in normalizado)
                 {
-                UnicodeCategory categoria =
-                    CharUnicodeInfo.GetUnicodeCategory(
-                        caracter
-                    );
+                UnicodeCategory categoria = CharUnicodeInfo.GetUnicodeCategory(caracter);
 
-                if (categoria ==
-                    UnicodeCategory.NonSpacingMark)
-                    {
+                if (categoria == UnicodeCategory.NonSpacingMark)
                     continue;
-                    }
 
                 if (char.IsLetterOrDigit(caracter))
                     {
                     resultado.Append(caracter);
                     ultimoFueSeparador = false;
                     }
-                else if (!ultimoFueSeparador &&
-                         resultado.Length > 0)
+                else if (!ultimoFueSeparador && resultado.Length > 0)
                     {
                     resultado.Append('_');
                     ultimoFueSeparador = true;
                     }
                 }
 
-            return resultado
-                .ToString()
-                .Trim('_');
+            return resultado.ToString().Trim('_');
             }
         private string CrearCodigoTemporal(int pagina, string capa, int indice)
             {
-            string codigoCapa =
-                NormalizarCodigo(capa);
+            string codigoCapa = NormalizarCodigo(capa);
 
             if (string.IsNullOrWhiteSpace(codigoCapa))
                 codigoCapa = "sin_capa";
 
-            return "sin_nombre_p" +
-                   pagina +
-                   "_" +
-                   codigoCapa +
-                   "_" +
-                   indice;
-            }
-        private bool EsGrupoDeTalla(VGCore.Shape objeto,string nombre)
-            {
-            if (objeto == null)
-                return false;
-
-            string codigo = NormalizarCodigo(nombre);
-
-            if (codigo == "molde_s" ||
-                codigo == "molde_m" ||
-                codigo == "molde_l")
-                {
-                return TieneElementosInternos(objeto);
-                }
-
-            string modelo;
-            string corte;
-            string talla;
-
-            return TryInterpretarGrupoCamiseta(nombre, out modelo, out corte, out talla) &&
-                   TieneElementosInternos(objeto);
-            }
-        private bool TieneElementosInternos(VGCore.Shape objeto)
-            {
-            try
-                {
-                return objeto.Shapes != null && objeto.Shapes.Count > 0;
-                }
-            catch
-                {
-                return false;
-                }
-            }
-        private void AnalizarGrupoDeTalla(VGCore.Shape grupo, int numeroPagina, string nombreCapa, List<Molde> moldes)
-            {
-            string nombreGrupo = ObtenerNombreSeguro(grupo);
-            string modelo;
-            string corte;
-            string talla;
-
-            bool esGrupoCamiseta =
-                TryInterpretarGrupoCamiseta(
-                    nombreGrupo,
-                    out modelo,
-                    out corte,
-                    out talla
-                );
-
-            string tallaGrupo =
-                esGrupoCamiseta
-                    ? talla
-                    : ObtenerTallaDelGrupo(nombreGrupo);
-
-            // Solo analiza los hijos inmediatos del grupo superior.
-            for (int indice = 1;
-                 indice <= grupo.Shapes.Count;
-                 indice++)
-                {
-                VGCore.Shape objetoMolde = grupo.Shapes[indice];
-
-                Molde molde =
-                    esGrupoCamiseta
-                        ? CrearMoldeCamiseta(
-                            objetoMolde,
-                            grupo,
-                            numeroPagina,
-                            nombreCapa,
-                            indice,
-                            modelo,
-                            corte,
-                            tallaGrupo
-                        )
-                        : CrearMoldeFunda(
-                            objetoMolde,
-                            numeroPagina,
-                            nombreCapa,
-                            indice,
-                            tallaGrupo
-                        );
-
-                moldes.Add(molde);
-                }
-            }
-        private string ObtenerTallaDelGrupo(
-            string nombreGrupo)
-            {
-            string codigo =
-                NormalizarCodigo(nombreGrupo);
-
-            if (codigo == "molde_s")
-                return "S";
-
-            if (codigo == "molde_m")
-                return "M";
-
-            if (codigo == "molde_l")
-                return "L";
-
-            return string.Empty;
-            }
-        private bool TryInterpretarGrupoCamiseta(string nombreGrupo, out string modelo, out string corte, out string talla)
-            {
-            modelo = string.Empty;
-            corte = string.Empty;
-            talla = string.Empty;
-
-            string codigo = NormalizarCodigo(nombreGrupo);
-            string[] partes = codigo.Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (partes.Length < 4 || partes[0] != "molde")
-                return false;
-
-            string codigoCorte = partes[partes.Length - 2];
-            string codigoTalla = partes[partes.Length - 1];
-            string codigoModelo = string.Join("_", partes, 1, partes.Length - 3);
-
-            modelo = ObtenerModeloCamiseta(codigoModelo);
-            corte = ObtenerCorteCamiseta(codigoCorte);
-            talla = ObtenerTallaCamiseta(codigoTalla);
-
-            return !string.IsNullOrWhiteSpace(modelo) &&
-                   !string.IsNullOrWhiteSpace(corte) &&
-                   !string.IsNullOrWhiteSpace(talla);
-            }
-        private string ObtenerModeloCamiseta(string codigo)
-            {
-            switch (codigo)
-                {
-                case "clasico":
-                    return "Clásico";
-
-                case "raglan":
-                    return "Raglan";
-
-                case "manga_cero":
-                    return "Manga cero";
-
-                case "bividi":
-                    return "Bividi";
-
-                default:
-                    return string.Empty;
-                }
-            }
-        private string ObtenerCorteCamiseta(string codigo)
-            {
-            switch (codigo)
-                {
-                case "varon":
-                case "hombre":
-                    return "Varón";
-
-                case "dama":
-                case "mujer":
-                    return "Dama";
-
-                default:
-                    return string.Empty;
-                }
-            }
-        private string ObtenerTallaCamiseta(string codigo)
-            {
-            switch (codigo)
-                {
-                case "2":
-                case "4":
-                case "6":
-                case "8":
-                case "10":
-                case "12":
-                case "14":
-                case "16":
-                    return codigo;
-
-                case "xs":
-                case "s":
-                case "m":
-                case "l":
-                case "xl":
-                case "2xl":
-                case "3xl":
-                    return codigo.ToUpperInvariant();
-
-                default:
-                    return string.Empty;
-                }
-            }
-        private Molde CrearMoldeCamiseta(VGCore.Shape objeto, VGCore.Shape grupo, int numeroPagina, string nombreCapa, int indiceObjeto, string modelo, string corte, string talla)
-            {
-            string nombre = ObtenerNombreSeguro(objeto);
-            string codigoPieza = NormalizarCodigo(nombre);
-            string codigoGrupo = NormalizarCodigo(ObtenerNombreSeguro(grupo));
-
-            if (string.IsNullOrWhiteSpace(codigoPieza))
-                {
-                codigoPieza = CrearCodigoTemporal(
-                    numeroPagina,
-                    nombreCapa,
-                    indiceObjeto
-                );
-                }
-
-            Molde molde = new Molde
-                {
-                Codigo = codigoGrupo + "__" + codigoPieza,
-                NombreObjeto = nombre,
-                Pieza = string.Empty,
-                Talla = talla,
-                Corte = corte,
-                Manga = string.Empty,
-                Cuello = string.Empty,
-                Pagina = numeroPagina,
-                Capa = nombreCapa,
-                Estado = "Nuevo",
-                FechaAnalisis = DateTime.Now,
-                IndiceObjeto = indiceObjeto,
-                Observacion = string.Empty
-                };
-
-            InterpretarPiezaCamiseta(
-                molde,
-                codigoPieza,
-                modelo,
-                codigoGrupo
-            );
-
-            return molde;
-            }
-        private void InterpretarPiezaCamiseta(Molde molde, string codigoPieza, string modelo, string codigoGrupo)
-            {
-            if (string.IsNullOrWhiteSpace(molde.NombreObjeto))
-                {
-                MarcarMoldeInvalido(
-                    molde,
-                    "El elemento del grupo \"" + codigoGrupo + "\" no tiene nombre."
-                );
-
-                return;
-                }
-
-            switch (codigoPieza)
-                {
-                case "frente":
-                    molde.Pieza = "Frente";
-                    break;
-
-                case "frente_cuello_redondo":
-                    molde.Pieza = "Frente";
-                    molde.Cuello = "Redondo";
-                    break;
-
-                case "frente_cuello_v":
-                    molde.Pieza = "Frente";
-                    molde.Cuello = "V";
-                    break;
-
-                case "espalda":
-                    molde.Pieza = "Espalda";
-                    break;
-
-                case "manga_corta_izquierda":
-                    molde.Pieza = "Manga izquierda";
-                    molde.Manga = "Corta";
-                    break;
-
-                case "manga_corta_derecha":
-                    molde.Pieza = "Manga derecha";
-                    molde.Manga = "Corta";
-                    break;
-
-                case "manga_larga_izquierda":
-                    molde.Pieza = "Manga izquierda";
-                    molde.Manga = "Larga";
-                    break;
-
-                case "manga_larga_derecha":
-                    molde.Pieza = "Manga derecha";
-                    molde.Manga = "Larga";
-                    break;
-
-                case "cuello_redondo":
-                    molde.Pieza = "Cuello";
-                    molde.Cuello = "Redondo";
-                    break;
-
-                case "cuello_v":
-                    molde.Pieza = "Cuello";
-                    molde.Cuello = "V";
-                    break;
-
-                case "short_derecho":
-                case "pierna_derecha":
-                    molde.Pieza = "Pierna derecha";
-                    break;
-
-                case "short_izquierdo":
-                case "pierna_izquierda":
-                    molde.Pieza = "Pierna izquierda";
-                    break;
-
-                default:
-                    MarcarMoldeInvalido(
-                        molde,
-                        "La pieza \"" +
-                        codigoPieza +
-                        "\" no está reconocida para camisetas."
-                    );
-
-                    return;
-                }
-
-            molde.Estado = "Nuevo";
-            molde.Observacion =
-                "Molde válido. Modelo: " +
-                modelo +
-                ". Grupo: " +
-                codigoGrupo +
-                ".";
-            }
-        private Molde CrearMoldeFunda(VGCore.Shape objeto, int numeroPagina, string nombreCapa, int indiceObjeto, string tallaGrupo)
-            {
-            string nombre =
-                ObtenerNombreSeguro(objeto);
-
-            string codigo =
-                NormalizarCodigo(nombre);
-
-            if (string.IsNullOrWhiteSpace(codigo))
-                {
-                codigo = CrearCodigoTemporal(
-                    numeroPagina,
-                    nombreCapa,
-                    indiceObjeto
-                );
-                }
-
-            Molde molde = new Molde
-                {
-                Codigo = codigo,
-                NombreObjeto = nombre,
-                Pieza = string.Empty,
-                Talla = string.Empty,
-                Corte = string.Empty,
-                Manga = string.Empty,
-                Cuello = string.Empty,
-                Pagina = numeroPagina,
-                Capa = nombreCapa,
-                Estado = "Nuevo",
-                FechaAnalisis = DateTime.Now,
-                IndiceObjeto = indiceObjeto,
-                Observacion = string.Empty
-                };
-
-            InterpretarNombreFunda(
-                molde,
-                tallaGrupo
-            );
-
-            return molde;
-            }
-        private void InterpretarNombreFunda(Molde molde,string tallaGrupo)
-            {
-            if (string.IsNullOrWhiteSpace(
-                molde.NombreObjeto))
-                {
-                MarcarMoldeInvalido(
-                    molde,
-                    "El objeto no tiene nombre."
-                );
-
-                return;
-                }
-
-            string[] partes =
-                molde.Codigo.Split(
-                    new[] { '_' },
-                    StringSplitOptions.RemoveEmptyEntries
-                );
-
-            if (partes.Length < 3 ||
-                partes[0] != "funda")
-                {
-                MarcarMoldeInvalido(
-                    molde,
-                    "El nombre debe comenzar con funda_."
-                );
-
-                return;
-                }
-
-            string talla =
-                partes[1].ToUpperInvariant();
-
-            if (talla != "S" &&
-                talla != "M" &&
-                talla != "L")
-                {
-                MarcarMoldeInvalido(
-                    molde,
-                    "La talla debe ser S, M o L."
-                );
-
-                return;
-                }
-
-            string codigoPieza =
-                string.Join(
-                    "_",
-                    partes,
-                    2,
-                    partes.Length - 2
-                );
-
-            string pieza =
-                ObtenerNombrePieza(codigoPieza);
-
-            if (string.IsNullOrWhiteSpace(pieza))
-                {
-                MarcarMoldeInvalido(
-                    molde,
-                    "La pieza \"" +
-                    codigoPieza +
-                    "\" no está reconocida."
-                );
-
-                return;
-                }
-
-            if (!string.IsNullOrWhiteSpace(tallaGrupo) &&
-                !string.Equals(
-                    talla,
-                    tallaGrupo,
-                    StringComparison.OrdinalIgnoreCase))
-                {
-                MarcarMoldeInvalido(
-                    molde,
-                    "La talla del objeto no coincide con el grupo " +
-                    "molde_" +
-                    tallaGrupo.ToLowerInvariant() +
-                    "."
-                );
-
-                return;
-                }
-
-            molde.Talla = talla;
-            molde.Pieza = pieza;
-            molde.Estado = "Nuevo";
-            molde.Observacion =
-                "Molde válido encontrado en el Master.";
-            }
-        private string ObtenerNombrePieza( string codigoPieza)
-            {
-            switch (codigoPieza)
-                {
-                case "frente":
-                    return "Frente";
-
-                case "espalda":
-                    return "Espalda";
-
-                case "lateral_izquierdo":
-                    return "Lateral izquierdo";
-
-                case "lateral_derecho":
-                    return "Lateral derecho";
-
-                default:
-                    return string.Empty;
-                }
-            }
-        private void MarcarMoldeInvalido(Molde molde,string observacion)
-            {
-            molde.Estado = "Inválido";
-            molde.Observacion = observacion;
+            return "sin_nombre_p" + pagina + "_" + codigoCapa + "_" + indice;
             }
         }
     }
