@@ -15,7 +15,6 @@ namespace TithorAutomation
         private readonly EscaladorPowerClip escalador = new EscaladorPowerClip();
         private bool modoGuiadoEscalar;
         private List<TareaEscalar> tareasEscalar = new List<TareaEscalar>();
-        private ComboBox cboTareaEscalar;
 
         private sealed class TareaEscalar
             {
@@ -55,21 +54,12 @@ namespace TithorAutomation
             cboTallaEscalar.SelectedIndex = 0;
             chkReemplazarContenidoEscalar.Checked = false;
 
-            if (cboTareaEscalar == null)
-                {
-                cboTareaEscalar = new ComboBox();
-                cboTareaEscalar.Name = "cboTareaEscalar";
-                cboTareaEscalar.DropDownStyle = ComboBoxStyle.DropDownList;
-                cboTareaEscalar.Location = new System.Drawing.Point(61, 27);
-                cboTareaEscalar.Size = new System.Drawing.Size(330, 25);
-                cboTareaEscalar.Anchor = AnchorStyles.Left | AnchorStyles.Bottom;
-                cboTareaEscalar.SelectedIndexChanged += cboTareaEscalar_SelectedIndexChanged;
-                groupBox1.Controls.Add(cboTareaEscalar);
-                }
+            cboTareaEscalar.SelectedIndexChanged -= cboTareaEscalar_SelectedIndexChanged;
+            cboTareaEscalar.SelectedIndexChanged += cboTareaEscalar_SelectedIndexChanged;
 
             modoGuiadoEscalar = false;
             tareasEscalar.Clear();
-            ConfigurarColumnasEscalar(false);
+            ConfigurarColumnasEscalar(true);
 
             lblEstadoEscalar.Text = "Analiza el documento para comenzar.";
             btnAnalizarEscalar.Enabled = true;
