@@ -19,6 +19,8 @@ namespace TithorAutomation.Servicios
         public string Diseno { get; set; }
         public string NombreGrupo { get; set; }
         public int FilaExcel { get; set; }
+        public string NombreVariable { get; set; }
+        public string NumeroVariable { get; set; }
     }
 
     public sealed class EscaladorPowerClip
@@ -232,7 +234,9 @@ namespace TithorAutomation.Servicios
                 NombreGrupo = solicitud.NombreDestino ?? string.Empty,
                 FilaExcel = solicitud.FilaExcel,
                 Talla = (solicitud.Talla ?? string.Empty).ToUpperInvariant(),
-                Pieza = NombrePiezaVisible(nombrePieza)
+                Pieza = NombrePiezaVisible(nombrePieza),
+                NombreVariable = solicitud.ObtenerCampo("nombre"),
+                NumeroVariable = solicitud.ObtenerCampo("numero")
             };
 
             if (grupo == null)
@@ -372,6 +376,35 @@ namespace TithorAutomation.Servicios
                 throw new InvalidOperationException("Se detectaron contenedores duplicados. Revise los grupos del documento.");
         }
 
+        private void ReemplazarVariables(Shape objeto, PiezaEscalable destino)
+        {
+            if (objeto == null) return;
+
+            string nombreObjeto = AnalizadorMasterCorel.NormalizarCodigo(ObtenerNombreSeguro(objeto));
+
+            if (objeto.Type == cdrShapeType.cdrTextShape)
+                {
+                if (nombreObjeto == "nombre")
+                    objeto.Text.Story.Text = destino.NombreVariable ?? string.Empty;
+                else if (nombreObjeto == "numero")
+                    objeto.Text.Story.Text = destino.NumeroVariable ?? string.Empty;
+                }
+
+            if (objeto.Type == cdrShapeType.cdrGroupShape && objeto.PowerClip == null)
+                {
+                for (int i = 1; i <= objeto.Shapes.Count; i++)
+                    ReemplazarVariables(objeto.Shapes[i], destino);
+                }
+
+            if (objeto.PowerClip != null)
+                {
+                Shapes contenido = objeto.PowerClip.Shapes;
+
+                for (int i = 1; i <= contenido.Count; i++)
+                    ReemplazarVariables(contenido[i], destino);
+                }
+        }
+
         public int Aplicar(Document documento, Shape diseno, IList<PiezaEscalable> destinos, bool reemplazar, Action<int, int> progreso = null)
             {
             Validar(diseno, destinos, reemplazar);
@@ -406,6 +439,7 @@ namespace TithorAutomation.Servicios
 
                         Shape copia = diseno.Duplicate(0, 0);
                         huboCambios = true;
+                        ReemplazarVariables(copia, destino);
 
                         if (reemplazar && contenedor.PowerClip != null)
                             {
