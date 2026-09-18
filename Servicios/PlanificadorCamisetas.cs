@@ -47,16 +47,9 @@ namespace TithorAutomation.Servicios
                 if (!linea.Procesable)
                     continue;
 
-                string prenda = Normalizar(linea.ObtenerCampo("prenda"));
-                bool tieneTallaCamiseta = !string.IsNullOrWhiteSpace(linea.ObtenerCampo("talla_camiseta"));
-                bool tieneTallaShort = !string.IsNullOrWhiteSpace(linea.ObtenerCampo("talla_short"));
-                bool solicitaCamiseta = tieneTallaCamiseta && prenda != "short";
-                bool solicitaShort = tieneTallaShort || prenda == "camiseta_short" || prenda == "short";
+                AgregarCamiseta(linea, resultado.CodigoProducto, catalogo, plan);
 
-                if (solicitaCamiseta)
-                    AgregarCamiseta(linea, resultado.CodigoProducto, catalogo, plan);
-
-                if (solicitaShort)
+                if (Normalizar(linea.ObtenerCampo("prenda")) == "camiseta_short")
                     AgregarShort(linea, resultado.CodigoProducto, catalogo, plan);
                 }
 
