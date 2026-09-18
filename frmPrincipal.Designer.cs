@@ -224,6 +224,7 @@ namespace TithorAutomation
             this.btnAnalizarEscalar = new System.Windows.Forms.Button();
             this.btnAplicarEscalar = new System.Windows.Forms.Button();
             this.chkReemplazarContenidoEscalar = new System.Windows.Forms.CheckBox();
+            this.cboTareaEscalar = new System.Windows.Forms.ComboBox();
             this.lblTallaEscalar = new System.Windows.Forms.Label();
             this.cboTallaEscalar = new System.Windows.Forms.ComboBox();
             this.lblPiezaEscalar = new System.Windows.Forms.Label();
@@ -2468,6 +2469,7 @@ namespace TithorAutomation
             this.groupBox1.Controls.Add(this.btnAnalizarEscalar);
             this.groupBox1.Controls.Add(this.btnAplicarEscalar);
             this.groupBox1.Controls.Add(this.chkReemplazarContenidoEscalar);
+            this.groupBox1.Controls.Add(this.cboTareaEscalar);
             this.groupBox1.Controls.Add(this.lblTallaEscalar);
             this.groupBox1.Controls.Add(this.cboTallaEscalar);
             this.groupBox1.Controls.Add(this.lblPiezaEscalar);
@@ -2527,7 +2529,16 @@ namespace TithorAutomation
             this.chkReemplazarContenidoEscalar.TabIndex = 39;
             this.chkReemplazarContenidoEscalar.Text = "Reemplazar contenido";
             this.chkReemplazarContenidoEscalar.UseVisualStyleBackColor = true;
+            //            // cboTareaEscalar
             // 
+            this.cboTareaEscalar.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTareaEscalar.FormattingEnabled = true;
+            this.cboTareaEscalar.Location = new System.Drawing.Point(61, 27);
+            this.cboTareaEscalar.Name = "cboTareaEscalar";
+            this.cboTareaEscalar.Size = new System.Drawing.Size(330, 25);
+            this.cboTareaEscalar.TabIndex = 43;
+            // 
+ 
             // lblTallaEscalar
             // 
             this.lblTallaEscalar.AutoSize = true;
@@ -3109,6 +3120,7 @@ namespace TithorAutomation
         private System.Windows.Forms.Button btnAnalizarEscalar;
         private System.Windows.Forms.Button btnAplicarEscalar;
         private System.Windows.Forms.CheckBox chkReemplazarContenidoEscalar;
+        private System.Windows.Forms.ComboBox cboTareaEscalar;
         private System.Windows.Forms.Label lblTallaEscalar;
         private System.Windows.Forms.ComboBox cboTallaEscalar;
         private System.Windows.Forms.Label lblPiezaEscalar;
