@@ -29,7 +29,7 @@ namespace TithorAutomation
             catch (Exception ex)
                 {
                 MessageBox.Show(
-                    "No se pudieron cargar los productos en Producción.\n\n" + ex.Message,
+                    "No se pudieron cargar los productos en Moldes.\n\n" + ex.Message,
                     "Tithor Automation",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error
@@ -384,7 +384,7 @@ namespace TithorAutomation
                     {
                     MessageBox.Show(
                         "Primero debe analizar un archivo Excel con filas válidas.",
-                        "Producción",
+                        "Moldes",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
                     );
@@ -398,7 +398,7 @@ namespace TithorAutomation
                     {
                     MessageBox.Show(
                         "Seleccione el producto que desea producir.",
-                        "Producción",
+                        "Moldes",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
                     );
@@ -412,7 +412,7 @@ namespace TithorAutomation
                     {
                     MessageBox.Show(
                         $"El producto '{producto.Nombre}' todavía no tiene un planificador de producción.",
-                        "Producción",
+                        "Moldes",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
                     );
@@ -426,7 +426,7 @@ namespace TithorAutomation
                     {
                     MessageBox.Show(
                         "Este producto no tiene un archivo Master configurado.",
-                        "Producción",
+                        "Moldes",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
                     );
@@ -438,7 +438,7 @@ namespace TithorAutomation
                     {
                     MessageBox.Show(
                         $"No se encontró el archivo Master:\n\n{master.RutaArchivo}",
-                        "Producción",
+                        "Moldes",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
                     );
@@ -450,7 +450,7 @@ namespace TithorAutomation
                     {
                     MessageBox.Show(
                         "El archivo Master todavía no ha sido analizado.\n\nAnalícelo desde Configuración antes de continuar.",
-                        "Producción",
+                        "Moldes",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
                     );
@@ -464,7 +464,7 @@ namespace TithorAutomation
                     {
                     MessageBox.Show(
                         "El catálogo de moldes está vacío.\n\nAnalice y sincronice el Master desde Configuración.",
-                        "Producción",
+                        "Moldes",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
                     );
@@ -478,7 +478,7 @@ namespace TithorAutomation
                     {
                     MessageBox.Show(
                         "No se pudo crear el plan de producción.",
-                        "Producción",
+                        "Moldes",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error
                     );
@@ -494,7 +494,7 @@ namespace TithorAutomation
 
                     MessageBox.Show(
                         "No se pueden copiar los moldes:\n\n• " + detalleAdvertencias,
-                        "Revisar producción",
+                        "Revisar moldes",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
                     );
@@ -506,7 +506,7 @@ namespace TithorAutomation
                     {
                     MessageBox.Show(
                         "El plan de producción no contiene moldes para copiar.",
-                        "Producción",
+                        "Moldes",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
                     );
@@ -520,7 +520,7 @@ namespace TithorAutomation
                     {
                     MessageBox.Show(
                         "Abra el documento de producción en CorelDRAW antes de copiar los moldes.",
-                        "Producción",
+                        "Moldes",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Warning
                     );
@@ -569,7 +569,7 @@ namespace TithorAutomation
                 planProduccionActual = plan;
 
                 lblResultadoPedido.Text =
-                    $"Producción preparada: {totalCopiado} conjuntos copiados en {documentoDestino.Name}.";
+                    $"Moldes preparados: {totalCopiado} conjuntos copiados en {documentoDestino.Name}.";
 
                 btnCopiarMoldesPedido.Text = "Copiar nuevamente";
                 btnCopiarMoldesPedido.Enabled = true;
@@ -580,7 +580,7 @@ namespace TithorAutomation
                     $"Documento: {documentoDestino.Name}\n" +
                     "Capa creada: TITHOR_PRODUCCION\n\n" +
                     "Puede usar Ctrl+Z una sola vez para deshacer toda la copia.",
-                    "Producción preparada",
+                    "Moldes preparados",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
                 );
