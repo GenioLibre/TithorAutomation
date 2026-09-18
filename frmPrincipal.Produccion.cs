@@ -205,19 +205,44 @@ namespace TithorAutomation
                     File.Exists(txtRutaExcelProduccion.Text);
                 }
             }
-        private void ConfigurarColumnasPedido()
+        private void ConfigurarColumnasPedido(ResultadoAnalisisPedido resultado)
             {
             dgvPedidoProduccion.Columns.Clear();
             dgvPedidoProduccion.AutoGenerateColumns = false;
             dgvPedidoProduccion.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
 
             AgregarColumnaPedido("colEstadoPedido", "Estado", 75F, 90);
-            AgregarColumnaPedido("colFilaPedido", "Fila", 45F, 50);
+            AgregarColumnaPedido("colFilaPedido", "Fila Excel", 55F, 70);
+
+            if (EsPedidoCamisetas(resultado))
+                {
+                AgregarColumnaPedido("colNumeroOrdenPedido", "N°", 45F, 50);
+                AgregarColumnaPedido("colModeloPedido", "Modelo", 85F, 90);
+                AgregarColumnaPedido("colNombrePedido", "Nombre", 110F, 110);
+                AgregarColumnaPedido("colPrendaPedido", "Prenda", 105F, 110);
+                AgregarColumnaPedido("colNumeroPedido", "Número", 55F, 65);
+                AgregarColumnaPedido("colTallaCamisetaPedido", "Talla camiseta", 75F, 90);
+                AgregarColumnaPedido("colTallaShortPedido", "Talla short", 70F, 85);
+                AgregarColumnaPedido("colCortePedido", "Corte", 70F, 75);
+                AgregarColumnaPedido("colMangaPedido", "Manga", 70F, 75);
+                AgregarColumnaPedido("colCuelloPedido", "Cuello", 70F, 75);
+                AgregarColumnaPedido("colObservacionesPedido", "Observaciones", 140F, 140);
+                return;
+                }
+
             AgregarColumnaPedido("colDisenoPedido", "Diseño", 150F, 140);
             AgregarColumnaPedido("colTallaPedido", "Talla", 60F, 60);
             AgregarColumnaPedido("colCantidadPedido", "Cantidad", 70F, 75);
             AgregarColumnaPedido("colNotasPedido", "Notas", 140F, 120);
             AgregarColumnaPedido("colObservacionesPedido", "Observaciones", 220F, 180);
+            }
+
+        private bool EsPedidoCamisetas(ResultadoAnalisisPedido resultado)
+            {
+            if (resultado == null || string.IsNullOrWhiteSpace(resultado.CodigoProducto))
+                return false;
+
+            return resultado.CodigoProducto.IndexOf("CAMISETA", StringComparison.OrdinalIgnoreCase) >= 0;
             }
         private void AgregarColumnaPedido(string nombre, string titulo, float proporcion, int anchoMinimo)
             {
@@ -235,22 +260,18 @@ namespace TithorAutomation
             }
         private void MostrarResultadoPedido(ResultadoAnalisisPedido resultado)
             {
-            ConfigurarColumnasPedido();
-
+            ConfigurarColumnasPedido(resultado);
             dgvPedidoProduccion.Rows.Clear();
+
+            bool pedidoCamisetas = EsPedidoCamisetas(resultado);
 
             foreach (LineaPedido linea in resultado.Lineas)
                 {
-                int indice = dgvPedidoProduccion.Rows.Add(
-                    linea.Estado,
-                    linea.NumeroFila,
-                    linea.Diseno,
-                    linea.Talla,
-                    linea.Cantidad > 0 ? linea.Cantidad.ToString() : "",
-                    linea.Notas,
-                    linea.MensajeCompleto
-                );
+                object[] valores = pedidoCamisetas
+                    ? CrearValoresFilaCamisetas(linea)
+                    : CrearValoresFilaGeneral(linea);
 
+                int indice = dgvPedidoProduccion.Rows.Add(valores);
                 DataGridViewRow fila = dgvPedidoProduccion.Rows[indice];
                 fila.Tag = linea;
 
@@ -268,6 +289,7 @@ namespace TithorAutomation
             int advertencias = resultado.TotalFilasOmitidas + resultado.AdvertenciasGenerales.Count;
 
             lblFilasPedidoValor.Text = resultado.TotalFilasProcesables.ToString();
+            lblDisenosPedidoTitulo.Text = pedidoCamisetas ? "Prendas" : "Diseños";
             lblDisenosPedidoValor.Text = resultado.ObtenerDisenos().Count.ToString();
             lblUnidadesPedidoValor.Text = resultado.TotalUnidades.ToString();
             lblAdvertenciasPedidoValor.Text = advertencias.ToString();
@@ -277,6 +299,47 @@ namespace TithorAutomation
                 resultado.TotalFilasOmitidas + " filas serán omitidas.";
 
             dgvPedidoProduccion.Visible = true;
+            }
+
+        private object[] CrearValoresFilaCamisetas(LineaPedido linea)
+            {
+            return new object[]
+                {
+                linea.Estado,
+                linea.NumeroFila,
+                linea.ObtenerCampo("n"),
+                linea.ObtenerCampo("modelo"),
+                linea.ObtenerCampo("nombre"),
+                linea.ObtenerCampo("prenda"),
+                linea.ObtenerCampo("numero"),
+                MostrarTallaPedido(linea.ObtenerCampo("talla_camiseta")),
+                MostrarTallaPedido(linea.ObtenerCampo("talla_short")),
+                linea.ObtenerCampo("corte"),
+                linea.ObtenerCampo("manga"),
+                linea.ObtenerCampo("cuello"),
+                linea.MensajeCompleto
+                };
+            }
+
+        private object[] CrearValoresFilaGeneral(LineaPedido linea)
+            {
+            return new object[]
+                {
+                linea.Estado,
+                linea.NumeroFila,
+                linea.Diseno,
+                linea.Talla,
+                linea.Cantidad > 0 ? linea.Cantidad.ToString() : string.Empty,
+                linea.Notas,
+                linea.MensajeCompleto
+                };
+            }
+
+        private string MostrarTallaPedido(string talla)
+            {
+            return string.IsNullOrWhiteSpace(talla)
+                ? string.Empty
+                : talla.Trim().ToUpperInvariant();
             }
         private void MostrarAdvertenciasPedido(ResultadoAnalisisPedido resultado)
             {
