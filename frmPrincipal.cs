@@ -15,7 +15,7 @@ namespace TithorAutomation
     {
     public partial class frmPrincipal : Form
         {
-        private readonly List<IPlanificadorProducto> planificadoresProducto = new List<IPlanificadorProducto> { new PlanificadorFundas() };
+        private readonly List<IPlanificadorProducto> planificadoresProducto = new List<IPlanificadorProducto> { new PlanificadorFundas(), new PlanificadorCamisetas() };
         private readonly CopiadorMoldesCorel copiadorMoldesCorel = new CopiadorMoldesCorel();
         private PlanProduccion planProduccionActual;
         private readonly List<ILectorPedidoProducto> lectoresPedido = new List<ILectorPedidoProducto>
