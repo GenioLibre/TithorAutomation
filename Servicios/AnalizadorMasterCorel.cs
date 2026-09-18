@@ -116,7 +116,7 @@ namespace TithorAutomation.Servicios
             if (cantidadElementos == 0)
                 {
                 moldes.Add(CrearMoldeInvalido(
-                    codigoGrupo + "__sin_elementos",
+                    CrearCodigoEstructural(nombreCapa, codigoGrupo, "sin_elementos"),
                     nombreGrupo,
                     talla,
                     numeroPagina,
@@ -149,9 +149,11 @@ namespace TithorAutomation.Servicios
             if (string.IsNullOrWhiteSpace(codigoElemento))
                 {
                 string codigoTemporal =
-                    codigoGrupo +
-                    "__" +
-                    CrearCodigoTemporal(numeroPagina, nombreCapa, indiceObjeto);
+                    CrearCodigoEstructural(
+                        nombreCapa,
+                        codigoGrupo,
+                        CrearCodigoTemporal(numeroPagina, nombreCapa, indiceObjeto)
+                    );
 
                 return CrearMoldeInvalido(
                     codigoTemporal,
@@ -168,7 +170,7 @@ namespace TithorAutomation.Servicios
 
             return new Molde
                 {
-                Codigo = codigoGrupo + "__" + codigoElemento,
+                Codigo = CrearCodigoEstructural(nombreCapa, codigoGrupo, codigoElemento),
                 NombreObjeto = nombreElemento,
                 Pieza = ConvertirCodigoATexto(codigoPieza),
                 Talla = talla,
@@ -180,7 +182,12 @@ namespace TithorAutomation.Servicios
                 Estado = "Nuevo",
                 FechaAnalisis = DateTime.Now,
                 IndiceObjeto = indiceObjeto,
-                Observacion = "Elemento válido del grupo " + nombreGrupo + "."
+                Observacion =
+                    "Elemento válido del grupo " +
+                    nombreGrupo +
+                    " en la capa " +
+                    nombreCapa +
+                    "."
                 };
             }
         private Molde CrearMoldeInvalido(string codigo, string nombreObjeto, string talla, int pagina, string capa, int indice, string observacion)
@@ -201,6 +208,15 @@ namespace TithorAutomation.Servicios
                 IndiceObjeto = indice,
                 Observacion = observacion
                 };
+            }
+        private string CrearCodigoEstructural(string nombreCapa, string codigoGrupo, string codigoElemento)
+            {
+            string codigoCapa = NormalizarCodigo(nombreCapa);
+
+            if (string.IsNullOrWhiteSpace(codigoCapa))
+                codigoCapa = "sin_capa";
+
+            return codigoCapa + "__" + codigoGrupo + "__" + codigoElemento;
             }
         private string ObtenerCodigoPieza(string codigoElemento, string talla)
             {
