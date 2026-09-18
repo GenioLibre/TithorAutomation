@@ -317,36 +317,79 @@ namespace TithorAutomation.Servicios
             if (objeto == null)
                 return false;
 
-            string codigo =
-                NormalizarCodigo(nombre);
+            string codigo = NormalizarCodigo(nombre);
 
-            return codigo == "molde_s" ||
-                   codigo == "molde_m" ||
-                   codigo == "molde_l";
+            if (codigo == "molde_s" ||
+                codigo == "molde_m" ||
+                codigo == "molde_l")
+                {
+                return TieneElementosInternos(objeto);
+                }
+
+            string modelo;
+            string corte;
+            string talla;
+
+            return TryInterpretarGrupoCamiseta(nombre, out modelo, out corte, out talla) &&
+                   TieneElementosInternos(objeto);
+            }
+        private bool TieneElementosInternos(VGCore.Shape objeto)
+            {
+            try
+                {
+                return objeto.Shapes != null && objeto.Shapes.Count > 0;
+                }
+            catch
+                {
+                return false;
+                }
             }
         private void AnalizarGrupoDeTalla(VGCore.Shape grupo, int numeroPagina, string nombreCapa, List<Molde> moldes)
             {
-            string tallaGrupo =
-                ObtenerTallaDelGrupo(
-                    ObtenerNombreSeguro(grupo)
+            string nombreGrupo = ObtenerNombreSeguro(grupo);
+            string modelo;
+            string corte;
+            string talla;
+
+            bool esGrupoCamiseta =
+                TryInterpretarGrupoCamiseta(
+                    nombreGrupo,
+                    out modelo,
+                    out corte,
+                    out talla
                 );
 
-            // Solo entra un nivel dentro del grupo.
-            // No analiza recursivamente grupos interiores.
+            string tallaGrupo =
+                esGrupoCamiseta
+                    ? talla
+                    : ObtenerTallaDelGrupo(nombreGrupo);
+
+            // Solo analiza los hijos inmediatos del grupo superior.
             for (int indice = 1;
                  indice <= grupo.Shapes.Count;
                  indice++)
                 {
-                VGCore.Shape objetoMolde =
-                    grupo.Shapes[indice];
+                VGCore.Shape objetoMolde = grupo.Shapes[indice];
 
-                Molde molde = CrearMoldeFunda(
-                    objetoMolde,
-                    numeroPagina,
-                    nombreCapa,
-                    indice,
-                    tallaGrupo
-                );
+                Molde molde =
+                    esGrupoCamiseta
+                        ? CrearMoldeCamiseta(
+                            objetoMolde,
+                            grupo,
+                            numeroPagina,
+                            nombreCapa,
+                            indice,
+                            modelo,
+                            corte,
+                            tallaGrupo
+                        )
+                        : CrearMoldeFunda(
+                            objetoMolde,
+                            numeroPagina,
+                            nombreCapa,
+                            indice,
+                            tallaGrupo
+                        );
 
                 moldes.Add(molde);
                 }
@@ -367,6 +410,225 @@ namespace TithorAutomation.Servicios
                 return "L";
 
             return string.Empty;
+            }
+        private bool TryInterpretarGrupoCamiseta(string nombreGrupo, out string modelo, out string corte, out string talla)
+            {
+            modelo = string.Empty;
+            corte = string.Empty;
+            talla = string.Empty;
+
+            string codigo = NormalizarCodigo(nombreGrupo);
+            string[] partes = codigo.Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (partes.Length < 4 || partes[0] != "molde")
+                return false;
+
+            string codigoCorte = partes[partes.Length - 2];
+            string codigoTalla = partes[partes.Length - 1];
+            string codigoModelo = string.Join("_", partes, 1, partes.Length - 3);
+
+            modelo = ObtenerModeloCamiseta(codigoModelo);
+            corte = ObtenerCorteCamiseta(codigoCorte);
+            talla = ObtenerTallaCamiseta(codigoTalla);
+
+            return !string.IsNullOrWhiteSpace(modelo) &&
+                   !string.IsNullOrWhiteSpace(corte) &&
+                   !string.IsNullOrWhiteSpace(talla);
+            }
+        private string ObtenerModeloCamiseta(string codigo)
+            {
+            switch (codigo)
+                {
+                case "clasico":
+                    return "Clásico";
+
+                case "raglan":
+                    return "Raglan";
+
+                case "manga_cero":
+                    return "Manga cero";
+
+                case "bividi":
+                    return "Bividi";
+
+                default:
+                    return string.Empty;
+                }
+            }
+        private string ObtenerCorteCamiseta(string codigo)
+            {
+            switch (codigo)
+                {
+                case "varon":
+                case "hombre":
+                    return "Varón";
+
+                case "dama":
+                case "mujer":
+                    return "Dama";
+
+                default:
+                    return string.Empty;
+                }
+            }
+        private string ObtenerTallaCamiseta(string codigo)
+            {
+            switch (codigo)
+                {
+                case "2":
+                case "4":
+                case "6":
+                case "8":
+                case "10":
+                case "12":
+                case "14":
+                case "16":
+                    return codigo;
+
+                case "xs":
+                case "s":
+                case "m":
+                case "l":
+                case "xl":
+                case "2xl":
+                case "3xl":
+                    return codigo.ToUpperInvariant();
+
+                default:
+                    return string.Empty;
+                }
+            }
+        private Molde CrearMoldeCamiseta(VGCore.Shape objeto, VGCore.Shape grupo, int numeroPagina, string nombreCapa, int indiceObjeto, string modelo, string corte, string talla)
+            {
+            string nombre = ObtenerNombreSeguro(objeto);
+            string codigoPieza = NormalizarCodigo(nombre);
+            string codigoGrupo = NormalizarCodigo(ObtenerNombreSeguro(grupo));
+
+            if (string.IsNullOrWhiteSpace(codigoPieza))
+                {
+                codigoPieza = CrearCodigoTemporal(
+                    numeroPagina,
+                    nombreCapa,
+                    indiceObjeto
+                );
+                }
+
+            Molde molde = new Molde
+                {
+                Codigo = codigoGrupo + "__" + codigoPieza,
+                NombreObjeto = nombre,
+                Pieza = string.Empty,
+                Talla = talla,
+                Corte = corte,
+                Manga = string.Empty,
+                Cuello = string.Empty,
+                Pagina = numeroPagina,
+                Capa = nombreCapa,
+                Estado = "Nuevo",
+                FechaAnalisis = DateTime.Now,
+                IndiceObjeto = indiceObjeto,
+                Observacion = string.Empty
+                };
+
+            InterpretarPiezaCamiseta(
+                molde,
+                codigoPieza,
+                modelo,
+                codigoGrupo
+            );
+
+            return molde;
+            }
+        private void InterpretarPiezaCamiseta(Molde molde, string codigoPieza, string modelo, string codigoGrupo)
+            {
+            if (string.IsNullOrWhiteSpace(molde.NombreObjeto))
+                {
+                MarcarMoldeInvalido(
+                    molde,
+                    "El elemento del grupo \"" + codigoGrupo + "\" no tiene nombre."
+                );
+
+                return;
+                }
+
+            switch (codigoPieza)
+                {
+                case "frente":
+                    molde.Pieza = "Frente";
+                    break;
+
+                case "frente_cuello_redondo":
+                    molde.Pieza = "Frente";
+                    molde.Cuello = "Redondo";
+                    break;
+
+                case "frente_cuello_v":
+                    molde.Pieza = "Frente";
+                    molde.Cuello = "V";
+                    break;
+
+                case "espalda":
+                    molde.Pieza = "Espalda";
+                    break;
+
+                case "manga_corta_izquierda":
+                    molde.Pieza = "Manga izquierda";
+                    molde.Manga = "Corta";
+                    break;
+
+                case "manga_corta_derecha":
+                    molde.Pieza = "Manga derecha";
+                    molde.Manga = "Corta";
+                    break;
+
+                case "manga_larga_izquierda":
+                    molde.Pieza = "Manga izquierda";
+                    molde.Manga = "Larga";
+                    break;
+
+                case "manga_larga_derecha":
+                    molde.Pieza = "Manga derecha";
+                    molde.Manga = "Larga";
+                    break;
+
+                case "cuello_redondo":
+                    molde.Pieza = "Cuello";
+                    molde.Cuello = "Redondo";
+                    break;
+
+                case "cuello_v":
+                    molde.Pieza = "Cuello";
+                    molde.Cuello = "V";
+                    break;
+
+                case "short_derecho":
+                case "pierna_derecha":
+                    molde.Pieza = "Pierna derecha";
+                    break;
+
+                case "short_izquierdo":
+                case "pierna_izquierda":
+                    molde.Pieza = "Pierna izquierda";
+                    break;
+
+                default:
+                    MarcarMoldeInvalido(
+                        molde,
+                        "La pieza \"" +
+                        codigoPieza +
+                        "\" no está reconocida para camisetas."
+                    );
+
+                    return;
+                }
+
+            molde.Estado = "Nuevo";
+            molde.Observacion =
+                "Molde válido. Modelo: " +
+                modelo +
+                ". Grupo: " +
+                codigoGrupo +
+                ".";
             }
         private Molde CrearMoldeFunda(VGCore.Shape objeto, int numeroPagina, string nombreCapa, int indiceObjeto, string tallaGrupo)
             {
