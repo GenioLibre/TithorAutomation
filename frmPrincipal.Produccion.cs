@@ -44,7 +44,7 @@ namespace TithorAutomation
             cboProductoProduccion.Enabled = true;
             btnCargarExcelProduccion.Enabled = true;
             btnNuevoPedido.Enabled = true;
-            btnCopiarMoldesPedido.Text = "Copiar moldes";
+            btnCopiarMoldesPedido.Text = "Copiar al documento abierto";
 
             if (limpiarRuta)
                 txtRutaExcelProduccion.Clear();
@@ -535,7 +535,7 @@ namespace TithorAutomation
                 DialogResult confirmacion = MessageBox.Show(
                     $"Se copiarán {plan.TotalMoldes} moldes.\n\n" +
                     $"Producto: {producto.Nombre}\n" +
-                    $"Documento destino: {documentoDestino.Name}\n" +
+                    $"Documento abierto: {documentoDestino.Name}\n" +
                     $"Master: {master.NombreArchivo}\n\n" +
                     "¿Desea continuar?",
                     "Copiar moldes",
@@ -573,7 +573,7 @@ namespace TithorAutomation
                 lblResultadoPedido.Text =
                     $"Moldes preparados: {totalCopiado} conjuntos copiados en {documentoDestino.Name}.";
 
-                btnCopiarMoldesPedido.Text = "Copiar nuevamente";
+                btnCopiarMoldesPedido.Text = "Copiar nuevamente al documento";
                 btnCopiarMoldesPedido.Enabled = true;
                 btnNuevoPedido.Enabled = true;
 
