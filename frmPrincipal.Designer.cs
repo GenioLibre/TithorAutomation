@@ -2536,6 +2536,7 @@ namespace TithorAutomation
             this.lblTallaEscalar.Size = new System.Drawing.Size(37, 17);
             this.lblTallaEscalar.TabIndex = 37;
             this.lblTallaEscalar.Text = "Talla:";
+            this.lblTallaEscalar.Visible = false;
             // 
             // cboTallaEscalar
             // 
@@ -2552,6 +2553,7 @@ namespace TithorAutomation
             this.cboTallaEscalar.Name = "cboTallaEscalar";
             this.cboTallaEscalar.Size = new System.Drawing.Size(143, 25);
             this.cboTallaEscalar.TabIndex = 38;
+            this.cboTallaEscalar.Visible = false;
             // 
             // lblPiezaEscalar
             // 
@@ -2560,7 +2562,7 @@ namespace TithorAutomation
             this.lblPiezaEscalar.Name = "lblPiezaEscalar";
             this.lblPiezaEscalar.Size = new System.Drawing.Size(41, 17);
             this.lblPiezaEscalar.TabIndex = 35;
-            this.lblPiezaEscalar.Text = "Pieza:";
+            this.lblPiezaEscalar.Text = "Tarea:";
             // 
             // cboPiezaEscalar
             // 
@@ -2577,6 +2579,7 @@ namespace TithorAutomation
             this.cboPiezaEscalar.Name = "cboPiezaEscalar";
             this.cboPiezaEscalar.Size = new System.Drawing.Size(143, 25);
             this.cboPiezaEscalar.TabIndex = 36;
+            this.cboPiezaEscalar.Visible = false;
             // 
             // panel12
             // 
