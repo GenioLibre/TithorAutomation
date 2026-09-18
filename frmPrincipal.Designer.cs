@@ -1592,9 +1592,9 @@ namespace TithorAutomation
             this.btnNuevoPedido.FlatAppearance.BorderSize = 0;
             this.btnNuevoPedido.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNuevoPedido.ForeColor = System.Drawing.Color.White;
-            this.btnNuevoPedido.Location = new System.Drawing.Point(671, 36);
+            this.btnNuevoPedido.Location = new System.Drawing.Point(619, 36);
             this.btnNuevoPedido.Name = "btnNuevoPedido";
-            this.btnNuevoPedido.Size = new System.Drawing.Size(103, 40);
+            this.btnNuevoPedido.Size = new System.Drawing.Size(130, 40);
             this.btnNuevoPedido.TabIndex = 37;
             this.btnNuevoPedido.Text = "Nuevo Pedido";
             this.btnNuevoPedido.UseVisualStyleBackColor = false;
@@ -1607,9 +1607,9 @@ namespace TithorAutomation
             this.btnCopiarMoldesPedido.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnCopiarMoldesPedido.FlatAppearance.BorderSize = 0;
             this.btnCopiarMoldesPedido.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCopiarMoldesPedido.Location = new System.Drawing.Point(780, 36);
+            this.btnCopiarMoldesPedido.Location = new System.Drawing.Point(755, 36);
             this.btnCopiarMoldesPedido.Name = "btnCopiarMoldesPedido";
-            this.btnCopiarMoldesPedido.Size = new System.Drawing.Size(105, 40);
+            this.btnCopiarMoldesPedido.Size = new System.Drawing.Size(130, 40);
             this.btnCopiarMoldesPedido.TabIndex = 36;
             this.btnCopiarMoldesPedido.Text = "Copiar moldes";
             this.btnCopiarMoldesPedido.UseVisualStyleBackColor = false;
