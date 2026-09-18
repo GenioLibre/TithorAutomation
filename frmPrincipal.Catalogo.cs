@@ -1029,14 +1029,14 @@ namespace TithorAutomation
                     continue;
                     }
 
-                int separador = molde.Codigo.IndexOf("__", StringComparison.Ordinal);
+                int separador = molde.Codigo.LastIndexOf("__", StringComparison.Ordinal);
 
                 if (separador <= 0)
                     {
                     advertencias.AppendLine(
                         "• El elemento \"" +
                         molde.NombreObjeto +
-                        "\" no tiene un grupo de origen válido."
+                        "\" no tiene una ruta estructural válida."
                     );
 
                     continue;
