@@ -475,7 +475,7 @@ namespace TithorAutomation
                    new System.Windows.Forms.OpenFileDialog())
                 {
                 dialogo.Title =
-                    "Seleccionar archivo Master de CorelDRAW";
+                    "Seleccionar Master para " + producto.Nombre;
 
                 dialogo.Filter =
                     "Archivos CorelDRAW (*.cdr)|*.cdr";
@@ -512,21 +512,73 @@ namespace TithorAutomation
             }
         private void GuardarArchivoMasterSeleccionado(Producto producto, string rutaArchivo)
             {
+            if (producto == null || producto.Id <= 0)
+                {
+                MessageBox.Show(
+                    "Seleccione primero un producto válido.",
+                    "Tithor Automation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information
+                );
+
+                return;
+                }
+
+            if (string.IsNullOrWhiteSpace(rutaArchivo) ||
+                !File.Exists(rutaArchivo) ||
+                !string.Equals(Path.GetExtension(rutaArchivo), ".cdr", StringComparison.OrdinalIgnoreCase))
+                {
+                MessageBox.Show(
+                    "Seleccione un archivo Master de CorelDRAW válido.",
+                    "Tithor Automation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+                }
+
+            Producto productoSeleccionado = ObtenerProductoSeleccionado();
+
+            if (productoSeleccionado == null || productoSeleccionado.Id != producto.Id)
+                {
+                MessageBox.Show(
+                    "El producto seleccionado cambió. Vuelva a seleccionar el archivo Master.",
+                    "Tithor Automation",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning
+                );
+
+                return;
+                }
+
             try
                 {
-                FileInfo informacion =
-                    new FileInfo(rutaArchivo);
+                FileInfo informacion = new FileInfo(rutaArchivo);
+
+                bool masterPerteneceAlProducto =
+                    archivoMasterActual != null &&
+                    archivoMasterActual.ProductoId == producto.Id;
 
                 bool esMismoArchivo =
-                    archivoMasterActual != null &&
+                    masterPerteneceAlProducto &&
                     string.Equals(
                         archivoMasterActual.RutaArchivo,
                         informacion.FullName,
                         StringComparison.OrdinalIgnoreCase
                     );
 
+                if (masterPerteneceAlProducto &&
+                    !esMismoArchivo &&
+                    !ConfirmarReemplazoMaster(producto, informacion.Name))
+                    {
+                    return;
+                    }
+
                 ArchivoMaster master =
-                    archivoMasterActual ?? new ArchivoMaster();
+                    masterPerteneceAlProducto
+                        ? archivoMasterActual
+                        : new ArchivoMaster();
 
                 master.ProductoId = producto.Id;
                 master.RutaArchivo = informacion.FullName;
@@ -538,34 +590,27 @@ namespace TithorAutomation
                     {
                     master.HashArchivo = string.Empty;
                     master.TamanoArchivo = informacion.Length;
-                    master.FechaModificacion =
-                        informacion.LastWriteTimeUtc;
-
+                    master.FechaModificacion = informacion.LastWriteTimeUtc;
                     master.FechaUltimoAnalisis = null;
                     master.CantidadMoldes = 0;
                     }
 
-                master.Id =
-                    archivoMasterRepositorio
-                        .GuardarPrincipal(master);
+                master.Id = archivoMasterRepositorio.GuardarPrincipal(master);
 
                 archivoMasterActual = master;
                 moldesAnalizados.Clear();
                 tamanoMasterAnalizado = 0;
                 fechaMasterAnalizadoUtc = DateTime.MinValue;
 
-                dgvCatalogoMoldes.Rows.Clear();
-                dgvCatalogoMoldes.Visible = false;
-
-                btnSincronizarMaster.Enabled = false;
-
-                MostrarArchivoMaster();
+                CargarArchivoMasterDelProducto();
 
                 MessageBox.Show(
-                    "El archivo Master fue guardado para el producto \"" +
+                    "El Master \"" +
+                    informacion.Name +
+                    "\" quedó enlazado al producto \"" +
                     producto.Nombre +
-                    "\".",
-                    "Tithor Automation",
+                    "\".\n\nEstado: pendiente de análisis.",
+                    "Master configurado",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information
                 );
@@ -580,6 +625,29 @@ namespace TithorAutomation
                     MessageBoxIcon.Error
                 );
                 }
+            }
+        private bool ConfirmarReemplazoMaster(Producto producto, string nombreArchivoNuevo)
+            {
+            string nombreArchivoActual =
+                archivoMasterActual == null
+                    ? string.Empty
+                    : archivoMasterActual.NombreArchivo;
+
+            DialogResult respuesta = MessageBox.Show(
+                "El producto \"" +
+                producto.Nombre +
+                "\" ya tiene un Master configurado:\n\n" +
+                nombreArchivoActual +
+                "\n\nSe reemplazará por:\n\n" +
+                nombreArchivoNuevo +
+                "\n\nEl nuevo archivo quedará pendiente de análisis. ¿Desea continuar?",
+                "Reemplazar Master",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2
+            );
+
+            return respuesta == DialogResult.Yes;
             }
         private void btnAbrirUbicacionMaster_Click(object sender, EventArgs e)
             {
