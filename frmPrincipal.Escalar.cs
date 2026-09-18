@@ -239,17 +239,18 @@ namespace TithorAutomation
                 cboTareaEscalar.SelectedIndex = 0;
 
             TareaEscalar actual = ObtenerTareaEscalarActual();
+            bool hayPendientes = tareasEscalar.Any(x => x.Estado == "Pendiente" || x.Estado == "Parcial");
 
             if (piezas.Count == 0)
                 lblEstadoEscalar.Text = "No se encontraron destinos del pedido. Vuelva a copiar los moldes.";
-            else if (actual == null && tareasEscalar.Any(x => x.Estado == "Con error"))
+            else if (!hayPendientes && tareasEscalar.Any(x => x.Estado == "Con error"))
                 lblEstadoEscalar.Text = "Hay destinos con error. Revise los nombres y vuelva a copiar los moldes.";
-            else if (actual == null)
-                lblEstadoEscalar.Text = "Escalado del pedido completado.";
-            else
+            else if (!hayPendientes)
+                lblEstadoEscalar.Text = "Escalado completado. Puede elegir una tarea para corregirla.";
+            else if (actual != null)
                 lblEstadoEscalar.Text = "Seleccione en CorelDRAW: " + actual.Diseno + " - " + actual.Pieza + ".";
 
-            btnAplicarEscalar.Enabled = actual != null;
+            btnAplicarEscalar.Enabled = actual != null && actual.Estado != "Con error";
             }
 
         private string EstadoTareaEscalar(List<PiezaEscalable> destinos)
@@ -286,7 +287,9 @@ namespace TithorAutomation
                 return;
                 }
 
-            lblEstadoEscalar.Text = "Seleccione en CorelDRAW: " + tarea.Diseno + " - " + tarea.Pieza + ".";
+            lblEstadoEscalar.Text = tarea.Estado == "Completado"
+                ? "Tarea completada. Active Reemplazar contenido para corregir: " + tarea.Diseno + " - " + tarea.Pieza + "."
+                : "Seleccione en CorelDRAW: " + tarea.Diseno + " - " + tarea.Pieza + ".";
             btnAplicarEscalar.Enabled = tarea.Estado != "Con error";
             }
 
@@ -325,7 +328,7 @@ namespace TithorAutomation
                     : tarea.Destinos.Where(x => !x.TieneContenido).ToList();
 
                 if (destinos.Count == 0)
-                    throw new InvalidOperationException("Todos los destinos de esta tarea ya tienen contenido.");
+                    throw new InvalidOperationException("Esta tarea ya está completada. Active Reemplazar contenido para corregirla.");
 
                 btnAnalizarEscalar.Enabled = false;
                 btnAplicarEscalar.Enabled = false;
@@ -360,9 +363,9 @@ namespace TithorAutomation
                 List<PiezaEscalable> resultado = escalador.AnalizarPedido(documento, planProduccionActual);
                 MostrarAnalisisEscalar(resultado);
 
-                TareaEscalar siguiente = ObtenerTareaEscalarActual();
+                TareaEscalar siguiente = tareasEscalar.FirstOrDefault(x => x.Estado == "Pendiente" || x.Estado == "Parcial");
                 lblEstadoEscalar.Text = siguiente == null
-                    ? "Escalado completado. Se aplicaron " + total + " destinos en el último paso."
+                    ? "Escalado completado. Se aplicaron " + total + " destinos en el último paso. Puede elegir una tarea para corregirla."
                     : "Listo. Ahora seleccione: " + siguiente.Diseno + " - " + siguiente.Pieza + ".";
                 }
             catch (Exception ex)
