@@ -20,6 +20,12 @@ namespace TithorAutomation
 
         private void ConfigurarModuloMockups()
             {
+            if (System.ComponentModel.LicenseManager.UsageMode != System.ComponentModel.LicenseUsageMode.Designtime)
+                {
+                pnlMockups.Dock = DockStyle.Fill;
+                pnlMockups.Location = System.Drawing.Point.Empty;
+                }
+
             dgvCatalogoMockups.AllowUserToAddRows = false;
             dgvCatalogoMockups.AllowUserToDeleteRows = false;
             dgvCatalogoMockups.ReadOnly = true;
