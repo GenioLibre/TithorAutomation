@@ -1538,7 +1538,7 @@ namespace TithorAutomation
             this.pnlMockups.Name = "pnlMockups";
             this.pnlMockups.Size = new System.Drawing.Size(896, 611);
             this.pnlMockups.TabIndex = 36;
-            this.pnlMockups.Visible = false;
+            this.pnlMockups.Visible = true;
             // 
             // lblTituloModuloMockups
             // 
