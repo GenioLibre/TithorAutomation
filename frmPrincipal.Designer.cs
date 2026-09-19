@@ -3349,6 +3349,7 @@ namespace TithorAutomation
             this.pnlResumenMockups.PerformLayout();
             this.pnlErroresMockups.ResumeLayout(false);
             this.pnlErroresMockups.PerformLayout();
+            this.pnlEscalar.BringToFront();
             this.ResumeLayout(false);
 
         }
