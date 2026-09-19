@@ -356,8 +356,11 @@ namespace TithorAutomation.Servicios
 
         public void Validar(Shape diseno, IList<PiezaEscalable> destinos, bool reemplazar)
         {
-            if (diseno == null || diseno.Type != cdrShapeType.cdrGroupShape)
-                throw new InvalidOperationException("Seleccione un único diseño agrupado en CorelDRAW.");
+            bool esGrupo = diseno != null && diseno.Type == cdrShapeType.cdrGroupShape;
+            bool esPowerClip = diseno != null && diseno.PowerClip != null && diseno.PowerClip.Shapes.Count > 0;
+
+            if (!esGrupo && !esPowerClip)
+                throw new InvalidOperationException("Seleccione un único grupo o un PowerClip plantilla con contenido.");
             if (destinos.Count == 0) throw new InvalidOperationException("No hay piezas para esa selección.");
             foreach (PiezaEscalable destino in destinos)
             {
@@ -405,6 +408,23 @@ namespace TithorAutomation.Servicios
                 }
         }
 
+        private Shape CrearCopiaDiseno(Shape diseno)
+            {
+            if (diseno.PowerClip == null)
+                return diseno.Duplicate(0, 0);
+
+            Shape marcoTemporal = diseno.Duplicate(0, 0);
+            ShapeRange contenido = marcoTemporal.PowerClip.ExtractShapes();
+            marcoTemporal.Delete();
+
+            if (contenido == null || contenido.Count == 0)
+                throw new InvalidOperationException("El PowerClip plantilla no contiene objetos para copiar.");
+
+            if (contenido.Count == 1)
+                return contenido[1];
+
+            return contenido.Group();
+            }
         public int Aplicar(Document documento, Shape diseno, IList<PiezaEscalable> destinos, bool reemplazar, Action<int, int> progreso = null, VGCore.Application corelApp = null)
             {
             Validar(diseno, destinos, reemplazar);
@@ -448,7 +468,7 @@ namespace TithorAutomation.Servicios
 
                         CalcularTamanoCobertura(anchoDiseno, altoDiseno, anchoContenedor, altoContenedor, out anchoFinal, out altoFinal);
 
-                        Shape copia = diseno.Duplicate(0, 0);
+                        Shape copia = CrearCopiaDiseno(diseno);
                         huboCambios = true;
                         ReemplazarVariables(copia, destino);
 
