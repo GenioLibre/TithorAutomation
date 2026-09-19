@@ -357,6 +357,20 @@ namespace TithorAutomation
                 lblEstadoEscalar.Text = siguiente == null
                     ? "Escalado completado. Se aplicaron " + total + " destinos en el último paso. Puede elegir una tarea para corregirla."
                     : "Listo. Ahora seleccione: " + siguiente.Diseno + " - " + siguiente.Pieza + ".";
+
+                Activate();
+                BringToFront();
+
+                MessageBox.Show(
+                    this,
+                    "Terminó de aplicar el diseño.\n\n" +
+                    "Diseño: " + tarea.Diseno + "\n" +
+                    "Pieza: " + tarea.Pieza + "\n" +
+                    "Destinos procesados: " + total + "\n\n" +
+                    "Los objetos de texto llamados Nombre y Numero se reemplazaron con los datos correspondientes del Excel.",
+                    "Diseño aplicado",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 }
             catch (Exception ex)
                 {
@@ -570,6 +584,16 @@ namespace TithorAutomation
                     "Diseño aplicado a " +
                     total +
                     " piezas. Ctrl+Z deshace la operación.";
+
+                Activate();
+                BringToFront();
+
+                MessageBox.Show(
+                    this,
+                    "Terminó de aplicar el diseño a " + total + " piezas.",
+                    "Diseño aplicado",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 }
             catch (Exception ex)
                 {
