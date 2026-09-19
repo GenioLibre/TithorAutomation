@@ -322,6 +322,8 @@ namespace TithorAutomation
 
                 btnAnalizarEscalar.Enabled = false;
                 btnAplicarEscalar.Enabled = false;
+                UseWaitCursor = true;
+                Cursor = Cursors.WaitCursor;
                 lblEstadoEscalar.Text = "Aplicando " + tarea.Diseno + " - " + tarea.Pieza + "...";
 
                 bool temporizadorActivo = tmrConexionCorel.Enabled;
@@ -342,7 +344,8 @@ namespace TithorAutomation
                                 "Aplicando " + tarea.Diseno + " - " + tarea.Pieza +
                                 ": " + actual + " de " + cantidad + "...";
                             lblEstadoEscalar.Refresh();
-                            });
+                            },
+                        ObtenerCorel());
                     }
                 finally
                     {
@@ -379,6 +382,8 @@ namespace TithorAutomation
                 }
             finally
                 {
+                UseWaitCursor = false;
+                Cursor = Cursors.Default;
                 btnAnalizarEscalar.Enabled = true;
                 TareaEscalar tareaActual = ObtenerTareaEscalarActual();
                 btnAplicarEscalar.Enabled = tareaActual != null && tareaActual.Estado != "Con error";
@@ -567,13 +572,17 @@ namespace TithorAutomation
 
                 btnAnalizarEscalar.Enabled = false;
                 btnAplicarEscalar.Enabled = false;
+                UseWaitCursor = true;
+                Cursor = Cursors.WaitCursor;
                 lblEstadoEscalar.Text = "Aplicando el diseño...";
 
                 int total = escalador.Aplicar(
                     documento,
                     diseno,
                     destinos,
-                    chkReemplazarContenidoEscalar.Checked);
+                    chkReemplazarContenidoEscalar.Checked,
+                    null,
+                    ObtenerCorel());
 
                 List<PiezaEscalable> resultado =
                     escalador.Analizar(documento);
@@ -612,6 +621,8 @@ namespace TithorAutomation
                 }
             finally
                 {
+                UseWaitCursor = false;
+                Cursor = Cursors.Default;
                 btnAnalizarEscalar.Enabled = true;
                 }
             }
