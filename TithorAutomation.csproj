@@ -111,6 +111,7 @@
   <ItemGroup>
     <Compile Include="Datos\ArchivoMasterRepositorio.cs" />
     <Compile Include="Datos\BaseDatos.cs" />
+    <Compile Include="Datos\EstadoSesionRepositorio.cs" />
     <Compile Include="Datos\MoldeRepositorio.cs" />
     <Compile Include="Datos\MockupRepositorio.cs" />
     <Compile Include="Datos\ProductoRepositorio.cs" />
