@@ -39,6 +39,12 @@ namespace TithorAutomation
 
         private void ConfigurarModuloEscalar()
             {
+            if (System.ComponentModel.LicenseManager.UsageMode != System.ComponentModel.LicenseUsageMode.Designtime)
+                {
+                pnlEscalar.Dock = DockStyle.Fill;
+                pnlEscalar.Location = System.Drawing.Point.Empty;
+                }
+
             chkReemplazarContenidoEscalar.Checked = false;
 
             cboTareaEscalar.SelectedIndexChanged -= cboTareaEscalar_SelectedIndexChanged;
