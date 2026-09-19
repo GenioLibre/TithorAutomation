@@ -120,7 +120,7 @@ namespace TithorAutomation
 
             ActualizarBotonNavegacion(btnPantonear, panelSeleccionado == pnlPantonear);
             ActualizarBotonNavegacion(btnProduccion, panelSeleccionado == pnlProduccion);
-            ActualizarBotonNavegacion(btnConfiguracion, panelSeleccionado == pnlConfiguracion);
+            ActualizarBotonNavegacion(btnConfiguracion, panelSeleccionado == pnlConfiguracion && tabConfiguracion.SelectedTab != tabMockups);
             ActualizarBotonNavegacion(btnEscalar, panelSeleccionado == pnlEscalar);
             ActualizarBotonNavegacion(btnMockup, panelSeleccionado == pnlConfiguracion && tabConfiguracion.SelectedTab == tabMockups);
 
