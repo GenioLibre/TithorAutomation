@@ -405,7 +405,7 @@ namespace TithorAutomation.Servicios
                 }
         }
 
-        public int Aplicar(Document documento, Shape diseno, IList<PiezaEscalable> destinos, bool reemplazar, Action<int, int> progreso = null)
+        public int Aplicar(Document documento, Shape diseno, IList<PiezaEscalable> destinos, bool reemplazar, Action<int, int> progreso = null, VGCore.Application corelApp = null)
             {
             Validar(diseno, destinos, reemplazar);
 
@@ -414,16 +414,27 @@ namespace TithorAutomation.Servicios
 
             bool abierto = false;
             bool huboCambios = false;
+            bool eventosDesactivados = false;
+            bool optimizacionActivada = false;
 
             try
                 {
+                if (corelApp != null)
+                    {
+                    corelApp.EventsEnabled = false;
+                    eventosDesactivados = true;
+                    corelApp.Optimization = true;
+                    optimizacionActivada = true;
+                    }
+
                 documento.BeginCommandGroup("Tithor - Escalar diseños en PowerClip");
                 abierto = true;
+
+                progreso?.Invoke(0, destinos.Count);
 
                 for (int indiceDestino = 0; indiceDestino < destinos.Count; indiceDestino++)
                     {
                     PiezaEscalable destino = destinos[indiceDestino];
-                    progreso?.Invoke(indiceDestino, destinos.Count);
 
                     try
                         {
@@ -454,7 +465,10 @@ namespace TithorAutomation.Servicios
                         copia.CenterX = centroX;
                         copia.CenterY = centroY;
                         copia.Name = "TITHOR_DISENO_" + destino.Pieza.Replace(' ', '_');
-                        progreso?.Invoke(indiceDestino + 1, destinos.Count);
+                        int procesados = indiceDestino + 1;
+
+                        if (procesados % 5 == 0 || procesados == destinos.Count)
+                            progreso?.Invoke(procesados, destinos.Count);
                         }
                     catch (Exception errorDestino)
                         {
@@ -499,6 +513,37 @@ namespace TithorAutomation.Servicios
                     error.Message,
                     error
                 );
+                }
+            finally
+                {
+                if (corelApp != null)
+                    {
+                    try
+                        {
+                        if (optimizacionActivada)
+                            corelApp.Optimization = false;
+                        }
+                    catch
+                        {
+                        }
+
+                    try
+                        {
+                        if (eventosDesactivados)
+                            corelApp.EventsEnabled = true;
+                        }
+                    catch
+                        {
+                        }
+
+                    try
+                        {
+                        corelApp.ActiveWindow.Refresh();
+                        }
+                    catch
+                        {
+                        }
+                    }
                 }
             }
         }
