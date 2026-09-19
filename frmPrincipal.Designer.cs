@@ -1533,10 +1533,10 @@ namespace TithorAutomation
             this.pnlMockups.BackColor = System.Drawing.Color.White;
             this.pnlMockups.Controls.Add(this.lblDescripcionModuloMockups);
             this.pnlMockups.Controls.Add(this.lblTituloModuloMockups);
-            this.pnlMockups.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMockups.Location = new System.Drawing.Point(0, 0);
+            this.pnlMockups.Dock = System.Windows.Forms.DockStyle.None;
+            this.pnlMockups.Location = new System.Drawing.Point(8, 8);
             this.pnlMockups.Name = "pnlMockups";
-            this.pnlMockups.Size = new System.Drawing.Size(896, 611);
+            this.pnlMockups.Size = new System.Drawing.Size(880, 595);
             this.pnlMockups.TabIndex = 36;
             this.pnlMockups.Visible = true;
             // 
@@ -2420,10 +2420,10 @@ namespace TithorAutomation
             this.pnlEscalar.Controls.Add(this.dgvEscalar);
             this.pnlEscalar.Controls.Add(this.groupBox1);
             this.pnlEscalar.Controls.Add(this.panel12);
-            this.pnlEscalar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlEscalar.Location = new System.Drawing.Point(0, 0);
+            this.pnlEscalar.Dock = System.Windows.Forms.DockStyle.None;
+            this.pnlEscalar.Location = new System.Drawing.Point(8, 8);
             this.pnlEscalar.Name = "pnlEscalar";
-            this.pnlEscalar.Size = new System.Drawing.Size(896, 611);
+            this.pnlEscalar.Size = new System.Drawing.Size(880, 595);
             this.pnlEscalar.TabIndex = 40;
             this.pnlEscalar.Visible = true;
             // 
