@@ -158,6 +158,13 @@ CREATE INDEX IF NOT EXISTS IX_Mockups_Master
 CREATE INDEX IF NOT EXISTS IX_Mockups_Codigo
     ON Mockups(Codigo);
 
+CREATE TABLE IF NOT EXISTS EstadoSesion
+(
+    Clave               TEXT PRIMARY KEY,
+    Valor               TEXT,
+    FechaActualizacion  TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS ConfiguracionProducto
 (
     ProductoId              INTEGER PRIMARY KEY,
