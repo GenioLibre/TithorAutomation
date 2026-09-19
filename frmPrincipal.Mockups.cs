@@ -217,8 +217,20 @@ namespace TithorAutomation
 
         private void btnMockup_Click(object sender, EventArgs e)
             {
-            tabConfiguracion.SelectedTab = tabMockups;
-            MostrarPanel(pnlConfiguracion);
+            Panel panelMockups = BuscarPanelMockups();
+
+            if (panelMockups == null)
+                {
+                MessageBox.Show(
+                    this,
+                    "No se encontró el panel de Mockups. Asigne al panel el nombre pnlMockups.",
+                    "Mockups",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+                }
+
+            MostrarPanel(panelMockups);
             }
         }
     }
