@@ -27,6 +27,7 @@ namespace TithorAutomation
         private long tamanoMasterAnalizado;
         private DateTime fechaMasterAnalizadoUtc;
         private readonly MoldeRepositorio moldeRepositorio = new MoldeRepositorio();
+        private readonly EstadoSesionRepositorio estadoSesionRepositorio = new EstadoSesionRepositorio();
         private readonly AnalizadorMasterCorel analizadorMaster = new AnalizadorMasterCorel();
         private List<Molde> moldesAnalizados = new List<Molde>();
         private readonly ArchivoMasterRepositorio archivoMasterRepositorio = new ArchivoMasterRepositorio();
@@ -105,7 +106,7 @@ namespace TithorAutomation
             }
         private void frmPrincipal_Load(object sender, EventArgs e)
             {
-
+            RestaurarUltimoPedidoProduccion();
             }
         private void MostrarPanel(System.Windows.Forms.Panel panelSeleccionado)
             {
