@@ -122,6 +122,42 @@ CREATE TABLE IF NOT EXISTS Moldes
     UNIQUE (MasterId, Codigo)
 );
 
+CREATE TABLE IF NOT EXISTS ArchivosMockupMaster
+(
+    Id                          INTEGER PRIMARY KEY AUTOINCREMENT,
+    Ruta                        TEXT NOT NULL,
+    NombreArchivo               TEXT NOT NULL,
+    HashArchivo                 TEXT,
+    TamanoArchivo               INTEGER,
+    FechaModificacionArchivo    TEXT,
+    UltimoAnalisis              TEXT,
+    TotalMockups                INTEGER NOT NULL DEFAULT 0,
+    Activo                      INTEGER NOT NULL DEFAULT 1
+);
+
+CREATE TABLE IF NOT EXISTS Mockups
+(
+    Id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    MasterId        INTEGER NOT NULL,
+    Codigo          TEXT NOT NULL,
+    NombreGrupo     TEXT NOT NULL,
+    Producto        TEXT NOT NULL,
+    Estado          TEXT NOT NULL DEFAULT 'Correcto',
+    FechaAnalisis   TEXT NOT NULL,
+
+    FOREIGN KEY (MasterId)
+        REFERENCES ArchivosMockupMaster(Id)
+        ON DELETE CASCADE,
+
+    UNIQUE (MasterId, Codigo)
+);
+
+CREATE INDEX IF NOT EXISTS IX_Mockups_Master
+    ON Mockups(MasterId);
+
+CREATE INDEX IF NOT EXISTS IX_Mockups_Codigo
+    ON Mockups(Codigo);
+
 CREATE TABLE IF NOT EXISTS ConfiguracionProducto
 (
     ProductoId              INTEGER PRIMARY KEY,
