@@ -226,9 +226,7 @@ namespace TithorAutomation
             this.chkReemplazarContenidoEscalar = new System.Windows.Forms.CheckBox();
             this.cboTareaEscalar = new System.Windows.Forms.ComboBox();
             this.lblTallaEscalar = new System.Windows.Forms.Label();
-            this.cboTallaEscalar = new System.Windows.Forms.ComboBox();
             this.lblPiezaEscalar = new System.Windows.Forms.Label();
-            this.cboPiezaEscalar = new System.Windows.Forms.ComboBox();
             this.panel12 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -2478,9 +2476,7 @@ namespace TithorAutomation
             this.groupBox1.Controls.Add(this.chkReemplazarContenidoEscalar);
             this.groupBox1.Controls.Add(this.cboTareaEscalar);
             this.groupBox1.Controls.Add(this.lblTallaEscalar);
-            this.groupBox1.Controls.Add(this.cboTallaEscalar);
             this.groupBox1.Controls.Add(this.lblPiezaEscalar);
-            this.groupBox1.Controls.Add(this.cboPiezaEscalar);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.groupBox1.Location = new System.Drawing.Point(0, 511);
             this.groupBox1.Name = "groupBox1";
@@ -2556,23 +2552,6 @@ namespace TithorAutomation
             this.lblTallaEscalar.Text = "Talla:";
             this.lblTallaEscalar.Visible = false;
             // 
-            // cboTallaEscalar
-            // 
-            this.cboTallaEscalar.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboTallaEscalar.FormattingEnabled = true;
-            this.cboTallaEscalar.Items.AddRange(new object[] {
-            "Todos",
-            "Correctos",
-            "Nuevos",
-            "Modificados",
-            "Duplicados",
-            "Inválidos"});
-            this.cboTallaEscalar.Location = new System.Drawing.Point(250, 27);
-            this.cboTallaEscalar.Name = "cboTallaEscalar";
-            this.cboTallaEscalar.Size = new System.Drawing.Size(143, 25);
-            this.cboTallaEscalar.TabIndex = 38;
-            this.cboTallaEscalar.Visible = false;
-            // 
             // lblPiezaEscalar
             // 
             this.lblPiezaEscalar.AutoSize = true;
@@ -2581,23 +2560,6 @@ namespace TithorAutomation
             this.lblPiezaEscalar.Size = new System.Drawing.Size(43, 17);
             this.lblPiezaEscalar.TabIndex = 35;
             this.lblPiezaEscalar.Text = "Tarea:";
-            // 
-            // cboPiezaEscalar
-            // 
-            this.cboPiezaEscalar.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboPiezaEscalar.FormattingEnabled = true;
-            this.cboPiezaEscalar.Items.AddRange(new object[] {
-            "Todos",
-            "Correctos",
-            "Nuevos",
-            "Modificados",
-            "Duplicados",
-            "Inválidos"});
-            this.cboPiezaEscalar.Location = new System.Drawing.Point(61, 28);
-            this.cboPiezaEscalar.Name = "cboPiezaEscalar";
-            this.cboPiezaEscalar.Size = new System.Drawing.Size(143, 25);
-            this.cboPiezaEscalar.TabIndex = 36;
-            this.cboPiezaEscalar.Visible = false;
             // 
             // panel12
             // 
@@ -3543,9 +3505,7 @@ namespace TithorAutomation
         private System.Windows.Forms.CheckBox chkReemplazarContenidoEscalar;
         private System.Windows.Forms.ComboBox cboTareaEscalar;
         private System.Windows.Forms.Label lblTallaEscalar;
-        private System.Windows.Forms.ComboBox cboTallaEscalar;
         private System.Windows.Forms.Label lblPiezaEscalar;
-        private System.Windows.Forms.ComboBox cboPiezaEscalar;
         private System.Windows.Forms.DataGridView dgvEscalar;
         private System.Windows.Forms.Label lblEstadoEscalar;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPiezaEscalar;
