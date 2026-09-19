@@ -59,7 +59,7 @@ namespace TithorAutomation
             this.lblDocumentoActivo = new System.Windows.Forms.Label();
             this.lblEstadoCorel = new System.Windows.Forms.Label();
             this.pnlMenuLateral = new System.Windows.Forms.Panel();
-            this.btnRegistro = new System.Windows.Forms.Button();
+            this.btnMockup = new System.Windows.Forms.Button();
             this.btnConfiguracion = new System.Windows.Forms.Button();
             this.btnAcomodar = new System.Windows.Forms.Button();
             this.btnEscalar = new System.Windows.Forms.Button();
@@ -252,40 +252,40 @@ namespace TithorAutomation
             this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabConfiguracion = new System.Windows.Forms.TabControl();
+            this.tabMoldes = new System.Windows.Forms.TabPage();
+            this.tabMockups = new System.Windows.Forms.TabPage();
             this.grpCatalogoMoldes = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel15 = new System.Windows.Forms.Panel();
             this.panel16 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.dataGridView2 = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn15 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn16 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn17 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn18 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnAnalizarMasterMockups = new System.Windows.Forms.Button();
+            this.btnSincronizarMockups = new System.Windows.Forms.Button();
+            this.lblEstadoMockups = new System.Windows.Forms.Label();
+            this.dgvCatalogoMockups = new System.Windows.Forms.DataGridView();
+            this.colEstadoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCodigoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colProductoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNombreGrupoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn19 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn20 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn21 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn22 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn23 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.button8 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.button5 = new System.Windows.Forms.Button();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.panel17 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.panel18 = new System.Windows.Forms.Panel();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
+            this.grpArchivoMasterMockups = new System.Windows.Forms.GroupBox();
+            this.btnSeleccionarMasterMockups = new System.Windows.Forms.Button();
+            this.txtRutaMasterMockups = new System.Windows.Forms.TextBox();
+            this.grpAccionesMockups = new System.Windows.Forms.GroupBox();
+            this.grpCatalogoMockups = new System.Windows.Forms.GroupBox();
+            this.btnAbrirUbicacionMasterMockups = new System.Windows.Forms.Button();
+            this.tlpResumenMockups = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlResumenMockups = new System.Windows.Forms.Panel();
+            this.lblCantidadMockups = new System.Windows.Forms.Label();
+            this.lblTituloCantidadMockups = new System.Windows.Forms.Label();
+            this.pnlErroresMockups = new System.Windows.Forms.Panel();
+            this.lblCantidadErroresMockups = new System.Windows.Forms.Label();
+            this.lblTituloErroresMockups = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.pnlEstadoCorel.SuspendLayout();
             this.pnlMenuLateral.SuspendLayout();
@@ -335,21 +335,21 @@ namespace TithorAutomation
             this.panel12.SuspendLayout();
             this.pnlEstadoCorelGlobal.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
+            this.tabConfiguracion.SuspendLayout();
+            this.tabMoldes.SuspendLayout();
+            this.tabMockups.SuspendLayout();
             this.grpCatalogoMoldes.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel15.SuspendLayout();
             this.panel16.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
-            this.groupBox5.SuspendLayout();
-            this.groupBox6.SuspendLayout();
-            this.groupBox7.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
-            this.panel17.SuspendLayout();
-            this.panel18.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCatalogoMockups)).BeginInit();
+            this.grpArchivoMasterMockups.SuspendLayout();
+            this.grpAccionesMockups.SuspendLayout();
+            this.grpCatalogoMockups.SuspendLayout();
+            this.tlpResumenMockups.SuspendLayout();
+            this.pnlResumenMockups.SuspendLayout();
+            this.pnlErroresMockups.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTituloApp
@@ -438,7 +438,7 @@ namespace TithorAutomation
             this.pnlMenuLateral.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
             this.pnlMenuLateral.Controls.Add(this.lblTituloApp);
             this.pnlMenuLateral.Controls.Add(this.pictureBox1);
-            this.pnlMenuLateral.Controls.Add(this.btnRegistro);
+            this.pnlMenuLateral.Controls.Add(this.btnMockup);
             this.pnlMenuLateral.Controls.Add(this.btnConfiguracion);
             this.pnlMenuLateral.Controls.Add(this.btnAcomodar);
             this.pnlMenuLateral.Controls.Add(this.btnEscalar);
@@ -451,22 +451,22 @@ namespace TithorAutomation
             this.pnlMenuLateral.Size = new System.Drawing.Size(225, 611);
             this.pnlMenuLateral.TabIndex = 3;
             // 
-            // btnRegistro
+            // btnMockup
             // 
-            this.btnRegistro.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnRegistro.Enabled = false;
-            this.btnRegistro.FlatAppearance.BorderSize = 0;
-            this.btnRegistro.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRegistro.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRegistro.ForeColor = System.Drawing.Color.White;
-            this.btnRegistro.Location = new System.Drawing.Point(0, 93);
-            this.btnRegistro.Name = "btnRegistro";
-            this.btnRegistro.Padding = new System.Windows.Forms.Padding(18, 0, 0, 0);
-            this.btnRegistro.Size = new System.Drawing.Size(225, 48);
-            this.btnRegistro.TabIndex = 5;
-            this.btnRegistro.Text = "REGISTRO";
-            this.btnRegistro.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnRegistro.UseVisualStyleBackColor = true;
+            this.btnMockup.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnMockup.Enabled = true;
+            this.btnMockup.FlatAppearance.BorderSize = 0;
+            this.btnMockup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnMockup.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnMockup.ForeColor = System.Drawing.Color.White;
+            this.btnMockup.Location = new System.Drawing.Point(0, 93);
+            this.btnMockup.Name = "btnMockup";
+            this.btnMockup.Padding = new System.Windows.Forms.Padding(18, 0, 0, 0);
+            this.btnMockup.Size = new System.Drawing.Size(225, 48);
+            this.btnMockup.TabIndex = 5;
+            this.btnMockup.Text = "MOCKUPS";
+            this.btnMockup.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnMockup.UseVisualStyleBackColor = true;
             // 
             // btnConfiguracion
             // 
@@ -1009,7 +1009,7 @@ namespace TithorAutomation
             // 
             // pnlConfiguracion
             // 
-            this.pnlConfiguracion.Controls.Add(this.tabControl1);
+            this.pnlConfiguracion.Controls.Add(this.tabConfiguracion);
             this.pnlConfiguracion.Controls.Add(this.pnlConfiguracion_Header);
             this.pnlConfiguracion.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlConfiguracion.Location = new System.Drawing.Point(0, 0);
@@ -2838,45 +2838,45 @@ namespace TithorAutomation
             this.dataGridViewTextBoxColumn14.ReadOnly = true;
             this.dataGridViewTextBoxColumn14.Width = 60;
             // 
-            // tabControl1
+            // tabConfiguracion
             // 
-            this.tabControl1.Alignment = System.Windows.Forms.TabAlignment.Bottom;
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.ItemSize = new System.Drawing.Size(180, 40);
-            this.tabControl1.Location = new System.Drawing.Point(0, 69);
-            this.tabControl1.Multiline = true;
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(896, 542);
-            this.tabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-            this.tabControl1.TabIndex = 29;
+            this.tabConfiguracion.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+            this.tabConfiguracion.Controls.Add(this.tabMoldes);
+            this.tabConfiguracion.Controls.Add(this.tabMockups);
+            this.tabConfiguracion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabConfiguracion.ItemSize = new System.Drawing.Size(180, 40);
+            this.tabConfiguracion.Location = new System.Drawing.Point(0, 69);
+            this.tabConfiguracion.Multiline = true;
+            this.tabConfiguracion.Name = "tabConfiguracion";
+            this.tabConfiguracion.SelectedIndex = 0;
+            this.tabConfiguracion.Size = new System.Drawing.Size(896, 542);
+            this.tabConfiguracion.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.tabConfiguracion.TabIndex = 29;
             // 
-            // tabPage1
+            // tabMoldes
             // 
-            this.tabPage1.Controls.Add(this.panel16);
-            this.tabPage1.Controls.Add(this.panel15);
-            this.tabPage1.Location = new System.Drawing.Point(4, 4);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(888, 494);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Moldes Master";
-            this.tabPage1.UseVisualStyleBackColor = true;
+            this.tabMoldes.Controls.Add(this.panel16);
+            this.tabMoldes.Controls.Add(this.panel15);
+            this.tabMoldes.Location = new System.Drawing.Point(4, 4);
+            this.tabMoldes.Name = "tabMoldes";
+            this.tabMoldes.Padding = new System.Windows.Forms.Padding(3);
+            this.tabMoldes.Size = new System.Drawing.Size(888, 494);
+            this.tabMoldes.TabIndex = 0;
+            this.tabMoldes.Text = "MOLDES";
+            this.tabMoldes.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
+            // tabMockups
             // 
-            this.tabPage2.Controls.Add(this.groupBox7);
-            this.tabPage2.Controls.Add(this.groupBox6);
-            this.tabPage2.Controls.Add(this.groupBox5);
-            this.tabPage2.Location = new System.Drawing.Point(4, 4);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(888, 494);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Mockups";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.tabMockups.Controls.Add(this.grpCatalogoMockups);
+            this.tabMockups.Controls.Add(this.grpAccionesMockups);
+            this.tabMockups.Controls.Add(this.grpArchivoMasterMockups);
+            this.tabMockups.Location = new System.Drawing.Point(4, 4);
+            this.tabMockups.Name = "tabMockups";
+            this.tabMockups.Padding = new System.Windows.Forms.Padding(3);
+            this.tabMockups.Size = new System.Drawing.Size(888, 494);
+            this.tabMockups.TabIndex = 1;
+            this.tabMockups.Text = "MOCKUPS";
+            this.tabMockups.UseVisualStyleBackColor = true;
             // 
             // grpCatalogoMoldes
             // 
@@ -2933,60 +2933,60 @@ namespace TithorAutomation
             this.panel2.Size = new System.Drawing.Size(876, 98);
             this.panel2.TabIndex = 32;
             // 
-            // button3
+            // btnAnalizarMasterMockups
             // 
-            this.button3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button3.BackColor = System.Drawing.Color.White;
-            this.button3.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button3.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.button3.Location = new System.Drawing.Point(575, 20);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(130, 40);
-            this.button3.TabIndex = 33;
-            this.button3.Text = "Analizar Master";
-            this.button3.UseVisualStyleBackColor = false;
+            this.btnAnalizarMasterMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAnalizarMasterMockups.BackColor = System.Drawing.Color.White;
+            this.btnAnalizarMasterMockups.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAnalizarMasterMockups.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnAnalizarMasterMockups.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAnalizarMasterMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnAnalizarMasterMockups.Location = new System.Drawing.Point(575, 20);
+            this.btnAnalizarMasterMockups.Name = "btnAnalizarMasterMockups";
+            this.btnAnalizarMasterMockups.Size = new System.Drawing.Size(130, 40);
+            this.btnAnalizarMasterMockups.TabIndex = 33;
+            this.btnAnalizarMasterMockups.Text = "Analizar Master";
+            this.btnAnalizarMasterMockups.UseVisualStyleBackColor = false;
             // 
-            // button4
+            // btnSincronizarMockups
             // 
-            this.button4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(216)))), ((int)(((byte)(68)))));
-            this.button4.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button4.FlatAppearance.BorderSize = 0;
-            this.button4.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button4.Location = new System.Drawing.Point(714, 20);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(161, 40);
-            this.button4.TabIndex = 32;
-            this.button4.Text = "Sincronizar cambios";
-            this.button4.UseVisualStyleBackColor = false;
+            this.btnSincronizarMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSincronizarMockups.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(216)))), ((int)(((byte)(68)))));
+            this.btnSincronizarMockups.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSincronizarMockups.FlatAppearance.BorderSize = 0;
+            this.btnSincronizarMockups.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSincronizarMockups.Location = new System.Drawing.Point(714, 20);
+            this.btnSincronizarMockups.Name = "btnSincronizarMockups";
+            this.btnSincronizarMockups.Size = new System.Drawing.Size(161, 40);
+            this.btnSincronizarMockups.TabIndex = 32;
+            this.btnSincronizarMockups.Text = "Sincronizar cambios";
+            this.btnSincronizarMockups.UseVisualStyleBackColor = false;
             // 
-            // label3
+            // lblEstadoMockups
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.ForeColor = System.Drawing.Color.Gray;
-            this.label3.Location = new System.Drawing.Point(6, 34);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(215, 13);
-            this.label3.TabIndex = 31;
-            this.label3.Text = "Seleccione un producto para configurar.";
+            this.lblEstadoMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblEstadoMockups.AutoSize = true;
+            this.lblEstadoMockups.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblEstadoMockups.ForeColor = System.Drawing.Color.Gray;
+            this.lblEstadoMockups.Location = new System.Drawing.Point(6, 34);
+            this.lblEstadoMockups.Name = "lblEstadoMockups";
+            this.lblEstadoMockups.Size = new System.Drawing.Size(215, 13);
+            this.lblEstadoMockups.TabIndex = 31;
+            this.lblEstadoMockups.Text = "Seleccione un archivo Master de mockups.";
             // 
-            // dataGridView2
+            // dgvCatalogoMockups
             // 
-            this.dataGridView2.AllowUserToAddRows = false;
-            this.dataGridView2.AllowUserToDeleteRows = false;
-            this.dataGridView2.AllowUserToResizeColumns = false;
-            this.dataGridView2.AllowUserToResizeRows = false;
+            this.dgvCatalogoMockups.AllowUserToAddRows = false;
+            this.dgvCatalogoMockups.AllowUserToDeleteRows = false;
+            this.dgvCatalogoMockups.AllowUserToResizeColumns = false;
+            this.dgvCatalogoMockups.AllowUserToResizeRows = false;
             dataGridViewCellStyle7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
-            this.dataGridView2.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
-            this.dataGridView2.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridView2.BackgroundColor = System.Drawing.Color.White;
-            this.dataGridView2.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dataGridView2.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            this.dataGridView2.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            this.dgvCatalogoMockups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            this.dgvCatalogoMockups.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvCatalogoMockups.BackgroundColor = System.Drawing.Color.White;
+            this.dgvCatalogoMockups.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvCatalogoMockups.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.dgvCatalogoMockups.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
             dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -2995,20 +2995,15 @@ namespace TithorAutomation
             dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
             dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.White;
             dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
-            this.dataGridView2.ColumnHeadersHeight = 42;
-            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dataGridView2.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn15,
-            this.dataGridViewTextBoxColumn16,
-            this.dataGridViewTextBoxColumn17,
-            this.dataGridViewTextBoxColumn18,
-            this.dataGridViewTextBoxColumn19,
-            this.dataGridViewTextBoxColumn20,
-            this.dataGridViewTextBoxColumn21,
-            this.dataGridViewTextBoxColumn22,
-            this.dataGridViewTextBoxColumn23});
-            this.dataGridView2.Cursor = System.Windows.Forms.Cursors.Default;
+            this.dgvCatalogoMockups.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
+            this.dgvCatalogoMockups.ColumnHeadersHeight = 42;
+            this.dgvCatalogoMockups.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvCatalogoMockups.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colEstadoMockup,
+            this.colCodigoMockup,
+            this.colProductoMockup,
+            this.colNombreGrupoMockup});
+            this.dgvCatalogoMockups.Cursor = System.Windows.Forms.Cursors.Default;
             dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle9.BackColor = System.Drawing.Color.White;
             dataGridViewCellStyle9.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -3017,43 +3012,43 @@ namespace TithorAutomation
             dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
             dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
             dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView2.DefaultCellStyle = dataGridViewCellStyle9;
-            this.dataGridView2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView2.EnableHeadersVisualStyles = false;
-            this.dataGridView2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dataGridView2.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
-            this.dataGridView2.Location = new System.Drawing.Point(3, 21);
-            this.dataGridView2.MultiSelect = false;
-            this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.RowHeadersVisible = false;
-            this.dataGridView2.RowTemplate.Height = 34;
-            this.dataGridView2.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dataGridView2.Size = new System.Drawing.Size(876, 236);
-            this.dataGridView2.TabIndex = 34;
+            this.dgvCatalogoMockups.DefaultCellStyle = dataGridViewCellStyle9;
+            this.dgvCatalogoMockups.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvCatalogoMockups.EnableHeadersVisualStyles = false;
+            this.dgvCatalogoMockups.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgvCatalogoMockups.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
+            this.dgvCatalogoMockups.Location = new System.Drawing.Point(3, 21);
+            this.dgvCatalogoMockups.MultiSelect = false;
+            this.dgvCatalogoMockups.Name = "dgvCatalogoMockups";
+            this.dgvCatalogoMockups.RowHeadersVisible = false;
+            this.dgvCatalogoMockups.RowTemplate.Height = 34;
+            this.dgvCatalogoMockups.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvCatalogoMockups.Size = new System.Drawing.Size(876, 236);
+            this.dgvCatalogoMockups.TabIndex = 34;
             // 
-            // dataGridViewTextBoxColumn15
+            // colEstadoMockup
             // 
-            this.dataGridViewTextBoxColumn15.HeaderText = "Estado";
-            this.dataGridViewTextBoxColumn15.Name = "dataGridViewTextBoxColumn15";
-            this.dataGridViewTextBoxColumn15.ReadOnly = true;
+            this.colEstadoMockup.HeaderText = "Estado";
+            this.colEstadoMockup.Name = "colEstadoMockup";
+            this.colEstadoMockup.ReadOnly = true;
             // 
-            // dataGridViewTextBoxColumn16
+            // colCodigoMockup
             // 
-            this.dataGridViewTextBoxColumn16.HeaderText = "Código";
-            this.dataGridViewTextBoxColumn16.Name = "dataGridViewTextBoxColumn16";
-            this.dataGridViewTextBoxColumn16.ReadOnly = true;
+            this.colCodigoMockup.HeaderText = "Código";
+            this.colCodigoMockup.Name = "colCodigoMockup";
+            this.colCodigoMockup.ReadOnly = true;
             // 
-            // dataGridViewTextBoxColumn17
+            // colProductoMockup
             // 
-            this.dataGridViewTextBoxColumn17.HeaderText = "Pieza";
-            this.dataGridViewTextBoxColumn17.Name = "dataGridViewTextBoxColumn17";
-            this.dataGridViewTextBoxColumn17.ReadOnly = true;
+            this.colProductoMockup.HeaderText = "Producto";
+            this.colProductoMockup.Name = "colProductoMockup";
+            this.colProductoMockup.ReadOnly = true;
             // 
-            // dataGridViewTextBoxColumn18
+            // colNombreGrupoMockup
             // 
-            this.dataGridViewTextBoxColumn18.HeaderText = "Talla";
-            this.dataGridViewTextBoxColumn18.Name = "dataGridViewTextBoxColumn18";
-            this.dataGridViewTextBoxColumn18.ReadOnly = true;
+            this.colNombreGrupoMockup.HeaderText = "Capa o grupo";
+            this.colNombreGrupoMockup.Name = "colNombreGrupoMockup";
+            this.colNombreGrupoMockup.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn19
             // 
@@ -3085,164 +3080,164 @@ namespace TithorAutomation
             this.dataGridViewTextBoxColumn23.Name = "dataGridViewTextBoxColumn23";
             this.dataGridViewTextBoxColumn23.ReadOnly = true;
             // 
-            // groupBox5
+            // grpArchivoMasterMockups
             // 
-            this.groupBox5.BackColor = System.Drawing.Color.White;
-            this.groupBox5.Controls.Add(this.tableLayoutPanel2);
-            this.groupBox5.Controls.Add(this.button5);
-            this.groupBox5.Controls.Add(this.button8);
-            this.groupBox5.Controls.Add(this.textBox1);
-            this.groupBox5.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox5.Location = new System.Drawing.Point(3, 3);
-            this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(882, 158);
-            this.groupBox5.TabIndex = 35;
-            this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "ARCHIVO MASTER DE MOCKUPS";
+            this.grpArchivoMasterMockups.BackColor = System.Drawing.Color.White;
+            this.grpArchivoMasterMockups.Controls.Add(this.tlpResumenMockups);
+            this.grpArchivoMasterMockups.Controls.Add(this.btnAbrirUbicacionMasterMockups);
+            this.grpArchivoMasterMockups.Controls.Add(this.btnSeleccionarMasterMockups);
+            this.grpArchivoMasterMockups.Controls.Add(this.txtRutaMasterMockups);
+            this.grpArchivoMasterMockups.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpArchivoMasterMockups.Location = new System.Drawing.Point(3, 3);
+            this.grpArchivoMasterMockups.Name = "grpArchivoMasterMockups";
+            this.grpArchivoMasterMockups.Size = new System.Drawing.Size(882, 158);
+            this.grpArchivoMasterMockups.TabIndex = 35;
+            this.grpArchivoMasterMockups.TabStop = false;
+            this.grpArchivoMasterMockups.Text = "ARCHIVO MASTER DE MOCKUPS";
             // 
-            // button8
+            // btnSeleccionarMasterMockups
             // 
-            this.button8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button8.BackColor = System.Drawing.Color.White;
-            this.button8.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button8.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.button8.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button8.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.button8.Location = new System.Drawing.Point(578, 28);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(156, 40);
-            this.button8.TabIndex = 27;
-            this.button8.Text = "Seleccionar Archivo";
-            this.button8.UseVisualStyleBackColor = false;
+            this.btnSeleccionarMasterMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSeleccionarMasterMockups.BackColor = System.Drawing.Color.White;
+            this.btnSeleccionarMasterMockups.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSeleccionarMasterMockups.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnSeleccionarMasterMockups.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSeleccionarMasterMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnSeleccionarMasterMockups.Location = new System.Drawing.Point(578, 28);
+            this.btnSeleccionarMasterMockups.Name = "btnSeleccionarMasterMockups";
+            this.btnSeleccionarMasterMockups.Size = new System.Drawing.Size(156, 40);
+            this.btnSeleccionarMasterMockups.TabIndex = 27;
+            this.btnSeleccionarMasterMockups.Text = "Seleccionar Archivo";
+            this.btnSeleccionarMasterMockups.UseVisualStyleBackColor = false;
             // 
-            // textBox1
+            // txtRutaMasterMockups
             // 
-            this.textBox1.Enabled = false;
-            this.textBox1.Location = new System.Drawing.Point(7, 36);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(533, 25);
-            this.textBox1.TabIndex = 26;
+            this.txtRutaMasterMockups.Enabled = false;
+            this.txtRutaMasterMockups.Location = new System.Drawing.Point(7, 36);
+            this.txtRutaMasterMockups.Name = "txtRutaMasterMockups";
+            this.txtRutaMasterMockups.Size = new System.Drawing.Size(533, 25);
+            this.txtRutaMasterMockups.TabIndex = 26;
             // 
-            // groupBox6
+            // grpAccionesMockups
             // 
-            this.groupBox6.Controls.Add(this.label3);
-            this.groupBox6.Controls.Add(this.button4);
-            this.groupBox6.Controls.Add(this.button3);
-            this.groupBox6.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox6.Location = new System.Drawing.Point(3, 421);
-            this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(882, 70);
-            this.groupBox6.TabIndex = 36;
-            this.groupBox6.TabStop = false;
+            this.grpAccionesMockups.Controls.Add(this.lblEstadoMockups);
+            this.grpAccionesMockups.Controls.Add(this.btnSincronizarMockups);
+            this.grpAccionesMockups.Controls.Add(this.btnAnalizarMasterMockups);
+            this.grpAccionesMockups.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.grpAccionesMockups.Location = new System.Drawing.Point(3, 421);
+            this.grpAccionesMockups.Name = "grpAccionesMockups";
+            this.grpAccionesMockups.Size = new System.Drawing.Size(882, 70);
+            this.grpAccionesMockups.TabIndex = 36;
+            this.grpAccionesMockups.TabStop = false;
             // 
-            // groupBox7
+            // grpCatalogoMockups
             // 
-            this.groupBox7.Controls.Add(this.dataGridView2);
-            this.groupBox7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox7.Location = new System.Drawing.Point(3, 161);
-            this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(882, 260);
-            this.groupBox7.TabIndex = 37;
-            this.groupBox7.TabStop = false;
+            this.grpCatalogoMockups.Controls.Add(this.dgvCatalogoMockups);
+            this.grpCatalogoMockups.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grpCatalogoMockups.Location = new System.Drawing.Point(3, 161);
+            this.grpCatalogoMockups.Name = "grpCatalogoMockups";
+            this.grpCatalogoMockups.Size = new System.Drawing.Size(882, 260);
+            this.grpCatalogoMockups.TabIndex = 37;
+            this.grpCatalogoMockups.TabStop = false;
             // 
-            // button5
+            // btnAbrirUbicacionMasterMockups
             // 
-            this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button5.BackColor = System.Drawing.Color.White;
-            this.button5.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button5.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.button5.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.button5.Location = new System.Drawing.Point(744, 28);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(130, 40);
-            this.button5.TabIndex = 31;
-            this.button5.Text = "Abrir Ubicación";
-            this.button5.UseVisualStyleBackColor = false;
+            this.btnAbrirUbicacionMasterMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAbrirUbicacionMasterMockups.BackColor = System.Drawing.Color.White;
+            this.btnAbrirUbicacionMasterMockups.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAbrirUbicacionMasterMockups.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnAbrirUbicacionMasterMockups.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAbrirUbicacionMasterMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnAbrirUbicacionMasterMockups.Location = new System.Drawing.Point(744, 28);
+            this.btnAbrirUbicacionMasterMockups.Name = "btnAbrirUbicacionMasterMockups";
+            this.btnAbrirUbicacionMasterMockups.Size = new System.Drawing.Size(130, 40);
+            this.btnAbrirUbicacionMasterMockups.TabIndex = 31;
+            this.btnAbrirUbicacionMasterMockups.Text = "Abrir Ubicación";
+            this.btnAbrirUbicacionMasterMockups.UseVisualStyleBackColor = false;
             // 
-            // tableLayoutPanel2
+            // tlpResumenMockups
             // 
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tableLayoutPanel2.Controls.Add(this.panel17, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.panel18, 1, 0);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 75);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.Padding = new System.Windows.Forms.Padding(5);
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(876, 80);
-            this.tableLayoutPanel2.TabIndex = 32;
+            this.tlpResumenMockups.ColumnCount = 2;
+            this.tlpResumenMockups.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpResumenMockups.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpResumenMockups.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpResumenMockups.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpResumenMockups.Controls.Add(this.pnlResumenMockups, 0, 0);
+            this.tlpResumenMockups.Controls.Add(this.pnlErroresMockups, 1, 0);
+            this.tlpResumenMockups.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tlpResumenMockups.Location = new System.Drawing.Point(3, 75);
+            this.tlpResumenMockups.Name = "tlpResumenMockups";
+            this.tlpResumenMockups.Padding = new System.Windows.Forms.Padding(5);
+            this.tlpResumenMockups.RowCount = 1;
+            this.tlpResumenMockups.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpResumenMockups.Size = new System.Drawing.Size(876, 80);
+            this.tlpResumenMockups.TabIndex = 32;
             // 
-            // panel17
+            // pnlResumenMockups
             // 
-            this.panel17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.panel17.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel17.Controls.Add(this.label4);
-            this.panel17.Controls.Add(this.label5);
-            this.panel17.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel17.Location = new System.Drawing.Point(8, 8);
-            this.panel17.Name = "panel17";
-            this.panel17.Size = new System.Drawing.Size(427, 64);
-            this.panel17.TabIndex = 8;
+            this.pnlResumenMockups.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
+            this.pnlResumenMockups.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlResumenMockups.Controls.Add(this.lblCantidadMockups);
+            this.pnlResumenMockups.Controls.Add(this.lblTituloCantidadMockups);
+            this.pnlResumenMockups.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlResumenMockups.Location = new System.Drawing.Point(8, 8);
+            this.pnlResumenMockups.Name = "pnlResumenMockups";
+            this.pnlResumenMockups.Size = new System.Drawing.Size(427, 64);
+            this.pnlResumenMockups.TabIndex = 8;
             // 
-            // label4
+            // lblCantidadMockups
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            this.label4.Location = new System.Drawing.Point(8, 17);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(34, 40);
-            this.label4.TabIndex = 8;
-            this.label4.Text = "0";
+            this.lblCantidadMockups.AutoSize = true;
+            this.lblCantidadMockups.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCantidadMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            this.lblCantidadMockups.Location = new System.Drawing.Point(8, 17);
+            this.lblCantidadMockups.Name = "lblCantidadMockups";
+            this.lblCantidadMockups.Size = new System.Drawing.Size(34, 40);
+            this.lblCantidadMockups.TabIndex = 8;
+            this.lblCantidadMockups.Text = "0";
             // 
-            // label5
+            // lblTituloCantidadMockups
             // 
-            this.label5.AutoSize = true;
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.label5.Location = new System.Drawing.Point(8, 2);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(143, 17);
-            this.label5.TabIndex = 7;
-            this.label5.Text = "Objetos seleccionados:";
+            this.lblTituloCantidadMockups.AutoSize = true;
+            this.lblTituloCantidadMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.lblTituloCantidadMockups.Location = new System.Drawing.Point(8, 2);
+            this.lblTituloCantidadMockups.Name = "lblTituloCantidadMockups";
+            this.lblTituloCantidadMockups.Size = new System.Drawing.Size(143, 17);
+            this.lblTituloCantidadMockups.TabIndex = 7;
+            this.lblTituloCantidadMockups.Text = "Mockups encontrados:";
             // 
-            // panel18
+            // pnlErroresMockups
             // 
-            this.panel18.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.panel18.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel18.Controls.Add(this.label6);
-            this.panel18.Controls.Add(this.label7);
-            this.panel18.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel18.Location = new System.Drawing.Point(441, 8);
-            this.panel18.Name = "panel18";
-            this.panel18.Size = new System.Drawing.Size(427, 64);
-            this.panel18.TabIndex = 9;
+            this.pnlErroresMockups.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
+            this.pnlErroresMockups.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlErroresMockups.Controls.Add(this.lblCantidadErroresMockups);
+            this.pnlErroresMockups.Controls.Add(this.lblTituloErroresMockups);
+            this.pnlErroresMockups.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlErroresMockups.Location = new System.Drawing.Point(441, 8);
+            this.pnlErroresMockups.Name = "pnlErroresMockups";
+            this.pnlErroresMockups.Size = new System.Drawing.Size(427, 64);
+            this.pnlErroresMockups.TabIndex = 9;
             // 
-            // label6
+            // lblCantidadErroresMockups
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(166)))), ((int)(((byte)(111)))));
-            this.label6.Location = new System.Drawing.Point(8, 17);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(34, 40);
-            this.label6.TabIndex = 8;
-            this.label6.Text = "0";
+            this.lblCantidadErroresMockups.AutoSize = true;
+            this.lblCantidadErroresMockups.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCantidadErroresMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(166)))), ((int)(((byte)(111)))));
+            this.lblCantidadErroresMockups.Location = new System.Drawing.Point(8, 17);
+            this.lblCantidadErroresMockups.Name = "lblCantidadErroresMockups";
+            this.lblCantidadErroresMockups.Size = new System.Drawing.Size(34, 40);
+            this.lblCantidadErroresMockups.TabIndex = 8;
+            this.lblCantidadErroresMockups.Text = "0";
             // 
-            // label7
+            // lblTituloErroresMockups
             // 
-            this.label7.AutoSize = true;
-            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.label7.Location = new System.Drawing.Point(8, 2);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(133, 17);
-            this.label7.TabIndex = 7;
-            this.label7.Text = "Colores encontrados:";
+            this.lblTituloErroresMockups.AutoSize = true;
+            this.lblTituloErroresMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.lblTituloErroresMockups.Location = new System.Drawing.Point(8, 2);
+            this.lblTituloErroresMockups.Name = "lblTituloErroresMockups";
+            this.lblTituloErroresMockups.Size = new System.Drawing.Size(133, 17);
+            this.lblTituloErroresMockups.TabIndex = 7;
+            this.lblTituloErroresMockups.Text = "Con error:";
             // 
             // frmPrincipal
             // 
@@ -3334,26 +3329,26 @@ namespace TithorAutomation
             this.panel12.PerformLayout();
             this.pnlEstadoCorelGlobal.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage2.ResumeLayout(false);
+            this.tabConfiguracion.ResumeLayout(false);
+            this.tabMoldes.ResumeLayout(false);
+            this.tabMockups.ResumeLayout(false);
             this.grpCatalogoMoldes.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel15.ResumeLayout(false);
             this.panel16.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
-            this.groupBox5.ResumeLayout(false);
-            this.groupBox5.PerformLayout();
-            this.groupBox6.ResumeLayout(false);
-            this.groupBox6.PerformLayout();
-            this.groupBox7.ResumeLayout(false);
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.panel17.ResumeLayout(false);
-            this.panel17.PerformLayout();
-            this.panel18.ResumeLayout(false);
-            this.panel18.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCatalogoMockups)).EndInit();
+            this.grpArchivoMasterMockups.ResumeLayout(false);
+            this.grpArchivoMasterMockups.PerformLayout();
+            this.grpAccionesMockups.ResumeLayout(false);
+            this.grpAccionesMockups.PerformLayout();
+            this.grpCatalogoMockups.ResumeLayout(false);
+            this.tlpResumenMockups.ResumeLayout(false);
+            this.pnlResumenMockups.ResumeLayout(false);
+            this.pnlResumenMockups.PerformLayout();
+            this.pnlErroresMockups.ResumeLayout(false);
+            this.pnlErroresMockups.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -3366,7 +3361,7 @@ namespace TithorAutomation
         private System.Windows.Forms.Panel pnlEstadoCorel;
         private System.Windows.Forms.Label lblEstadoCorel;
         private System.Windows.Forms.Panel pnlMenuLateral;
-        private System.Windows.Forms.Button btnRegistro;
+        private System.Windows.Forms.Button btnMockup;
         private System.Windows.Forms.Button btnConfiguracion;
         private System.Windows.Forms.Button btnEscalar;
         private System.Windows.Forms.Button btnAcomodar;
@@ -3562,39 +3557,39 @@ namespace TithorAutomation
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabControl tabConfiguracion;
+        private System.Windows.Forms.TabPage tabMoldes;
+        private System.Windows.Forms.TabPage tabMockups;
         private System.Windows.Forms.GroupBox grpCatalogoMoldes;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel15;
         private System.Windows.Forms.Panel panel16;
         private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.GroupBox groupBox7;
-        private System.Windows.Forms.DataGridView dataGridView2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn15;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn16;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn17;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn18;
+        private System.Windows.Forms.GroupBox grpCatalogoMockups;
+        private System.Windows.Forms.DataGridView dgvCatalogoMockups;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEstadoMockup;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colCodigoMockup;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colProductoMockup;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colNombreGrupoMockup;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn19;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn20;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn21;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn22;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn23;
-        private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
-        private System.Windows.Forms.Panel panel17;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Panel panel18;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.GroupBox grpAccionesMockups;
+        private System.Windows.Forms.Label lblEstadoMockups;
+        private System.Windows.Forms.Button btnSincronizarMockups;
+        private System.Windows.Forms.Button btnAnalizarMasterMockups;
+        private System.Windows.Forms.GroupBox grpArchivoMasterMockups;
+        private System.Windows.Forms.Button btnSeleccionarMasterMockups;
+        private System.Windows.Forms.TextBox txtRutaMasterMockups;
+        private System.Windows.Forms.TableLayoutPanel tlpResumenMockups;
+        private System.Windows.Forms.Panel pnlResumenMockups;
+        private System.Windows.Forms.Label lblCantidadMockups;
+        private System.Windows.Forms.Label lblTituloCantidadMockups;
+        private System.Windows.Forms.Panel pnlErroresMockups;
+        private System.Windows.Forms.Label lblCantidadErroresMockups;
+        private System.Windows.Forms.Label lblTituloErroresMockups;
+        private System.Windows.Forms.Button btnAbrirUbicacionMasterMockups;
         }
 }
