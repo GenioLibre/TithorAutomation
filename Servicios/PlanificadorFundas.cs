@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using TithorAutomation.Modelos;
@@ -36,6 +36,10 @@ namespace TithorAutomation.Servicios
                 CodigoProducto = resultado.CodigoProducto
                 };
 
+            // Se indexa una vez por pedido, en lugar de recorrer el catálogo por pieza y fila.
+            HashSet<string> codigos = CrearIndiceCatalogo(catalogo);
+            Dictionary<string, List<string>> faltantesPorTalla = new Dictionary<string, List<string>>();
+
             foreach (LineaPedido linea in resultado.Lineas)
                 {
                 if (!linea.Procesable)
@@ -49,7 +53,12 @@ namespace TithorAutomation.Servicios
                     continue;
                     }
 
-                List<string> moldesFaltantes = ObtenerMoldesFaltantes(talla, catalogo);
+                List<string> moldesFaltantes;
+                if (!faltantesPorTalla.TryGetValue(talla, out moldesFaltantes))
+                    {
+                    moldesFaltantes = ObtenerMoldesFaltantes(talla, codigos);
+                    faltantesPorTalla.Add(talla, moldesFaltantes);
+                    }
 
                 if (moldesFaltantes.Count > 0)
                     {
@@ -103,7 +112,7 @@ namespace TithorAutomation.Servicios
             return string.Empty;
             }
 
-        private List<string> ObtenerMoldesFaltantes(string talla, List<Molde> catalogo)
+        private List<string> ObtenerMoldesFaltantes(string talla, HashSet<string> codigos)
             {
             List<string> faltantes = new List<string>();
             string tallaCodigo = talla.ToLowerInvariant();
@@ -112,43 +121,27 @@ namespace TithorAutomation.Servicios
                 {
                 string codigoEsperado = $"funda_{tallaCodigo}_{pieza}";
 
-                if (!ExisteMolde(catalogo, codigoEsperado))
+                if (!codigos.Contains(codigoEsperado))
                     faltantes.Add(codigoEsperado);
                 }
 
             return faltantes;
             }
 
-        private bool ExisteMolde(List<Molde> catalogo, string codigo)
+        private HashSet<string> CrearIndiceCatalogo(List<Molde> catalogo)
             {
-            string sufijoCodigo = "__" + codigo;
-
+            HashSet<string> codigos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (Molde molde in catalogo)
                 {
-                bool coincideCodigo =
-                    string.Equals(
-                        molde.Codigo,
-                        codigo,
-                        StringComparison.OrdinalIgnoreCase
-                    ) ||
-                    (!string.IsNullOrWhiteSpace(molde.Codigo) &&
-                     molde.Codigo.EndsWith(
-                         sufijoCodigo,
-                         StringComparison.OrdinalIgnoreCase
-                     ));
-
-                bool coincideNombre =
-                    string.Equals(
-                        molde.NombreObjeto,
-                        codigo,
-                        StringComparison.OrdinalIgnoreCase
-                    );
-
-                if (coincideCodigo || coincideNombre)
-                    return true;
+                if (molde == null || !molde.EsValido) continue;
+                if (!string.IsNullOrWhiteSpace(molde.NombreObjeto))
+                    codigos.Add(molde.NombreObjeto);
+                if (string.IsNullOrWhiteSpace(molde.Codigo)) continue;
+                codigos.Add(molde.Codigo);
+                int separador = molde.Codigo.LastIndexOf("__", StringComparison.Ordinal);
+                if (separador >= 0) codigos.Add(molde.Codigo.Substring(separador + 2));
                 }
-
-            return false;
+            return codigos;
             }
 
         private void CopiarCampos(LineaPedido linea, MoldeProduccion solicitud)

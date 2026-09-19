@@ -19,11 +19,16 @@ internal static class EscaladorPowerClipTests
     private static void Rechazar(double ancho, double alto, double destino)
     {
         bool rechazo = false;
-        try { EscaladorPowerClip.AnchoProporcional(ancho, alto, destino); }
+        try { double w, h; EscaladorPowerClip.CalcularTamanoCobertura(ancho, alto, destino, destino, out w, out h); }
         catch (InvalidOperationException) { rechazo = true; }
         Exigir(rechazo, "Dimensiones inválidas aceptadas");
     }
     public static int Main()
+    {
+        try { return Ejecutar(); }
+        catch (Exception error) { Console.Error.WriteLine(error); return 1; }
+    }
+    private static int Ejecutar()
     {
         Nombre("funda_s_frente", "Frente", "S");
         Nombre("FUNDA_M_ESPALDA", "Espalda", "M");
@@ -48,9 +53,10 @@ internal static class EscaladorPowerClipTests
             string pieza, talla;
             Exigir(!EscaladorPowerClip.InterpretarNombre(nombre, out pieza, out talla), "Acepta un nombre ajeno: " + nombre);
         }
-        Exigir(EscaladorPowerClip.AnchoProporcional(100, 200, 500) == 250, "Ampliación incorrecta");
-        Exigir(EscaladorPowerClip.AnchoProporcional(300, 100, 50) == 150, "Reducción incorrecta");
-        Exigir(EscaladorPowerClip.AnchoProporcional(40, 80, 80) == 40, "Escala 1:1 incorrecta");
+        Cobertura(100, 200, 500, 500, 500, 1000);
+        Cobertura(300, 100, 50, 50, 150, 50);
+        Cobertura(40, 80, 40, 80, 40, 80);
+        Cobertura(200, 100, 100, 300, 600, 300);
         Rechazar(0, 10, 10);
         Rechazar(10, 0, 10);
         Rechazar(10, 10, -1);
@@ -58,7 +64,16 @@ internal static class EscaladorPowerClipTests
         Rechazar(10, double.PositiveInfinity, 10);
         Rechazar(10, 10, double.PositiveInfinity);
         Rechazar(double.MaxValue, 1, 10);
+        PedidoTests.Ejecutar();
         Console.WriteLine("PASS: " + comprobaciones + " comprobaciones de nombres, tallas y proporciones.");
         return 0;
+    }
+
+    private static void Cobertura(double w, double h, double dw, double dh, double ew, double eh)
+    {
+        double aw, ah;
+        EscaladorPowerClip.CalcularTamanoCobertura(w, h, dw, dh, out aw, out ah);
+        Exigir(aw == ew && ah == eh, "Cobertura incorrecta");
+        Exigir(aw >= dw && ah >= dh, "El diseño no cubre el destino");
     }
 }
