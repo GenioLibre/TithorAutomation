@@ -28,7 +28,7 @@ namespace TithorAutomation
                 }
             catch (Exception ex)
                 {
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     "No se pudieron cargar los productos en Moldes.\n\n" + ex.Message,
                     "Tithor Automation",
                     MessageBoxButtons.OK,
@@ -76,7 +76,7 @@ namespace TithorAutomation
 
             if (producto == null)
                 {
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     "Seleccione primero un producto.",
                     "Tithor Automation",
                     MessageBoxButtons.OK,
@@ -127,7 +127,7 @@ namespace TithorAutomation
 
             if (producto == null)
                 {
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     "Seleccione un producto.",
                     "Tithor Automation",
                     MessageBoxButtons.OK,
@@ -139,7 +139,7 @@ namespace TithorAutomation
 
             if (!File.Exists(txtRutaExcelProduccion.Text))
                 {
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     "Seleccione un archivo Excel válido.",
                     "Tithor Automation",
                     MessageBoxButtons.OK,
@@ -153,7 +153,7 @@ namespace TithorAutomation
 
             if (lector == null)
                 {
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     "Todavía no existe un lector de Excel para el producto \"" + producto.Nombre + "\".",
                     "Producto no implementado",
                     MessageBoxButtons.OK,
@@ -192,7 +192,7 @@ namespace TithorAutomation
 
                 lblEstadoExcelProduccion.Text = "Error durante el análisis.";
 
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     "No se pudo analizar el archivo Excel.\n\n" + ex.Message,
                     "Tithor Automation",
                     MessageBoxButtons.OK,
@@ -359,7 +359,7 @@ namespace TithorAutomation
                     mensaje.AppendLine("• Fila " + linea.NumeroFila + ": " + linea.MensajeCompleto);
                 }
 
-            MessageBox.Show(
+            MessageBox.Show(this, 
                 "El Excel se analizó con advertencias:\n\n" + mensaje,
                 "Revisar pedido",
                 MessageBoxButtons.OK,
@@ -384,7 +384,7 @@ namespace TithorAutomation
                 {
                 if (resultadoPedidoActual == null || !resultadoPedidoActual.PuedeAprobar)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "Primero debe analizar un archivo Excel con filas válidas.",
                         "Moldes",
                         MessageBoxButtons.OK,
@@ -398,7 +398,7 @@ namespace TithorAutomation
 
                 if (producto == null)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "Seleccione el producto que desea producir.",
                         "Moldes",
                         MessageBoxButtons.OK,
@@ -412,7 +412,7 @@ namespace TithorAutomation
 
                 if (planificador == null)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         $"El producto '{producto.Nombre}' todavía no tiene un planificador de producción.",
                         "Moldes",
                         MessageBoxButtons.OK,
@@ -426,7 +426,7 @@ namespace TithorAutomation
 
                 if (master == null)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "Este producto no tiene un archivo Master configurado.",
                         "Moldes",
                         MessageBoxButtons.OK,
@@ -438,7 +438,7 @@ namespace TithorAutomation
 
                 if (!System.IO.File.Exists(master.RutaArchivo))
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         $"No se encontró el archivo Master:\n\n{master.RutaArchivo}",
                         "Moldes",
                         MessageBoxButtons.OK,
@@ -450,7 +450,7 @@ namespace TithorAutomation
 
                 if (!master.FechaUltimoAnalisis.HasValue)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "El archivo Master todavía no ha sido analizado.\n\nAnalícelo desde Configuración antes de continuar.",
                         "Moldes",
                         MessageBoxButtons.OK,
@@ -464,7 +464,7 @@ namespace TithorAutomation
 
                 if (catalogo == null || catalogo.Count == 0)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "El catálogo de moldes está vacío.\n\nAnalice y sincronice el Master desde Configuración.",
                         "Moldes",
                         MessageBoxButtons.OK,
@@ -478,7 +478,7 @@ namespace TithorAutomation
 
                 if (plan == null)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "No se pudo crear el plan de producción.",
                         "Moldes",
                         MessageBoxButtons.OK,
@@ -494,7 +494,7 @@ namespace TithorAutomation
                         ? string.Join("\n• ", plan.Advertencias)
                         : "El plan contiene errores sin especificar.";
 
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "No se pueden copiar los moldes:\n\n• " + detalleAdvertencias,
                         "Revisar moldes",
                         MessageBoxButtons.OK,
@@ -506,7 +506,7 @@ namespace TithorAutomation
 
                 if (plan.TotalMoldes == 0)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "El plan de producción no contiene moldes para copiar.",
                         "Moldes",
                         MessageBoxButtons.OK,
@@ -520,7 +520,7 @@ namespace TithorAutomation
 
                 if (corel == null || corel.Documents.Count == 0)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "Abra el documento de producción en CorelDRAW antes de copiar los moldes.",
                         "Moldes",
                         MessageBoxButtons.OK,
@@ -532,7 +532,7 @@ namespace TithorAutomation
 
                 VGCore.Document documentoDestino = corel.ActiveDocument;
 
-                DialogResult confirmacion = MessageBox.Show(
+                DialogResult confirmacion = MessageBox.Show(this, 
                     $"Se copiarán {plan.TotalMoldes} moldes.\n\n" +
                     $"Producto: {producto.Nombre}\n" +
                     $"Documento abierto: {documentoDestino.Name}\n" +
@@ -548,6 +548,8 @@ namespace TithorAutomation
 
                 btnCopiarMoldesPedido.Enabled = false;
                 btnNuevoPedido.Enabled = false;
+                UseWaitCursor = true;
+                Cursor = Cursors.WaitCursor;
                 tmrConexionCorel.Stop();
                 cboProductoProduccion.Enabled = false;
                 btnCargarExcelProduccion.Enabled = false;
@@ -577,7 +579,10 @@ namespace TithorAutomation
                 btnCopiarMoldesPedido.Enabled = true;
                 btnNuevoPedido.Enabled = true;
 
-                MessageBox.Show(
+                Activate();
+                BringToFront();
+
+                MessageBox.Show(this, 
                     $"Se copiaron correctamente {totalCopiado} moldes.\n\n" +
                     $"Documento: {documentoDestino.Name}\n" +
                     "Capa creada: TITHOR_PRODUCCION\n\n" +
@@ -590,8 +595,10 @@ namespace TithorAutomation
             catch (Exception ex)
                 {
                 lblResultadoPedido.Text = "No se pudieron copiar los moldes.";
+                Activate();
+                BringToFront();
 
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     $"No se pudieron copiar los moldes.\n\n" +
                     $"Tipo: {ex.GetType().FullName}\n" +
                     $"Código: 0x{ex.HResult:X8}\n\n" +
@@ -603,6 +610,9 @@ namespace TithorAutomation
                 }
             finally
                 {
+                UseWaitCursor = false;
+                Cursor = Cursors.Default;
+
                 if (temporizadorActivo) tmrConexionCorel.Start();
                 cboProductoProduccion.Enabled = true;
                 btnCargarExcelProduccion.Enabled = true;
@@ -624,7 +634,7 @@ namespace TithorAutomation
             {
             if (resultadoPedidoActual != null)
                 {
-                DialogResult respuesta = MessageBox.Show(
+                DialogResult respuesta = MessageBox.Show(this, 
                     "Se limpiará el pedido actual para comenzar uno nuevo.\n\n" +
                     "Los moldes que ya fueron copiados en CorelDRAW no se eliminarán.\n\n" +
                     "¿Desea continuar?",
