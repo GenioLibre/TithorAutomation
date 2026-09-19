@@ -15,6 +15,96 @@ namespace TithorAutomation
     {
     public partial class frmPrincipal
         {
+        private const string ClaveSesionProducto = "Pedido.ProductoId";
+        private const string ClaveSesionExcel = "Pedido.RutaExcel";
+        private bool restaurandoUltimoPedidoProduccion;
+
+        private void GuardarUltimoPedidoProduccion(Producto producto)
+            {
+            if (producto == null || resultadoPedidoActual == null)
+                return;
+
+            estadoSesionRepositorio.Guardar(ClaveSesionProducto, producto.Id.ToString());
+            estadoSesionRepositorio.Guardar(ClaveSesionExcel, txtRutaExcelProduccion.Text);
+            }
+
+        private void RestaurarUltimoPedidoProduccion()
+            {
+            try
+                {
+                string productoGuardado = estadoSesionRepositorio.Obtener(ClaveSesionProducto);
+                string rutaExcel = estadoSesionRepositorio.Obtener(ClaveSesionExcel);
+
+                int productoId;
+
+                if (!int.TryParse(productoGuardado, out productoId) || !File.Exists(rutaExcel))
+                    return;
+
+                Producto producto = null;
+
+                foreach (object elemento in cboProductoProduccion.Items)
+                    {
+                    Producto candidato = elemento as Producto;
+
+                    if (candidato != null && candidato.Id == productoId)
+                        {
+                        producto = candidato;
+                        break;
+                        }
+                    }
+
+                if (producto == null)
+                    return;
+
+                restaurandoUltimoPedidoProduccion = true;
+                cboProductoProduccion.SelectedItem = producto;
+                txtRutaExcelProduccion.Text = rutaExcel;
+                btnAnalizarExcelProduccion_Click(null, EventArgs.Empty);
+
+                if (resultadoPedidoActual != null)
+                    lblEstadoExcelProduccion.Text = "Último pedido recuperado y analizado.";
+                }
+            catch (Exception ex)
+                {
+                lblEstadoExcelProduccion.Text = "No se pudo recuperar el último pedido: " + ex.Message;
+                }
+            finally
+                {
+                restaurandoUltimoPedidoProduccion = false;
+                }
+            }
+
+        private void ReconstruirPlanProduccionActual(Producto producto)
+            {
+            planProduccionActual = null;
+
+            if (producto == null || resultadoPedidoActual == null || !resultadoPedidoActual.PuedeAprobar)
+                return;
+
+            try
+                {
+                IPlanificadorProducto planificador = ObtenerPlanificadorProducto(producto.Codigo);
+                ArchivoMaster master = archivoMasterRepositorio.ObtenerPrincipalPorProducto(producto.Id);
+
+                if (planificador == null || master == null)
+                    return;
+
+                List<Molde> catalogo = moldeRepositorio.ListarPorMaster(master.Id);
+
+                if (catalogo == null || catalogo.Count == 0)
+                    return;
+
+                PlanProduccion plan = planificador.CrearPlan(resultadoPedidoActual, catalogo);
+
+                if (plan != null && plan.EsValido && plan.TotalMoldes > 0)
+                    planProduccionActual = plan;
+                }
+            catch
+                {
+                planProduccionActual = null;
+                }
+            }
+
         private void CargarProductosProduccion()
             {
             try
@@ -184,7 +274,11 @@ namespace TithorAutomation
                 lblEstadoExcelProduccion.Text = "Análisis terminado.";
                 btnNuevoPedido.Enabled = true;
 
-                MostrarAdvertenciasPedido(resultadoPedidoActual);
+                ReconstruirPlanProduccionActual(producto);
+                GuardarUltimoPedidoProduccion(producto);
+
+                if (!restaurandoUltimoPedidoProduccion)
+                    MostrarAdvertenciasPedido(resultadoPedidoActual);
                 }
             catch (Exception ex)
                 {
@@ -647,6 +741,7 @@ namespace TithorAutomation
                     return;
                 }
 
+            estadoSesionRepositorio.Eliminar(ClaveSesionProducto, ClaveSesionExcel);
             LimpiarPedidoProduccion(true);
             lblResultadoPedido.Text = "Listo para cargar un nuevo pedido";
 
