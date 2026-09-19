@@ -33,24 +33,24 @@ namespace TithorAutomation
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblTituloApp = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pnlEstadoCorel = new System.Windows.Forms.Panel();
@@ -104,11 +104,6 @@ namespace TithorAutomation
             this.errorProviderPrincipal = new System.Windows.Forms.ErrorProvider(this.components);
             this.tmrConexionCorel = new System.Windows.Forms.Timer(this.components);
             this.pnlConfiguracion = new System.Windows.Forms.Panel();
-            this.tabConfiguracion = new System.Windows.Forms.TabControl();
-            this.tabMoldes = new System.Windows.Forms.TabPage();
-            this.panel16 = new System.Windows.Forms.Panel();
-            this.grpCatalogoMoldes = new System.Windows.Forms.GroupBox();
-            this.panel2 = new System.Windows.Forms.Panel();
             this.dgvCatalogoMoldes = new System.Windows.Forms.DataGridView();
             this.colEstadoMolde = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCodigoMolde = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -119,12 +114,10 @@ namespace TithorAutomation
             this.colCuelloMolde = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPaginaMolde = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colCapaMolde = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.lblBuscarMolde = new System.Windows.Forms.Label();
             this.txtBuscarMolde = new System.Windows.Forms.TextBox();
             this.cboEstadoMolde = new System.Windows.Forms.ComboBox();
             this.lblResumenCatalogo = new System.Windows.Forms.Label();
-            this.panel15 = new System.Windows.Forms.Panel();
             this.grpArchivoMaster = new System.Windows.Forms.GroupBox();
             this.lblProcesoMaster = new System.Windows.Forms.Label();
             this.prgAnalisisMaster = new System.Windows.Forms.ProgressBar();
@@ -147,32 +140,13 @@ namespace TithorAutomation
             this.btnAgregarProducto = new System.Windows.Forms.Button();
             this.btnEliminarProducto = new System.Windows.Forms.Button();
             this.btnEditarProducto = new System.Windows.Forms.Button();
-            this.tabMockups = new System.Windows.Forms.TabPage();
-            this.grpCatalogoMockups = new System.Windows.Forms.GroupBox();
-            this.dgvCatalogoMockups = new System.Windows.Forms.DataGridView();
-            this.colEstadoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colCodigoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colProductoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colNombreGrupoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.grpAccionesMockups = new System.Windows.Forms.GroupBox();
-            this.lblEstadoMockups = new System.Windows.Forms.Label();
-            this.btnSincronizarMockups = new System.Windows.Forms.Button();
-            this.btnAnalizarMasterMockups = new System.Windows.Forms.Button();
-            this.grpArchivoMasterMockups = new System.Windows.Forms.GroupBox();
-            this.tlpResumenMockups = new System.Windows.Forms.TableLayoutPanel();
-            this.pnlResumenMockups = new System.Windows.Forms.Panel();
-            this.lblCantidadMockups = new System.Windows.Forms.Label();
-            this.lblTituloCantidadMockups = new System.Windows.Forms.Label();
-            this.pnlErroresMockups = new System.Windows.Forms.Panel();
-            this.lblCantidadErroresMockups = new System.Windows.Forms.Label();
-            this.lblTituloErroresMockups = new System.Windows.Forms.Label();
-            this.btnAbrirUbicacionMasterMockups = new System.Windows.Forms.Button();
-            this.btnSeleccionarMasterMockups = new System.Windows.Forms.Button();
-            this.txtRutaMasterMockups = new System.Windows.Forms.TextBox();
             this.pnlConfiguracion_Header = new System.Windows.Forms.Panel();
             this.lblTituloConfiguracion = new System.Windows.Forms.Label();
             this.lblSubtituloConfiguracion = new System.Windows.Forms.Label();
             this.pnlContenido = new System.Windows.Forms.Panel();
+            this.pnlMockups = new System.Windows.Forms.Panel();
+            this.lblTituloModuloMockups = new System.Windows.Forms.Label();
+            this.lblDescripcionModuloMockups = new System.Windows.Forms.Label();
             this.pnlAcomodar = new System.Windows.Forms.Panel();
             this.panel9 = new System.Windows.Forms.Panel();
             this.dgvAcomodo = new System.Windows.Forms.DataGridView();
@@ -241,10 +215,6 @@ namespace TithorAutomation
             this.panel3 = new System.Windows.Forms.Panel();
             this.lblTituloProduccion = new System.Windows.Forms.Label();
             this.lblSubtituloProduccion = new System.Windows.Forms.Label();
-            this.pnlEstadoCorelGlobal = new System.Windows.Forms.Panel();
-            this.pnlMockups = new System.Windows.Forms.Panel();
-            this.lblDescripcionModuloMockups = new System.Windows.Forms.Label();
-            this.lblTituloModuloMockups = new System.Windows.Forms.Label();
             this.pnlEscalar = new System.Windows.Forms.Panel();
             this.dgvEscalar = new System.Windows.Forms.DataGridView();
             this.colPiezaEscalar = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -259,11 +229,11 @@ namespace TithorAutomation
             this.chkReemplazarContenidoEscalar = new System.Windows.Forms.CheckBox();
             this.cboTareaEscalar = new System.Windows.Forms.ComboBox();
             this.lblTallaEscalar = new System.Windows.Forms.Label();
-            this.cboTallaEscalar = new System.Windows.Forms.ComboBox();
             this.lblPiezaEscalar = new System.Windows.Forms.Label();
             this.panel12 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.pnlEstadoCorelGlobal = new System.Windows.Forms.Panel();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -283,11 +253,40 @@ namespace TithorAutomation
             this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn13 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn14 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tabConfiguracion = new System.Windows.Forms.TabControl();
+            this.tabMoldes = new System.Windows.Forms.TabPage();
+            this.tabMockups = new System.Windows.Forms.TabPage();
+            this.grpCatalogoMoldes = new System.Windows.Forms.GroupBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel15 = new System.Windows.Forms.Panel();
+            this.panel16 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.btnAnalizarMasterMockups = new System.Windows.Forms.Button();
+            this.btnSincronizarMockups = new System.Windows.Forms.Button();
+            this.lblEstadoMockups = new System.Windows.Forms.Label();
+            this.dgvCatalogoMockups = new System.Windows.Forms.DataGridView();
+            this.colEstadoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCodigoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colProductoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colNombreGrupoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn19 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn20 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn21 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn22 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn23 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.grpArchivoMasterMockups = new System.Windows.Forms.GroupBox();
+            this.btnSeleccionarMasterMockups = new System.Windows.Forms.Button();
+            this.txtRutaMasterMockups = new System.Windows.Forms.TextBox();
+            this.grpAccionesMockups = new System.Windows.Forms.GroupBox();
+            this.grpCatalogoMockups = new System.Windows.Forms.GroupBox();
+            this.btnAbrirUbicacionMasterMockups = new System.Windows.Forms.Button();
+            this.tlpResumenMockups = new System.Windows.Forms.TableLayoutPanel();
+            this.pnlResumenMockups = new System.Windows.Forms.Panel();
+            this.lblCantidadMockups = new System.Windows.Forms.Label();
+            this.lblTituloCantidadMockups = new System.Windows.Forms.Label();
+            this.pnlErroresMockups = new System.Windows.Forms.Panel();
+            this.lblCantidadErroresMockups = new System.Windows.Forms.Label();
+            this.lblTituloErroresMockups = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.pnlEstadoCorel.SuspendLayout();
             this.pnlMenuLateral.SuspendLayout();
@@ -303,25 +302,10 @@ namespace TithorAutomation
             this.pnlIgnorados.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderPrincipal)).BeginInit();
             this.pnlConfiguracion.SuspendLayout();
-            this.tabConfiguracion.SuspendLayout();
-            this.tabMoldes.SuspendLayout();
-            this.panel16.SuspendLayout();
-            this.grpCatalogoMoldes.SuspendLayout();
-            this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCatalogoMoldes)).BeginInit();
-            this.panel1.SuspendLayout();
-            this.panel15.SuspendLayout();
             this.grpArchivoMaster.SuspendLayout();
             this.pnlEstadoArchivoMaster.SuspendLayout();
             this.grpProductoConfiguracion.SuspendLayout();
-            this.tabMockups.SuspendLayout();
-            this.grpCatalogoMockups.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCatalogoMockups)).BeginInit();
-            this.grpAccionesMockups.SuspendLayout();
-            this.grpArchivoMasterMockups.SuspendLayout();
-            this.tlpResumenMockups.SuspendLayout();
-            this.pnlResumenMockups.SuspendLayout();
-            this.pnlErroresMockups.SuspendLayout();
             this.pnlConfiguracion_Header.SuspendLayout();
             this.pnlContenido.SuspendLayout();
             this.pnlAcomodar.SuspendLayout();
@@ -346,13 +330,27 @@ namespace TithorAutomation
             this.panel6.SuspendLayout();
             this.panel7.SuspendLayout();
             this.panel3.SuspendLayout();
-            this.pnlEstadoCorelGlobal.SuspendLayout();
-            this.pnlMockups.SuspendLayout();
             this.pnlEscalar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvEscalar)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.panel12.SuspendLayout();
+            this.pnlEstadoCorelGlobal.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.tabConfiguracion.SuspendLayout();
+            this.tabMoldes.SuspendLayout();
+            this.tabMockups.SuspendLayout();
+            this.grpCatalogoMoldes.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel15.SuspendLayout();
+            this.panel16.SuspendLayout();
+            this.panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCatalogoMockups)).BeginInit();
+            this.grpArchivoMasterMockups.SuspendLayout();
+            this.grpAccionesMockups.SuspendLayout();
+            this.grpCatalogoMockups.SuspendLayout();
+            this.tlpResumenMockups.SuspendLayout();
+            this.pnlResumenMockups.SuspendLayout();
+            this.pnlErroresMockups.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTituloApp
@@ -457,6 +455,7 @@ namespace TithorAutomation
             // btnMockup
             // 
             this.btnMockup.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnMockup.Enabled = true;
             this.btnMockup.FlatAppearance.BorderSize = 0;
             this.btnMockup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnMockup.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1020,87 +1019,28 @@ namespace TithorAutomation
             this.pnlConfiguracion.TabIndex = 11;
             this.pnlConfiguracion.Visible = false;
             // 
-            // tabConfiguracion
-            // 
-            this.tabConfiguracion.Alignment = System.Windows.Forms.TabAlignment.Bottom;
-            this.tabConfiguracion.Controls.Add(this.tabMoldes);
-            this.tabConfiguracion.Controls.Add(this.tabMockups);
-            this.tabConfiguracion.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabConfiguracion.ItemSize = new System.Drawing.Size(180, 40);
-            this.tabConfiguracion.Location = new System.Drawing.Point(0, 69);
-            this.tabConfiguracion.Multiline = true;
-            this.tabConfiguracion.Name = "tabConfiguracion";
-            this.tabConfiguracion.SelectedIndex = 0;
-            this.tabConfiguracion.Size = new System.Drawing.Size(896, 542);
-            this.tabConfiguracion.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
-            this.tabConfiguracion.TabIndex = 29;
-            // 
-            // tabMoldes
-            // 
-            this.tabMoldes.Controls.Add(this.panel16);
-            this.tabMoldes.Controls.Add(this.panel15);
-            this.tabMoldes.Location = new System.Drawing.Point(4, 4);
-            this.tabMoldes.Name = "tabMoldes";
-            this.tabMoldes.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMoldes.Size = new System.Drawing.Size(888, 494);
-            this.tabMoldes.TabIndex = 0;
-            this.tabMoldes.Text = "MOLDES";
-            this.tabMoldes.UseVisualStyleBackColor = true;
-            // 
-            // panel16
-            // 
-            this.panel16.Controls.Add(this.grpCatalogoMoldes);
-            this.panel16.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel16.Location = new System.Drawing.Point(3, 325);
-            this.panel16.Margin = new System.Windows.Forms.Padding(3, 3, 3, 10);
-            this.panel16.Name = "panel16";
-            this.panel16.Size = new System.Drawing.Size(882, 166);
-            this.panel16.TabIndex = 30;
-            // 
-            // grpCatalogoMoldes
-            // 
-            this.grpCatalogoMoldes.BackColor = System.Drawing.Color.White;
-            this.grpCatalogoMoldes.Controls.Add(this.panel2);
-            this.grpCatalogoMoldes.Controls.Add(this.panel1);
-            this.grpCatalogoMoldes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpCatalogoMoldes.Location = new System.Drawing.Point(0, 0);
-            this.grpCatalogoMoldes.Name = "grpCatalogoMoldes";
-            this.grpCatalogoMoldes.Size = new System.Drawing.Size(882, 166);
-            this.grpCatalogoMoldes.TabIndex = 28;
-            this.grpCatalogoMoldes.TabStop = false;
-            this.grpCatalogoMoldes.Text = "CATÁLOGO DE MOLDES";
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.dgvCatalogoMoldes);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 65);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(876, 98);
-            this.panel2.TabIndex = 32;
-            // 
             // dgvCatalogoMoldes
             // 
             this.dgvCatalogoMoldes.AllowUserToAddRows = false;
             this.dgvCatalogoMoldes.AllowUserToDeleteRows = false;
             this.dgvCatalogoMoldes.AllowUserToResizeColumns = false;
             this.dgvCatalogoMoldes.AllowUserToResizeRows = false;
-            dataGridViewCellStyle7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
-            this.dgvCatalogoMoldes.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
+            this.dgvCatalogoMoldes.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgvCatalogoMoldes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvCatalogoMoldes.BackgroundColor = System.Drawing.Color.White;
             this.dgvCatalogoMoldes.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvCatalogoMoldes.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvCatalogoMoldes.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle8.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvCatalogoMoldes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvCatalogoMoldes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
             this.dgvCatalogoMoldes.ColumnHeadersHeight = 42;
             this.dgvCatalogoMoldes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvCatalogoMoldes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -1114,15 +1054,15 @@ namespace TithorAutomation
             this.colPaginaMolde,
             this.colCapaMolde});
             this.dgvCatalogoMoldes.Cursor = System.Windows.Forms.Cursors.Default;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle9.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvCatalogoMoldes.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle6.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvCatalogoMoldes.DefaultCellStyle = dataGridViewCellStyle6;
             this.dgvCatalogoMoldes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvCatalogoMoldes.EnableHeadersVisualStyles = false;
             this.dgvCatalogoMoldes.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1190,18 +1130,6 @@ namespace TithorAutomation
             this.colCapaMolde.Name = "colCapaMolde";
             this.colCapaMolde.ReadOnly = true;
             // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.lblBuscarMolde);
-            this.panel1.Controls.Add(this.txtBuscarMolde);
-            this.panel1.Controls.Add(this.cboEstadoMolde);
-            this.panel1.Controls.Add(this.lblResumenCatalogo);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(3, 21);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(876, 44);
-            this.panel1.TabIndex = 31;
-            // 
             // lblBuscarMolde
             // 
             this.lblBuscarMolde.AutoSize = true;
@@ -1247,17 +1175,6 @@ namespace TithorAutomation
             this.lblResumenCatalogo.Size = new System.Drawing.Size(133, 17);
             this.lblResumenCatalogo.TabIndex = 28;
             this.lblResumenCatalogo.Text = "0 moldes registrados";
-            // 
-            // panel15
-            // 
-            this.panel15.BackColor = System.Drawing.Color.White;
-            this.panel15.Controls.Add(this.grpArchivoMaster);
-            this.panel15.Controls.Add(this.grpProductoConfiguracion);
-            this.panel15.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel15.Location = new System.Drawing.Point(3, 3);
-            this.panel15.Name = "panel15";
-            this.panel15.Size = new System.Drawing.Size(882, 322);
-            this.panel15.TabIndex = 29;
             // 
             // grpArchivoMaster
             // 
@@ -1564,295 +1481,6 @@ namespace TithorAutomation
             this.btnEditarProducto.UseVisualStyleBackColor = false;
             this.btnEditarProducto.Click += new System.EventHandler(this.btnEditarProducto_Click);
             // 
-            // tabMockups
-            // 
-            this.tabMockups.Controls.Add(this.grpCatalogoMockups);
-            this.tabMockups.Controls.Add(this.grpAccionesMockups);
-            this.tabMockups.Controls.Add(this.grpArchivoMasterMockups);
-            this.tabMockups.Location = new System.Drawing.Point(4, 4);
-            this.tabMockups.Name = "tabMockups";
-            this.tabMockups.Padding = new System.Windows.Forms.Padding(3);
-            this.tabMockups.Size = new System.Drawing.Size(888, 494);
-            this.tabMockups.TabIndex = 1;
-            this.tabMockups.Text = "MOCKUPS";
-            this.tabMockups.UseVisualStyleBackColor = true;
-            // 
-            // grpCatalogoMockups
-            // 
-            this.grpCatalogoMockups.Controls.Add(this.dgvCatalogoMockups);
-            this.grpCatalogoMockups.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpCatalogoMockups.Location = new System.Drawing.Point(3, 161);
-            this.grpCatalogoMockups.Name = "grpCatalogoMockups";
-            this.grpCatalogoMockups.Size = new System.Drawing.Size(882, 260);
-            this.grpCatalogoMockups.TabIndex = 37;
-            this.grpCatalogoMockups.TabStop = false;
-            // 
-            // dgvCatalogoMockups
-            // 
-            this.dgvCatalogoMockups.AllowUserToAddRows = false;
-            this.dgvCatalogoMockups.AllowUserToDeleteRows = false;
-            this.dgvCatalogoMockups.AllowUserToResizeColumns = false;
-            this.dgvCatalogoMockups.AllowUserToResizeRows = false;
-            dataGridViewCellStyle10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
-            this.dgvCatalogoMockups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle10;
-            this.dgvCatalogoMockups.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvCatalogoMockups.BackgroundColor = System.Drawing.Color.White;
-            this.dgvCatalogoMockups.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvCatalogoMockups.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            this.dgvCatalogoMockups.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle11.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvCatalogoMockups.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
-            this.dgvCatalogoMockups.ColumnHeadersHeight = 42;
-            this.dgvCatalogoMockups.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvCatalogoMockups.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colEstadoMockup,
-            this.colCodigoMockup,
-            this.colProductoMockup,
-            this.colNombreGrupoMockup});
-            this.dgvCatalogoMockups.Cursor = System.Windows.Forms.Cursors.Default;
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle12.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvCatalogoMockups.DefaultCellStyle = dataGridViewCellStyle12;
-            this.dgvCatalogoMockups.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvCatalogoMockups.EnableHeadersVisualStyles = false;
-            this.dgvCatalogoMockups.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvCatalogoMockups.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
-            this.dgvCatalogoMockups.Location = new System.Drawing.Point(3, 21);
-            this.dgvCatalogoMockups.MultiSelect = false;
-            this.dgvCatalogoMockups.Name = "dgvCatalogoMockups";
-            this.dgvCatalogoMockups.RowHeadersVisible = false;
-            this.dgvCatalogoMockups.RowTemplate.Height = 34;
-            this.dgvCatalogoMockups.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvCatalogoMockups.Size = new System.Drawing.Size(876, 236);
-            this.dgvCatalogoMockups.TabIndex = 34;
-            // 
-            // colEstadoMockup
-            // 
-            this.colEstadoMockup.HeaderText = "Estado";
-            this.colEstadoMockup.Name = "colEstadoMockup";
-            this.colEstadoMockup.ReadOnly = true;
-            // 
-            // colCodigoMockup
-            // 
-            this.colCodigoMockup.HeaderText = "Código";
-            this.colCodigoMockup.Name = "colCodigoMockup";
-            this.colCodigoMockup.ReadOnly = true;
-            // 
-            // colProductoMockup
-            // 
-            this.colProductoMockup.HeaderText = "Producto";
-            this.colProductoMockup.Name = "colProductoMockup";
-            this.colProductoMockup.ReadOnly = true;
-            // 
-            // colNombreGrupoMockup
-            // 
-            this.colNombreGrupoMockup.HeaderText = "Capa o grupo";
-            this.colNombreGrupoMockup.Name = "colNombreGrupoMockup";
-            this.colNombreGrupoMockup.ReadOnly = true;
-            // 
-            // grpAccionesMockups
-            // 
-            this.grpAccionesMockups.Controls.Add(this.lblEstadoMockups);
-            this.grpAccionesMockups.Controls.Add(this.btnSincronizarMockups);
-            this.grpAccionesMockups.Controls.Add(this.btnAnalizarMasterMockups);
-            this.grpAccionesMockups.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpAccionesMockups.Location = new System.Drawing.Point(3, 421);
-            this.grpAccionesMockups.Name = "grpAccionesMockups";
-            this.grpAccionesMockups.Size = new System.Drawing.Size(882, 70);
-            this.grpAccionesMockups.TabIndex = 36;
-            this.grpAccionesMockups.TabStop = false;
-            // 
-            // lblEstadoMockups
-            // 
-            this.lblEstadoMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblEstadoMockups.AutoSize = true;
-            this.lblEstadoMockups.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblEstadoMockups.ForeColor = System.Drawing.Color.Gray;
-            this.lblEstadoMockups.Location = new System.Drawing.Point(6, 34);
-            this.lblEstadoMockups.Name = "lblEstadoMockups";
-            this.lblEstadoMockups.Size = new System.Drawing.Size(224, 13);
-            this.lblEstadoMockups.TabIndex = 31;
-            this.lblEstadoMockups.Text = "Seleccione un archivo Master de mockups.";
-            // 
-            // btnSincronizarMockups
-            // 
-            this.btnSincronizarMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSincronizarMockups.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(216)))), ((int)(((byte)(68)))));
-            this.btnSincronizarMockups.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSincronizarMockups.FlatAppearance.BorderSize = 0;
-            this.btnSincronizarMockups.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSincronizarMockups.Location = new System.Drawing.Point(714, 20);
-            this.btnSincronizarMockups.Name = "btnSincronizarMockups";
-            this.btnSincronizarMockups.Size = new System.Drawing.Size(161, 40);
-            this.btnSincronizarMockups.TabIndex = 32;
-            this.btnSincronizarMockups.Text = "Sincronizar cambios";
-            this.btnSincronizarMockups.UseVisualStyleBackColor = false;
-            // 
-            // btnAnalizarMasterMockups
-            // 
-            this.btnAnalizarMasterMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAnalizarMasterMockups.BackColor = System.Drawing.Color.White;
-            this.btnAnalizarMasterMockups.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnAnalizarMasterMockups.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.btnAnalizarMasterMockups.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAnalizarMasterMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.btnAnalizarMasterMockups.Location = new System.Drawing.Point(575, 20);
-            this.btnAnalizarMasterMockups.Name = "btnAnalizarMasterMockups";
-            this.btnAnalizarMasterMockups.Size = new System.Drawing.Size(130, 40);
-            this.btnAnalizarMasterMockups.TabIndex = 33;
-            this.btnAnalizarMasterMockups.Text = "Analizar Master";
-            this.btnAnalizarMasterMockups.UseVisualStyleBackColor = false;
-            // 
-            // grpArchivoMasterMockups
-            // 
-            this.grpArchivoMasterMockups.BackColor = System.Drawing.Color.White;
-            this.grpArchivoMasterMockups.Controls.Add(this.tlpResumenMockups);
-            this.grpArchivoMasterMockups.Controls.Add(this.btnAbrirUbicacionMasterMockups);
-            this.grpArchivoMasterMockups.Controls.Add(this.btnSeleccionarMasterMockups);
-            this.grpArchivoMasterMockups.Controls.Add(this.txtRutaMasterMockups);
-            this.grpArchivoMasterMockups.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpArchivoMasterMockups.Location = new System.Drawing.Point(3, 3);
-            this.grpArchivoMasterMockups.Name = "grpArchivoMasterMockups";
-            this.grpArchivoMasterMockups.Size = new System.Drawing.Size(882, 158);
-            this.grpArchivoMasterMockups.TabIndex = 35;
-            this.grpArchivoMasterMockups.TabStop = false;
-            this.grpArchivoMasterMockups.Text = "ARCHIVO MASTER DE MOCKUPS";
-            // 
-            // tlpResumenMockups
-            // 
-            this.tlpResumenMockups.ColumnCount = 2;
-            this.tlpResumenMockups.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpResumenMockups.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpResumenMockups.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpResumenMockups.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.tlpResumenMockups.Controls.Add(this.pnlResumenMockups, 0, 0);
-            this.tlpResumenMockups.Controls.Add(this.pnlErroresMockups, 1, 0);
-            this.tlpResumenMockups.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tlpResumenMockups.Location = new System.Drawing.Point(3, 75);
-            this.tlpResumenMockups.Name = "tlpResumenMockups";
-            this.tlpResumenMockups.Padding = new System.Windows.Forms.Padding(5);
-            this.tlpResumenMockups.RowCount = 1;
-            this.tlpResumenMockups.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpResumenMockups.Size = new System.Drawing.Size(876, 80);
-            this.tlpResumenMockups.TabIndex = 32;
-            // 
-            // pnlResumenMockups
-            // 
-            this.pnlResumenMockups.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.pnlResumenMockups.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlResumenMockups.Controls.Add(this.lblCantidadMockups);
-            this.pnlResumenMockups.Controls.Add(this.lblTituloCantidadMockups);
-            this.pnlResumenMockups.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlResumenMockups.Location = new System.Drawing.Point(8, 8);
-            this.pnlResumenMockups.Name = "pnlResumenMockups";
-            this.pnlResumenMockups.Size = new System.Drawing.Size(427, 64);
-            this.pnlResumenMockups.TabIndex = 8;
-            // 
-            // lblCantidadMockups
-            // 
-            this.lblCantidadMockups.AutoSize = true;
-            this.lblCantidadMockups.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCantidadMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            this.lblCantidadMockups.Location = new System.Drawing.Point(8, 17);
-            this.lblCantidadMockups.Name = "lblCantidadMockups";
-            this.lblCantidadMockups.Size = new System.Drawing.Size(34, 40);
-            this.lblCantidadMockups.TabIndex = 8;
-            this.lblCantidadMockups.Text = "0";
-            // 
-            // lblTituloCantidadMockups
-            // 
-            this.lblTituloCantidadMockups.AutoSize = true;
-            this.lblTituloCantidadMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.lblTituloCantidadMockups.Location = new System.Drawing.Point(8, 2);
-            this.lblTituloCantidadMockups.Name = "lblTituloCantidadMockups";
-            this.lblTituloCantidadMockups.Size = new System.Drawing.Size(141, 17);
-            this.lblTituloCantidadMockups.TabIndex = 7;
-            this.lblTituloCantidadMockups.Text = "Mockups encontrados:";
-            // 
-            // pnlErroresMockups
-            // 
-            this.pnlErroresMockups.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.pnlErroresMockups.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pnlErroresMockups.Controls.Add(this.lblCantidadErroresMockups);
-            this.pnlErroresMockups.Controls.Add(this.lblTituloErroresMockups);
-            this.pnlErroresMockups.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlErroresMockups.Location = new System.Drawing.Point(441, 8);
-            this.pnlErroresMockups.Name = "pnlErroresMockups";
-            this.pnlErroresMockups.Size = new System.Drawing.Size(427, 64);
-            this.pnlErroresMockups.TabIndex = 9;
-            // 
-            // lblCantidadErroresMockups
-            // 
-            this.lblCantidadErroresMockups.AutoSize = true;
-            this.lblCantidadErroresMockups.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCantidadErroresMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(166)))), ((int)(((byte)(111)))));
-            this.lblCantidadErroresMockups.Location = new System.Drawing.Point(8, 17);
-            this.lblCantidadErroresMockups.Name = "lblCantidadErroresMockups";
-            this.lblCantidadErroresMockups.Size = new System.Drawing.Size(34, 40);
-            this.lblCantidadErroresMockups.TabIndex = 8;
-            this.lblCantidadErroresMockups.Text = "0";
-            // 
-            // lblTituloErroresMockups
-            // 
-            this.lblTituloErroresMockups.AutoSize = true;
-            this.lblTituloErroresMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.lblTituloErroresMockups.Location = new System.Drawing.Point(8, 2);
-            this.lblTituloErroresMockups.Name = "lblTituloErroresMockups";
-            this.lblTituloErroresMockups.Size = new System.Drawing.Size(68, 17);
-            this.lblTituloErroresMockups.TabIndex = 7;
-            this.lblTituloErroresMockups.Text = "Con error:";
-            // 
-            // btnAbrirUbicacionMasterMockups
-            // 
-            this.btnAbrirUbicacionMasterMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAbrirUbicacionMasterMockups.BackColor = System.Drawing.Color.White;
-            this.btnAbrirUbicacionMasterMockups.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnAbrirUbicacionMasterMockups.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.btnAbrirUbicacionMasterMockups.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAbrirUbicacionMasterMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.btnAbrirUbicacionMasterMockups.Location = new System.Drawing.Point(744, 28);
-            this.btnAbrirUbicacionMasterMockups.Name = "btnAbrirUbicacionMasterMockups";
-            this.btnAbrirUbicacionMasterMockups.Size = new System.Drawing.Size(130, 40);
-            this.btnAbrirUbicacionMasterMockups.TabIndex = 31;
-            this.btnAbrirUbicacionMasterMockups.Text = "Abrir Ubicación";
-            this.btnAbrirUbicacionMasterMockups.UseVisualStyleBackColor = false;
-            // 
-            // btnSeleccionarMasterMockups
-            // 
-            this.btnSeleccionarMasterMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSeleccionarMasterMockups.BackColor = System.Drawing.Color.White;
-            this.btnSeleccionarMasterMockups.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSeleccionarMasterMockups.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.btnSeleccionarMasterMockups.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSeleccionarMasterMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.btnSeleccionarMasterMockups.Location = new System.Drawing.Point(578, 28);
-            this.btnSeleccionarMasterMockups.Name = "btnSeleccionarMasterMockups";
-            this.btnSeleccionarMasterMockups.Size = new System.Drawing.Size(156, 40);
-            this.btnSeleccionarMasterMockups.TabIndex = 27;
-            this.btnSeleccionarMasterMockups.Text = "Seleccionar Archivo";
-            this.btnSeleccionarMasterMockups.UseVisualStyleBackColor = false;
-            // 
-            // txtRutaMasterMockups
-            // 
-            this.txtRutaMasterMockups.Enabled = false;
-            this.txtRutaMasterMockups.Location = new System.Drawing.Point(7, 36);
-            this.txtRutaMasterMockups.Name = "txtRutaMasterMockups";
-            this.txtRutaMasterMockups.Size = new System.Drawing.Size(533, 25);
-            this.txtRutaMasterMockups.TabIndex = 26;
-            // 
             // pnlConfiguracion_Header
             // 
             this.pnlConfiguracion_Header.BackColor = System.Drawing.Color.White;
@@ -1886,17 +1514,52 @@ namespace TithorAutomation
             // 
             // pnlContenido
             // 
-            this.pnlContenido.Controls.Add(this.pnlProduccion);
+            this.pnlContenido.Controls.Add(this.pnlMockups);
             this.pnlContenido.Controls.Add(this.pnlConfiguracion);
             this.pnlContenido.Controls.Add(this.pnlPantonear);
             this.pnlContenido.Controls.Add(this.pnlAcomodar);
+            this.pnlContenido.Controls.Add(this.pnlProduccion);
+            this.pnlContenido.Controls.Add(this.pnlEscalar);
             this.pnlContenido.Controls.Add(this.pnlEstadoCorelGlobal);
             this.pnlContenido.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContenido.Location = new System.Drawing.Point(225, 0);
             this.pnlContenido.Name = "pnlContenido";
             this.pnlContenido.Size = new System.Drawing.Size(896, 611);
             this.pnlContenido.TabIndex = 12;
-            this.pnlContenido.Visible = false;
+            this.pnlContenido.Visible = true;
+            // 
+            // pnlMockups
+            // 
+            this.pnlMockups.BackColor = System.Drawing.Color.White;
+            this.pnlMockups.Controls.Add(this.lblDescripcionModuloMockups);
+            this.pnlMockups.Controls.Add(this.lblTituloModuloMockups);
+            this.pnlMockups.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlMockups.Location = new System.Drawing.Point(0, 0);
+            this.pnlMockups.Name = "pnlMockups";
+            this.pnlMockups.Size = new System.Drawing.Size(896, 611);
+            this.pnlMockups.TabIndex = 36;
+            this.pnlMockups.Visible = true;
+            // 
+            // lblTituloModuloMockups
+            // 
+            this.lblTituloModuloMockups.AutoSize = true;
+            this.lblTituloModuloMockups.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
+            this.lblTituloModuloMockups.Location = new System.Drawing.Point(20, 18);
+            this.lblTituloModuloMockups.Name = "lblTituloModuloMockups";
+            this.lblTituloModuloMockups.Size = new System.Drawing.Size(143, 32);
+            this.lblTituloModuloMockups.TabIndex = 0;
+            this.lblTituloModuloMockups.Text = "MOCKUPS";
+            // 
+            // lblDescripcionModuloMockups
+            // 
+            this.lblDescripcionModuloMockups.AutoSize = true;
+            this.lblDescripcionModuloMockups.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblDescripcionModuloMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.lblDescripcionModuloMockups.Location = new System.Drawing.Point(23, 55);
+            this.lblDescripcionModuloMockups.Name = "lblDescripcionModuloMockups";
+            this.lblDescripcionModuloMockups.Size = new System.Drawing.Size(316, 15);
+            this.lblDescripcionModuloMockups.TabIndex = 1;
+            this.lblDescripcionModuloMockups.Text = "Selecciona y prepara los mockups para el pedido activo.";
             // 
             // pnlAcomodar
             // 
@@ -1926,22 +1589,22 @@ namespace TithorAutomation
             this.dgvAcomodo.AllowUserToAddRows = false;
             this.dgvAcomodo.AllowUserToDeleteRows = false;
             this.dgvAcomodo.AllowUserToResizeRows = false;
-            dataGridViewCellStyle13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
-            this.dgvAcomodo.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
+            this.dgvAcomodo.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle10;
             this.dgvAcomodo.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvAcomodo.BackgroundColor = System.Drawing.Color.White;
             this.dgvAcomodo.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvAcomodo.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvAcomodo.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle14.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvAcomodo.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle11.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle11.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvAcomodo.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
             this.dgvAcomodo.ColumnHeadersHeight = 42;
             this.dgvAcomodo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvAcomodo.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -1952,15 +1615,15 @@ namespace TithorAutomation
             this.colAltoAcomodo,
             this.colRotacionAcomodo,
             this.colGrupoAcomodo});
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle15.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle15.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle15.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
-            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvAcomodo.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle12.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle12.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle12.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
+            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvAcomodo.DefaultCellStyle = dataGridViewCellStyle12;
             this.dgvAcomodo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvAcomodo.EnableHeadersVisualStyles = false;
             this.dgvAcomodo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -2368,32 +2031,32 @@ namespace TithorAutomation
             // 
             // dgvPedidoProduccion
             // 
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
-            this.dgvPedidoProduccion.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
+            this.dgvPedidoProduccion.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle13;
             this.dgvPedidoProduccion.BackgroundColor = System.Drawing.Color.White;
             this.dgvPedidoProduccion.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvPedidoProduccion.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvPedidoProduccion.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle5.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvPedidoProduccion.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle14.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle14.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle14.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPedidoProduccion.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle14;
             this.dgvPedidoProduccion.ColumnHeadersHeight = 42;
             this.dgvPedidoProduccion.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle6.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvPedidoProduccion.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle15.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle15.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle15.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
+            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPedidoProduccion.DefaultCellStyle = dataGridViewCellStyle15;
             this.dgvPedidoProduccion.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvPedidoProduccion.EnableHeadersVisualStyles = false;
             this.dgvPedidoProduccion.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -2752,49 +2415,6 @@ namespace TithorAutomation
             this.lblSubtituloProduccion.TabIndex = 7;
             this.lblSubtituloProduccion.Text = "Carga el pedido, analiza el Excel y copia los moldes necesarios";
             // 
-            // pnlEstadoCorelGlobal
-            // 
-            this.pnlEstadoCorelGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pnlEstadoCorelGlobal.Controls.Add(this.lblDocumentoActivo);
-            this.pnlEstadoCorelGlobal.Controls.Add(this.lblEstadoCorel);
-            this.pnlEstadoCorelGlobal.Location = new System.Drawing.Point(451, 6);
-            this.pnlEstadoCorelGlobal.Name = "pnlEstadoCorelGlobal";
-            this.pnlEstadoCorelGlobal.Size = new System.Drawing.Size(437, 58);
-            this.pnlEstadoCorelGlobal.TabIndex = 37;
-            // 
-            // pnlMockups
-            // 
-            this.pnlMockups.BackColor = System.Drawing.Color.White;
-            this.pnlMockups.Controls.Add(this.lblDescripcionModuloMockups);
-            this.pnlMockups.Controls.Add(this.lblTituloModuloMockups);
-            this.pnlMockups.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlMockups.Location = new System.Drawing.Point(0, 0);
-            this.pnlMockups.Name = "pnlMockups";
-            this.pnlMockups.Size = new System.Drawing.Size(896, 611);
-            this.pnlMockups.TabIndex = 36;
-            this.pnlMockups.Visible = false;
-            // 
-            // lblDescripcionModuloMockups
-            // 
-            this.lblDescripcionModuloMockups.AutoSize = true;
-            this.lblDescripcionModuloMockups.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.lblDescripcionModuloMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.lblDescripcionModuloMockups.Location = new System.Drawing.Point(23, 55);
-            this.lblDescripcionModuloMockups.Name = "lblDescripcionModuloMockups";
-            this.lblDescripcionModuloMockups.Size = new System.Drawing.Size(301, 15);
-            this.lblDescripcionModuloMockups.TabIndex = 1;
-            this.lblDescripcionModuloMockups.Text = "Selecciona y prepara los mockups para el pedido activo.";
-            // 
-            // lblTituloModuloMockups
-            // 
-            this.lblTituloModuloMockups.AutoSize = true;
-            this.lblTituloModuloMockups.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
-            this.lblTituloModuloMockups.Location = new System.Drawing.Point(20, 18);
-            this.lblTituloModuloMockups.Name = "lblTituloModuloMockups";
-            this.lblTituloModuloMockups.Size = new System.Drawing.Size(131, 32);
-            this.lblTituloModuloMockups.TabIndex = 0;
-            this.lblTituloModuloMockups.Text = "MOCKUPS";
-            // 
             // pnlEscalar
             // 
             this.pnlEscalar.Controls.Add(this.dgvEscalar);
@@ -2805,6 +2425,7 @@ namespace TithorAutomation
             this.pnlEscalar.Name = "pnlEscalar";
             this.pnlEscalar.Size = new System.Drawing.Size(896, 611);
             this.pnlEscalar.TabIndex = 40;
+            this.pnlEscalar.Visible = true;
             // 
             // dgvEscalar
             // 
@@ -2893,7 +2514,6 @@ namespace TithorAutomation
             this.groupBox1.Controls.Add(this.chkReemplazarContenidoEscalar);
             this.groupBox1.Controls.Add(this.cboTareaEscalar);
             this.groupBox1.Controls.Add(this.lblTallaEscalar);
-            this.groupBox1.Controls.Add(this.cboTallaEscalar);
             this.groupBox1.Controls.Add(this.lblPiezaEscalar);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.groupBox1.Location = new System.Drawing.Point(0, 511);
@@ -2908,7 +2528,7 @@ namespace TithorAutomation
             this.lblEstadoEscalar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
             this.lblEstadoEscalar.Location = new System.Drawing.Point(17, 71);
             this.lblEstadoEscalar.Name = "lblEstadoEscalar";
-            this.lblEstadoEscalar.Size = new System.Drawing.Size(306, 13);
+            this.lblEstadoEscalar.Size = new System.Drawing.Size(376, 17);
             this.lblEstadoEscalar.TabIndex = 42;
             this.lblEstadoEscalar.Text = "Aplica el diseño seleccionado en los PowerClips de cada pieza.";
             // 
@@ -2946,7 +2566,7 @@ namespace TithorAutomation
             this.chkReemplazarContenidoEscalar.AutoSize = true;
             this.chkReemplazarContenidoEscalar.Location = new System.Drawing.Point(399, 29);
             this.chkReemplazarContenidoEscalar.Name = "chkReemplazarContenidoEscalar";
-            this.chkReemplazarContenidoEscalar.Size = new System.Drawing.Size(132, 17);
+            this.chkReemplazarContenidoEscalar.Size = new System.Drawing.Size(158, 21);
             this.chkReemplazarContenidoEscalar.TabIndex = 39;
             this.chkReemplazarContenidoEscalar.Text = "Reemplazar contenido";
             this.chkReemplazarContenidoEscalar.UseVisualStyleBackColor = true;
@@ -2955,9 +2575,9 @@ namespace TithorAutomation
             // 
             this.cboTareaEscalar.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboTareaEscalar.FormattingEnabled = true;
-            this.cboTareaEscalar.Location = new System.Drawing.Point(61, 29);
+            this.cboTareaEscalar.Location = new System.Drawing.Point(61, 27);
             this.cboTareaEscalar.Name = "cboTareaEscalar";
-            this.cboTareaEscalar.Size = new System.Drawing.Size(330, 21);
+            this.cboTareaEscalar.Size = new System.Drawing.Size(330, 25);
             this.cboTareaEscalar.TabIndex = 43;
             // 
             // lblTallaEscalar
@@ -2965,34 +2585,17 @@ namespace TithorAutomation
             this.lblTallaEscalar.AutoSize = true;
             this.lblTallaEscalar.Location = new System.Drawing.Point(213, 30);
             this.lblTallaEscalar.Name = "lblTallaEscalar";
-            this.lblTallaEscalar.Size = new System.Drawing.Size(33, 13);
+            this.lblTallaEscalar.Size = new System.Drawing.Size(37, 17);
             this.lblTallaEscalar.TabIndex = 37;
             this.lblTallaEscalar.Text = "Talla:";
             this.lblTallaEscalar.Visible = false;
-            // 
-            // cboTallaEscalar
-            // 
-            this.cboTallaEscalar.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboTallaEscalar.FormattingEnabled = true;
-            this.cboTallaEscalar.Items.AddRange(new object[] {
-            "Todos",
-            "Correctos",
-            "Nuevos",
-            "Modificados",
-            "Duplicados",
-            "Inválidos"});
-            this.cboTallaEscalar.Location = new System.Drawing.Point(250, 27);
-            this.cboTallaEscalar.Name = "cboTallaEscalar";
-            this.cboTallaEscalar.Size = new System.Drawing.Size(143, 21);
-            this.cboTallaEscalar.TabIndex = 38;
-            this.cboTallaEscalar.Visible = false;
             // 
             // lblPiezaEscalar
             // 
             this.lblPiezaEscalar.AutoSize = true;
             this.lblPiezaEscalar.Location = new System.Drawing.Point(14, 31);
             this.lblPiezaEscalar.Name = "lblPiezaEscalar";
-            this.lblPiezaEscalar.Size = new System.Drawing.Size(38, 13);
+            this.lblPiezaEscalar.Size = new System.Drawing.Size(43, 17);
             this.lblPiezaEscalar.TabIndex = 35;
             this.lblPiezaEscalar.Text = "Tarea:";
             // 
@@ -3023,9 +2626,19 @@ namespace TithorAutomation
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
             this.label2.Location = new System.Drawing.Point(14, 43);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(306, 13);
+            this.label2.Size = new System.Drawing.Size(376, 17);
             this.label2.TabIndex = 7;
             this.label2.Text = "Aplica el diseño seleccionado en los PowerClips de cada pieza.";
+            // 
+            // pnlEstadoCorelGlobal
+            // 
+            this.pnlEstadoCorelGlobal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlEstadoCorelGlobal.Controls.Add(this.lblDocumentoActivo);
+            this.pnlEstadoCorelGlobal.Controls.Add(this.lblEstadoCorel);
+            this.pnlEstadoCorelGlobal.Location = new System.Drawing.Point(451, 6);
+            this.pnlEstadoCorelGlobal.Name = "pnlEstadoCorelGlobal";
+            this.pnlEstadoCorelGlobal.Size = new System.Drawing.Size(437, 58);
+            this.pnlEstadoCorelGlobal.TabIndex = 37;
             // 
             // dataGridViewImageColumn1
             // 
@@ -3225,6 +2838,218 @@ namespace TithorAutomation
             this.dataGridViewTextBoxColumn14.ReadOnly = true;
             this.dataGridViewTextBoxColumn14.Width = 60;
             // 
+            // tabConfiguracion
+            // 
+            this.tabConfiguracion.Alignment = System.Windows.Forms.TabAlignment.Bottom;
+            this.tabConfiguracion.Controls.Add(this.tabMoldes);
+            this.tabConfiguracion.Controls.Add(this.tabMockups);
+            this.tabConfiguracion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabConfiguracion.ItemSize = new System.Drawing.Size(180, 40);
+            this.tabConfiguracion.Location = new System.Drawing.Point(0, 69);
+            this.tabConfiguracion.Multiline = true;
+            this.tabConfiguracion.Name = "tabConfiguracion";
+            this.tabConfiguracion.SelectedIndex = 0;
+            this.tabConfiguracion.Size = new System.Drawing.Size(896, 542);
+            this.tabConfiguracion.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.tabConfiguracion.TabIndex = 29;
+            // 
+            // tabMoldes
+            // 
+            this.tabMoldes.Controls.Add(this.panel16);
+            this.tabMoldes.Controls.Add(this.panel15);
+            this.tabMoldes.Location = new System.Drawing.Point(4, 4);
+            this.tabMoldes.Name = "tabMoldes";
+            this.tabMoldes.Padding = new System.Windows.Forms.Padding(3);
+            this.tabMoldes.Size = new System.Drawing.Size(888, 494);
+            this.tabMoldes.TabIndex = 0;
+            this.tabMoldes.Text = "MOLDES";
+            this.tabMoldes.UseVisualStyleBackColor = true;
+            // 
+            // tabMockups
+            // 
+            this.tabMockups.Controls.Add(this.grpCatalogoMockups);
+            this.tabMockups.Controls.Add(this.grpAccionesMockups);
+            this.tabMockups.Controls.Add(this.grpArchivoMasterMockups);
+            this.tabMockups.Location = new System.Drawing.Point(4, 4);
+            this.tabMockups.Name = "tabMockups";
+            this.tabMockups.Padding = new System.Windows.Forms.Padding(3);
+            this.tabMockups.Size = new System.Drawing.Size(888, 494);
+            this.tabMockups.TabIndex = 1;
+            this.tabMockups.Text = "MOCKUPS";
+            this.tabMockups.UseVisualStyleBackColor = true;
+            // 
+            // grpCatalogoMoldes
+            // 
+            this.grpCatalogoMoldes.BackColor = System.Drawing.Color.White;
+            this.grpCatalogoMoldes.Controls.Add(this.panel2);
+            this.grpCatalogoMoldes.Controls.Add(this.panel1);
+            this.grpCatalogoMoldes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grpCatalogoMoldes.Location = new System.Drawing.Point(0, 0);
+            this.grpCatalogoMoldes.Name = "grpCatalogoMoldes";
+            this.grpCatalogoMoldes.Size = new System.Drawing.Size(882, 166);
+            this.grpCatalogoMoldes.TabIndex = 28;
+            this.grpCatalogoMoldes.TabStop = false;
+            this.grpCatalogoMoldes.Text = "CATÁLOGO DE MOLDES";
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.lblBuscarMolde);
+            this.panel1.Controls.Add(this.txtBuscarMolde);
+            this.panel1.Controls.Add(this.cboEstadoMolde);
+            this.panel1.Controls.Add(this.lblResumenCatalogo);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(3, 21);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(876, 44);
+            this.panel1.TabIndex = 31;
+            // 
+            // panel15
+            // 
+            this.panel15.BackColor = System.Drawing.Color.White;
+            this.panel15.Controls.Add(this.grpArchivoMaster);
+            this.panel15.Controls.Add(this.grpProductoConfiguracion);
+            this.panel15.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel15.Location = new System.Drawing.Point(3, 3);
+            this.panel15.Name = "panel15";
+            this.panel15.Size = new System.Drawing.Size(882, 322);
+            this.panel15.TabIndex = 29;
+            // 
+            // panel16
+            // 
+            this.panel16.Controls.Add(this.grpCatalogoMoldes);
+            this.panel16.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel16.Location = new System.Drawing.Point(3, 325);
+            this.panel16.Margin = new System.Windows.Forms.Padding(3, 3, 3, 10);
+            this.panel16.Name = "panel16";
+            this.panel16.Size = new System.Drawing.Size(882, 166);
+            this.panel16.TabIndex = 30;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.dgvCatalogoMoldes);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(3, 65);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(876, 98);
+            this.panel2.TabIndex = 32;
+            // 
+            // btnAnalizarMasterMockups
+            // 
+            this.btnAnalizarMasterMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAnalizarMasterMockups.BackColor = System.Drawing.Color.White;
+            this.btnAnalizarMasterMockups.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAnalizarMasterMockups.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnAnalizarMasterMockups.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAnalizarMasterMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnAnalizarMasterMockups.Location = new System.Drawing.Point(575, 20);
+            this.btnAnalizarMasterMockups.Name = "btnAnalizarMasterMockups";
+            this.btnAnalizarMasterMockups.Size = new System.Drawing.Size(130, 40);
+            this.btnAnalizarMasterMockups.TabIndex = 33;
+            this.btnAnalizarMasterMockups.Text = "Analizar Master";
+            this.btnAnalizarMasterMockups.UseVisualStyleBackColor = false;
+            // 
+            // btnSincronizarMockups
+            // 
+            this.btnSincronizarMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSincronizarMockups.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(216)))), ((int)(((byte)(68)))));
+            this.btnSincronizarMockups.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSincronizarMockups.FlatAppearance.BorderSize = 0;
+            this.btnSincronizarMockups.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSincronizarMockups.Location = new System.Drawing.Point(714, 20);
+            this.btnSincronizarMockups.Name = "btnSincronizarMockups";
+            this.btnSincronizarMockups.Size = new System.Drawing.Size(161, 40);
+            this.btnSincronizarMockups.TabIndex = 32;
+            this.btnSincronizarMockups.Text = "Sincronizar cambios";
+            this.btnSincronizarMockups.UseVisualStyleBackColor = false;
+            // 
+            // lblEstadoMockups
+            // 
+            this.lblEstadoMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblEstadoMockups.AutoSize = true;
+            this.lblEstadoMockups.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblEstadoMockups.ForeColor = System.Drawing.Color.Gray;
+            this.lblEstadoMockups.Location = new System.Drawing.Point(6, 34);
+            this.lblEstadoMockups.Name = "lblEstadoMockups";
+            this.lblEstadoMockups.Size = new System.Drawing.Size(215, 13);
+            this.lblEstadoMockups.TabIndex = 31;
+            this.lblEstadoMockups.Text = "Seleccione un archivo Master de mockups.";
+            // 
+            // dgvCatalogoMockups
+            // 
+            this.dgvCatalogoMockups.AllowUserToAddRows = false;
+            this.dgvCatalogoMockups.AllowUserToDeleteRows = false;
+            this.dgvCatalogoMockups.AllowUserToResizeColumns = false;
+            this.dgvCatalogoMockups.AllowUserToResizeRows = false;
+            dataGridViewCellStyle7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
+            this.dgvCatalogoMockups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            this.dgvCatalogoMockups.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvCatalogoMockups.BackgroundColor = System.Drawing.Color.White;
+            this.dgvCatalogoMockups.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvCatalogoMockups.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.dgvCatalogoMockups.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle8.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvCatalogoMockups.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
+            this.dgvCatalogoMockups.ColumnHeadersHeight = 42;
+            this.dgvCatalogoMockups.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvCatalogoMockups.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colEstadoMockup,
+            this.colCodigoMockup,
+            this.colProductoMockup,
+            this.colNombreGrupoMockup});
+            this.dgvCatalogoMockups.Cursor = System.Windows.Forms.Cursors.Default;
+            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle9.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle9.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle9.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
+            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvCatalogoMockups.DefaultCellStyle = dataGridViewCellStyle9;
+            this.dgvCatalogoMockups.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvCatalogoMockups.EnableHeadersVisualStyles = false;
+            this.dgvCatalogoMockups.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgvCatalogoMockups.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
+            this.dgvCatalogoMockups.Location = new System.Drawing.Point(3, 21);
+            this.dgvCatalogoMockups.MultiSelect = false;
+            this.dgvCatalogoMockups.Name = "dgvCatalogoMockups";
+            this.dgvCatalogoMockups.RowHeadersVisible = false;
+            this.dgvCatalogoMockups.RowTemplate.Height = 34;
+            this.dgvCatalogoMockups.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvCatalogoMockups.Size = new System.Drawing.Size(876, 236);
+            this.dgvCatalogoMockups.TabIndex = 34;
+            // 
+            // colEstadoMockup
+            // 
+            this.colEstadoMockup.HeaderText = "Estado";
+            this.colEstadoMockup.Name = "colEstadoMockup";
+            this.colEstadoMockup.ReadOnly = true;
+            // 
+            // colCodigoMockup
+            // 
+            this.colCodigoMockup.HeaderText = "Código";
+            this.colCodigoMockup.Name = "colCodigoMockup";
+            this.colCodigoMockup.ReadOnly = true;
+            // 
+            // colProductoMockup
+            // 
+            this.colProductoMockup.HeaderText = "Producto";
+            this.colProductoMockup.Name = "colProductoMockup";
+            this.colProductoMockup.ReadOnly = true;
+            // 
+            // colNombreGrupoMockup
+            // 
+            this.colNombreGrupoMockup.HeaderText = "Capa o grupo";
+            this.colNombreGrupoMockup.Name = "colNombreGrupoMockup";
+            this.colNombreGrupoMockup.ReadOnly = true;
+            // 
             // dataGridViewTextBoxColumn19
             // 
             this.dataGridViewTextBoxColumn19.HeaderText = "Corte";
@@ -3254,6 +3079,165 @@ namespace TithorAutomation
             this.dataGridViewTextBoxColumn23.HeaderText = "Capa";
             this.dataGridViewTextBoxColumn23.Name = "dataGridViewTextBoxColumn23";
             this.dataGridViewTextBoxColumn23.ReadOnly = true;
+            // 
+            // grpArchivoMasterMockups
+            // 
+            this.grpArchivoMasterMockups.BackColor = System.Drawing.Color.White;
+            this.grpArchivoMasterMockups.Controls.Add(this.tlpResumenMockups);
+            this.grpArchivoMasterMockups.Controls.Add(this.btnAbrirUbicacionMasterMockups);
+            this.grpArchivoMasterMockups.Controls.Add(this.btnSeleccionarMasterMockups);
+            this.grpArchivoMasterMockups.Controls.Add(this.txtRutaMasterMockups);
+            this.grpArchivoMasterMockups.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpArchivoMasterMockups.Location = new System.Drawing.Point(3, 3);
+            this.grpArchivoMasterMockups.Name = "grpArchivoMasterMockups";
+            this.grpArchivoMasterMockups.Size = new System.Drawing.Size(882, 158);
+            this.grpArchivoMasterMockups.TabIndex = 35;
+            this.grpArchivoMasterMockups.TabStop = false;
+            this.grpArchivoMasterMockups.Text = "ARCHIVO MASTER DE MOCKUPS";
+            // 
+            // btnSeleccionarMasterMockups
+            // 
+            this.btnSeleccionarMasterMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSeleccionarMasterMockups.BackColor = System.Drawing.Color.White;
+            this.btnSeleccionarMasterMockups.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnSeleccionarMasterMockups.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnSeleccionarMasterMockups.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnSeleccionarMasterMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnSeleccionarMasterMockups.Location = new System.Drawing.Point(578, 28);
+            this.btnSeleccionarMasterMockups.Name = "btnSeleccionarMasterMockups";
+            this.btnSeleccionarMasterMockups.Size = new System.Drawing.Size(156, 40);
+            this.btnSeleccionarMasterMockups.TabIndex = 27;
+            this.btnSeleccionarMasterMockups.Text = "Seleccionar Archivo";
+            this.btnSeleccionarMasterMockups.UseVisualStyleBackColor = false;
+            // 
+            // txtRutaMasterMockups
+            // 
+            this.txtRutaMasterMockups.Enabled = false;
+            this.txtRutaMasterMockups.Location = new System.Drawing.Point(7, 36);
+            this.txtRutaMasterMockups.Name = "txtRutaMasterMockups";
+            this.txtRutaMasterMockups.Size = new System.Drawing.Size(533, 25);
+            this.txtRutaMasterMockups.TabIndex = 26;
+            // 
+            // grpAccionesMockups
+            // 
+            this.grpAccionesMockups.Controls.Add(this.lblEstadoMockups);
+            this.grpAccionesMockups.Controls.Add(this.btnSincronizarMockups);
+            this.grpAccionesMockups.Controls.Add(this.btnAnalizarMasterMockups);
+            this.grpAccionesMockups.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.grpAccionesMockups.Location = new System.Drawing.Point(3, 421);
+            this.grpAccionesMockups.Name = "grpAccionesMockups";
+            this.grpAccionesMockups.Size = new System.Drawing.Size(882, 70);
+            this.grpAccionesMockups.TabIndex = 36;
+            this.grpAccionesMockups.TabStop = false;
+            // 
+            // grpCatalogoMockups
+            // 
+            this.grpCatalogoMockups.Controls.Add(this.dgvCatalogoMockups);
+            this.grpCatalogoMockups.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.grpCatalogoMockups.Location = new System.Drawing.Point(3, 161);
+            this.grpCatalogoMockups.Name = "grpCatalogoMockups";
+            this.grpCatalogoMockups.Size = new System.Drawing.Size(882, 260);
+            this.grpCatalogoMockups.TabIndex = 37;
+            this.grpCatalogoMockups.TabStop = false;
+            // 
+            // btnAbrirUbicacionMasterMockups
+            // 
+            this.btnAbrirUbicacionMasterMockups.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAbrirUbicacionMasterMockups.BackColor = System.Drawing.Color.White;
+            this.btnAbrirUbicacionMasterMockups.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAbrirUbicacionMasterMockups.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnAbrirUbicacionMasterMockups.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAbrirUbicacionMasterMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnAbrirUbicacionMasterMockups.Location = new System.Drawing.Point(744, 28);
+            this.btnAbrirUbicacionMasterMockups.Name = "btnAbrirUbicacionMasterMockups";
+            this.btnAbrirUbicacionMasterMockups.Size = new System.Drawing.Size(130, 40);
+            this.btnAbrirUbicacionMasterMockups.TabIndex = 31;
+            this.btnAbrirUbicacionMasterMockups.Text = "Abrir Ubicación";
+            this.btnAbrirUbicacionMasterMockups.UseVisualStyleBackColor = false;
+            // 
+            // tlpResumenMockups
+            // 
+            this.tlpResumenMockups.ColumnCount = 2;
+            this.tlpResumenMockups.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpResumenMockups.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpResumenMockups.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpResumenMockups.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpResumenMockups.Controls.Add(this.pnlResumenMockups, 0, 0);
+            this.tlpResumenMockups.Controls.Add(this.pnlErroresMockups, 1, 0);
+            this.tlpResumenMockups.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tlpResumenMockups.Location = new System.Drawing.Point(3, 75);
+            this.tlpResumenMockups.Name = "tlpResumenMockups";
+            this.tlpResumenMockups.Padding = new System.Windows.Forms.Padding(5);
+            this.tlpResumenMockups.RowCount = 1;
+            this.tlpResumenMockups.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpResumenMockups.Size = new System.Drawing.Size(876, 80);
+            this.tlpResumenMockups.TabIndex = 32;
+            // 
+            // pnlResumenMockups
+            // 
+            this.pnlResumenMockups.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
+            this.pnlResumenMockups.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlResumenMockups.Controls.Add(this.lblCantidadMockups);
+            this.pnlResumenMockups.Controls.Add(this.lblTituloCantidadMockups);
+            this.pnlResumenMockups.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlResumenMockups.Location = new System.Drawing.Point(8, 8);
+            this.pnlResumenMockups.Name = "pnlResumenMockups";
+            this.pnlResumenMockups.Size = new System.Drawing.Size(427, 64);
+            this.pnlResumenMockups.TabIndex = 8;
+            // 
+            // lblCantidadMockups
+            // 
+            this.lblCantidadMockups.AutoSize = true;
+            this.lblCantidadMockups.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCantidadMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            this.lblCantidadMockups.Location = new System.Drawing.Point(8, 17);
+            this.lblCantidadMockups.Name = "lblCantidadMockups";
+            this.lblCantidadMockups.Size = new System.Drawing.Size(34, 40);
+            this.lblCantidadMockups.TabIndex = 8;
+            this.lblCantidadMockups.Text = "0";
+            // 
+            // lblTituloCantidadMockups
+            // 
+            this.lblTituloCantidadMockups.AutoSize = true;
+            this.lblTituloCantidadMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.lblTituloCantidadMockups.Location = new System.Drawing.Point(8, 2);
+            this.lblTituloCantidadMockups.Name = "lblTituloCantidadMockups";
+            this.lblTituloCantidadMockups.Size = new System.Drawing.Size(143, 17);
+            this.lblTituloCantidadMockups.TabIndex = 7;
+            this.lblTituloCantidadMockups.Text = "Mockups encontrados:";
+            // 
+            // pnlErroresMockups
+            // 
+            this.pnlErroresMockups.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
+            this.pnlErroresMockups.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pnlErroresMockups.Controls.Add(this.lblCantidadErroresMockups);
+            this.pnlErroresMockups.Controls.Add(this.lblTituloErroresMockups);
+            this.pnlErroresMockups.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlErroresMockups.Location = new System.Drawing.Point(441, 8);
+            this.pnlErroresMockups.Name = "pnlErroresMockups";
+            this.pnlErroresMockups.Size = new System.Drawing.Size(427, 64);
+            this.pnlErroresMockups.TabIndex = 9;
+            // 
+            // lblCantidadErroresMockups
+            // 
+            this.lblCantidadErroresMockups.AutoSize = true;
+            this.lblCantidadErroresMockups.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCantidadErroresMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(166)))), ((int)(((byte)(111)))));
+            this.lblCantidadErroresMockups.Location = new System.Drawing.Point(8, 17);
+            this.lblCantidadErroresMockups.Name = "lblCantidadErroresMockups";
+            this.lblCantidadErroresMockups.Size = new System.Drawing.Size(34, 40);
+            this.lblCantidadErroresMockups.TabIndex = 8;
+            this.lblCantidadErroresMockups.Text = "0";
+            // 
+            // lblTituloErroresMockups
+            // 
+            this.lblTituloErroresMockups.AutoSize = true;
+            this.lblTituloErroresMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.lblTituloErroresMockups.Location = new System.Drawing.Point(8, 2);
+            this.lblTituloErroresMockups.Name = "lblTituloErroresMockups";
+            this.lblTituloErroresMockups.Size = new System.Drawing.Size(133, 17);
+            this.lblTituloErroresMockups.TabIndex = 7;
+            this.lblTituloErroresMockups.Text = "Con error:";
             // 
             // frmPrincipal
             // 
@@ -3292,33 +3276,13 @@ namespace TithorAutomation
             this.pnlIgnorados.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProviderPrincipal)).EndInit();
             this.pnlConfiguracion.ResumeLayout(false);
-            this.tabConfiguracion.ResumeLayout(false);
-            this.tabMoldes.ResumeLayout(false);
-            this.panel16.ResumeLayout(false);
-            this.grpCatalogoMoldes.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvCatalogoMoldes)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.panel15.ResumeLayout(false);
             this.grpArchivoMaster.ResumeLayout(false);
             this.grpArchivoMaster.PerformLayout();
             this.pnlEstadoArchivoMaster.ResumeLayout(false);
             this.pnlEstadoArchivoMaster.PerformLayout();
             this.grpProductoConfiguracion.ResumeLayout(false);
             this.grpProductoConfiguracion.PerformLayout();
-            this.tabMockups.ResumeLayout(false);
-            this.grpCatalogoMockups.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCatalogoMockups)).EndInit();
-            this.grpAccionesMockups.ResumeLayout(false);
-            this.grpAccionesMockups.PerformLayout();
-            this.grpArchivoMasterMockups.ResumeLayout(false);
-            this.grpArchivoMasterMockups.PerformLayout();
-            this.tlpResumenMockups.ResumeLayout(false);
-            this.pnlResumenMockups.ResumeLayout(false);
-            this.pnlResumenMockups.PerformLayout();
-            this.pnlErroresMockups.ResumeLayout(false);
-            this.pnlErroresMockups.PerformLayout();
             this.pnlConfiguracion_Header.ResumeLayout(false);
             this.pnlConfiguracion_Header.PerformLayout();
             this.pnlContenido.ResumeLayout(false);
@@ -3357,16 +3321,34 @@ namespace TithorAutomation
             this.panel7.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
-            this.pnlEstadoCorelGlobal.ResumeLayout(false);
-            this.pnlMockups.ResumeLayout(false);
-            this.pnlMockups.PerformLayout();
             this.pnlEscalar.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvEscalar)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
+            this.pnlEstadoCorelGlobal.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.tabConfiguracion.ResumeLayout(false);
+            this.tabMoldes.ResumeLayout(false);
+            this.tabMockups.ResumeLayout(false);
+            this.grpCatalogoMoldes.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel15.ResumeLayout(false);
+            this.panel16.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCatalogoMockups)).EndInit();
+            this.grpArchivoMasterMockups.ResumeLayout(false);
+            this.grpArchivoMasterMockups.PerformLayout();
+            this.grpAccionesMockups.ResumeLayout(false);
+            this.grpAccionesMockups.PerformLayout();
+            this.grpCatalogoMockups.ResumeLayout(false);
+            this.tlpResumenMockups.ResumeLayout(false);
+            this.pnlResumenMockups.ResumeLayout(false);
+            this.pnlResumenMockups.PerformLayout();
+            this.pnlErroresMockups.ResumeLayout(false);
+            this.pnlErroresMockups.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -3564,7 +3546,6 @@ namespace TithorAutomation
         private System.Windows.Forms.CheckBox chkReemplazarContenidoEscalar;
         private System.Windows.Forms.ComboBox cboTareaEscalar;
         private System.Windows.Forms.Label lblTallaEscalar;
-        private System.Windows.Forms.ComboBox cboTallaEscalar;
         private System.Windows.Forms.Label lblPiezaEscalar;
         private System.Windows.Forms.DataGridView dgvEscalar;
         private System.Windows.Forms.Label lblEstadoEscalar;
