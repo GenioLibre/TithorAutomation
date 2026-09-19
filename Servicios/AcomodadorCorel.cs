@@ -349,7 +349,16 @@ namespace TithorAutomation.Servicios
 
             return nombre.Replace("_", " ");
             }
-        public void Acomodar(Application corel, Document documento, ResultadoAcomodo resultado)
+        public ResultadoAcomodo AcomodarPaginaActiva(Application corel, Document documento,
+            double anchoMaterialMm, double separacionMm, bool permitirRotacion)
+            {
+            // Analizar y aplicar en una sola operación: nunca usar formas de una vista previa anterior.
+            ResultadoAcomodo resultado = Analizar(corel, documento, anchoMaterialMm, separacionMm, permitirRotacion);
+            Acomodar(corel, documento, resultado);
+            return resultado;
+            }
+
+        private void Acomodar(Application corel, Document documento, ResultadoAcomodo resultado)
             {
             if (corel == null)
                 {
@@ -371,15 +380,12 @@ namespace TithorAutomation.Servicios
                 throw new InvalidOperationException("Existen piezas que no pueden acomodarse dentro del ancho configurado.");
                 }
 
-            Page pagina = documento.ActivePage;
+            Page pagina = resultado.PaginaAnalizada;
 
             if (pagina == null)
                 {
                 throw new InvalidOperationException("El documento no tiene una página activa.");
                 }
-
-            if (!EscaladorPowerClip.MismoObjetoCom(pagina, resultado.PaginaAnalizada))
-                throw new InvalidOperationException("La página activa cambió después del análisis. Vuelva a analizar antes de acomodar.");
 
             bool grupoComandosIniciado = false;
             bool huboCambios = false;

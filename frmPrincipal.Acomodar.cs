@@ -274,7 +274,7 @@ namespace TithorAutomation
                 }
 
             DialogResult confirmacion = MessageBox.Show(
-                "Se desagruparán los grupos superiores y se acomodarán todas las piezas.\n\nLa operación podrá deshacerse con un solo Ctrl + Z.\n\n¿Deseas continuar?",
+                "Se volverá a analizar la página activa y se acomodarán sus piezas de TITHOR_PRODUCCION.\n\nLa operación podrá deshacerse con un solo Ctrl + Z.\n\n¿Deseas continuar?",
                 "Confirmar acomodo",
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question);
@@ -297,7 +297,13 @@ namespace TithorAutomation
 
                 lblEstadoAcomodar.Refresh();
 
-                acomodadorCorel.Acomodar(corel, documentoActual, resultadoAcomodoActual);
+                resultadoAcomodoActual = acomodadorCorel.AcomodarPaginaActiva(
+                    corel, documentoActual,
+                    Convert.ToDouble(nudAnchoMaterial.Value),
+                    Convert.ToDouble(nudSeparacionElementos.Value),
+                    chkPermitirRotacion.Checked);
+
+                MostrarResultadoAcomodo(resultadoAcomodoActual);
 
                 MarcarFilasComoAcomodadas();
 

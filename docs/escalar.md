@@ -10,7 +10,7 @@ Los destinos se buscan por el nombre del grupo y los nombres de piezas del plan.
 
 **Reemplazar contenido existente** está desmarcado inicialmente. Sin marcarlo, se procesan únicamente los destinos vacíos de la tarea. Al marcarlo se sustituye el contenido de todos sus destinos. El conjunto de cambios queda en un grupo para **Ctrl+Z**. Ante un error se intenta deshacer la operación, incluso si falla la extracción de la primera plantilla después de duplicarla; si CorelDRAW rechaza también la reversión se informa explícitamente.
 
-Si cambia el documento activo o las piezas después del análisis, hay que revisar el análisis actualizado antes de aplicar. No se cambia la unidad del documento ni se guarda automáticamente. En Acomodar también se verifica la identidad de la página analizada antes de redimensionar o mover objetos.
+Si cambia el documento activo o las piezas después del análisis, hay que revisar el análisis actualizado antes de aplicar. No se cambia la unidad del documento ni se guarda automáticamente. En Acomodar se vuelve a analizar la página activa al ejecutar la operación y se aplican sus piezas y medidas actuales, sin comparar identidades COM de páginas. Una página vacía, sin capa de producción o con piezas que no caben se rechaza antes de modificar el documento.
 
 ## Implementación
 

@@ -36,7 +36,7 @@ Es una carga sintética con variantes repetidas. No mide lectura de Excel, opera
 
 - Copiar un pedido y repetir en el mismo documento: debe rechazarse sin crear capas ni objetos. Repetir en otro documento vacío debe funcionar.
 - Abrir un documento antiguo con nombres de producción duplicados: Escalar debe mostrar el conflicto, sin elegir silenciosamente una copia.
-- Analizar acomodo en la página 1 y activar la página 2: debe rechazar la operación sin redimensionar ninguna página. También probar después de reordenar o eliminar páginas.
+- Analizar acomodo en la página 1 y ejecutar sin cambiar de página: debe funcionar sin el aviso de página cambiada. Cambiar a la página 2 antes de ejecutar: debe volver a analizar y acomodar únicamente la página 2. También probar después de reordenar o eliminar páginas; una página vacía, sin capa de producción o con piezas que no caben debe rechazarse sin cambios.
 - En el depurador, provocar un fallo de extracción justo después de duplicar la primera plantilla PowerClip: debe ejecutarse la reversión y desaparecer la copia temporal.
 - Comprobar escalado y Ctrl+Z con diseños reales. Verificar que `EventsEnabled` y `Optimization` recuperen sus valores anteriores después de éxito y error.
 
