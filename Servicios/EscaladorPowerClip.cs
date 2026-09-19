@@ -431,6 +431,7 @@ namespace TithorAutomation.Servicios
 
             double anchoDiseno = diseno.SizeWidth;
             double altoDiseno = diseno.SizeHeight;
+            bool disenoEsPowerClip = diseno.PowerClip != null;
 
             bool abierto = false;
             bool huboCambios = false;
@@ -481,7 +482,17 @@ namespace TithorAutomation.Servicios
                             }
 
                         copia.AddToPowerClip(contenedor, cdrTriState.cdrTrue);
-                        copia.SetSize(anchoFinal, altoFinal);
+
+                        if (disenoEsPowerClip)
+                            {
+                            double factorEscala = anchoFinal / anchoDiseno;
+                            copia.SetSize(copia.SizeWidth * factorEscala, copia.SizeHeight * factorEscala);
+                            }
+                        else
+                            {
+                            copia.SetSize(anchoFinal, altoFinal);
+                            }
+
                         copia.CenterX = centroX;
                         copia.CenterY = centroY;
                         copia.Name = "TITHOR_DISENO_" + destino.Pieza.Replace(' ', '_');
