@@ -591,6 +591,178 @@ namespace TithorAutomation.Servicios
             }
         private static DistribucionCalculada CalcularDistribucion(List<PiezaAcomodable> piezas, HashSet<PiezaAcomodable> piezasRotadas, double anchoMaterial, double separacion)
             {
+            DistribucionCalculada porFilas = CalcularDistribucionPorFilas(piezas, piezasRotadas, anchoMaterial, separacion);
+            DistribucionCalculada maxRects = CalcularDistribucionMaxRects(piezas, piezasRotadas, anchoMaterial, separacion);
+
+            if (maxRects == null)
+                {
+                return porFilas;
+                }
+
+            if (porFilas == null || maxRects.AltoTotal < porFilas.AltoTotal - 0.001)
+                {
+                return maxRects;
+                }
+
+            return porFilas;
+            }
+
+        private static DistribucionCalculada CalcularDistribucionMaxRects(List<PiezaAcomodable> piezas, HashSet<PiezaAcomodable> piezasRotadas, double anchoMaterial, double separacion)
+            {
+            const double tolerancia = 0.001;
+
+            if (piezas == null || piezas.Count == 0)
+                {
+                return new DistribucionCalculada();
+                }
+
+            double anchoContenedor = anchoMaterial + separacion;
+            double altoContenedor = piezas.Sum(x => ObtenerAltoAcomodado(x, piezasRotadas) + separacion);
+            List<RectanguloLibre> libres = new List<RectanguloLibre>
+                {
+                new RectanguloLibre(0, 0, anchoContenedor, altoContenedor)
+                };
+            List<PiezaAcomodable> pendientes = piezas.OrderBy(x => x.Orden).ToList();
+            DistribucionCalculada distribucion = new DistribucionCalculada();
+
+            while (pendientes.Count > 0)
+                {
+                PiezaAcomodable mejorPieza = null;
+                RectanguloLibre mejorPosicion = null;
+                double mejorLadoCorto = double.MaxValue;
+                double mejorLadoLargo = double.MaxValue;
+
+                foreach (PiezaAcomodable pieza in pendientes)
+                    {
+                    double anchoReal = ObtenerAnchoAcomodado(pieza, piezasRotadas);
+                    double altoReal = ObtenerAltoAcomodado(pieza, piezasRotadas);
+                    double anchoReservado = anchoReal + separacion;
+                    double altoReservado = altoReal + separacion;
+
+                    foreach (RectanguloLibre libre in libres)
+                        {
+                        if (anchoReservado > libre.Ancho + tolerancia || altoReservado > libre.Alto + tolerancia)
+                            {
+                            continue;
+                            }
+
+                        double sobranteHorizontal = libre.Ancho - anchoReservado;
+                        double sobranteVertical = libre.Alto - altoReservado;
+                        double ladoCorto = Math.Min(sobranteHorizontal, sobranteVertical);
+                        double ladoLargo = Math.Max(sobranteHorizontal, sobranteVertical);
+
+                        if (ladoCorto < mejorLadoCorto - tolerancia ||
+                            (Math.Abs(ladoCorto - mejorLadoCorto) <= tolerancia && ladoLargo < mejorLadoLargo - tolerancia) ||
+                            (Math.Abs(ladoCorto - mejorLadoCorto) <= tolerancia && Math.Abs(ladoLargo - mejorLadoLargo) <= tolerancia && pieza.Orden < (mejorPieza == null ? int.MaxValue : mejorPieza.Orden)))
+                            {
+                            mejorPieza = pieza;
+                            mejorPosicion = new RectanguloLibre(libre.X, libre.Y, anchoReservado, altoReservado);
+                            mejorLadoCorto = ladoCorto;
+                            mejorLadoLargo = ladoLargo;
+                            }
+                        }
+                    }
+
+                if (mejorPieza == null || mejorPosicion == null)
+                    {
+                    return null;
+                    }
+
+                double anchoPieza = ObtenerAnchoAcomodado(mejorPieza, piezasRotadas);
+                double altoPieza = ObtenerAltoAcomodado(mejorPieza, piezasRotadas);
+
+                distribucion.Posiciones[mejorPieza] = new PosicionCalculada
+                    {
+                    X = mejorPosicion.X + (anchoPieza / 2.0),
+                    Y = mejorPosicion.Y + (altoPieza / 2.0),
+                    Ancho = anchoPieza,
+                    Alto = altoPieza
+                    };
+
+                DividirRectangulosLibres(libres, mejorPosicion);
+                EliminarRectangulosLibresContenidos(libres);
+                pendientes.Remove(mejorPieza);
+                }
+
+            distribucion.AltoTotal = distribucion.Posiciones.Values.Max(x => x.Y + (x.Alto / 2.0));
+            return distribucion;
+            }
+
+        private static void DividirRectangulosLibres(List<RectanguloLibre> libres, RectanguloLibre ocupado)
+            {
+            const double tolerancia = 0.001;
+            List<RectanguloLibre> nuevos = new List<RectanguloLibre>();
+
+            foreach (RectanguloLibre libre in libres)
+                {
+                if (!SeSuperponen(libre, ocupado))
+                    {
+                    nuevos.Add(libre);
+                    continue;
+                    }
+
+                if (ocupado.X > libre.X + tolerancia)
+                    {
+                    nuevos.Add(new RectanguloLibre(libre.X, libre.Y, ocupado.X - libre.X, libre.Alto));
+                    }
+
+                if (ocupado.Derecha < libre.Derecha - tolerancia)
+                    {
+                    nuevos.Add(new RectanguloLibre(ocupado.Derecha, libre.Y, libre.Derecha - ocupado.Derecha, libre.Alto));
+                    }
+
+                if (ocupado.Y > libre.Y + tolerancia)
+                    {
+                    nuevos.Add(new RectanguloLibre(libre.X, libre.Y, libre.Ancho, ocupado.Y - libre.Y));
+                    }
+
+                if (ocupado.Superior < libre.Superior - tolerancia)
+                    {
+                    nuevos.Add(new RectanguloLibre(libre.X, ocupado.Superior, libre.Ancho, libre.Superior - ocupado.Superior));
+                    }
+                }
+
+            libres.Clear();
+            libres.AddRange(nuevos.Where(x => x.Ancho > tolerancia && x.Alto > tolerancia));
+            }
+
+        private static bool SeSuperponen(RectanguloLibre a, RectanguloLibre b)
+            {
+            return a.X < b.Derecha && a.Derecha > b.X && a.Y < b.Superior && a.Superior > b.Y;
+            }
+
+        private static void EliminarRectangulosLibresContenidos(List<RectanguloLibre> libres)
+            {
+            const double tolerancia = 0.001;
+
+            for (int i = libres.Count - 1; i >= 0; i--)
+                {
+                for (int j = 0; j < libres.Count; j++)
+                    {
+                    if (i == j)
+                        {
+                        continue;
+                        }
+
+                    if (EstaContenido(libres[i], libres[j], tolerancia))
+                        {
+                        libres.RemoveAt(i);
+                        break;
+                        }
+                    }
+                }
+            }
+
+        private static bool EstaContenido(RectanguloLibre interno, RectanguloLibre externo, double tolerancia)
+            {
+            return interno.X >= externo.X - tolerancia &&
+                   interno.Y >= externo.Y - tolerancia &&
+                   interno.Derecha <= externo.Derecha + tolerancia &&
+                   interno.Superior <= externo.Superior + tolerancia;
+            }
+
+        private static DistribucionCalculada CalcularDistribucionPorFilas(List<PiezaAcomodable> piezas, HashSet<PiezaAcomodable> piezasRotadas, double anchoMaterial, double separacion)
+            {
             List<PiezaAcomodable> ordenadas = piezas
                 .OrderByDescending(x => ObtenerAltoAcomodado(x, piezasRotadas))
                 .ThenByDescending(x => ObtenerAnchoAcomodado(x, piezasRotadas))
@@ -924,6 +1096,24 @@ namespace TithorAutomation.Servicios
         private static double ConvertirMilimetrosADocumento(Application corel, Document documento, double valorMilimetros)
             {
             return corel.ConvertUnits(valorMilimetros, cdrUnit.cdrMillimeter, documento.Unit);
+            }
+
+        private class RectanguloLibre
+            {
+            public RectanguloLibre(double x, double y, double ancho, double alto)
+                {
+                X = x;
+                Y = y;
+                Ancho = ancho;
+                Alto = alto;
+                }
+
+            public double X { get; private set; }
+            public double Y { get; private set; }
+            public double Ancho { get; private set; }
+            public double Alto { get; private set; }
+            public double Derecha { get { return X + Ancho; } }
+            public double Superior { get { return Y + Alto; } }
             }
 
         private class DistribucionCalculada
