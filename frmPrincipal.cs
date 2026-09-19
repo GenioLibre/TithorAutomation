@@ -47,6 +47,7 @@ namespace TithorAutomation
             InitializeComponent();
 
             ConfigurarFiltrosCatalogo();
+            ConfigurarModuloMockups();
             ConfigurarModuloAcomodar();
             ConfigurarModuloEscalar();
             CargarProductosConfiguracion();
@@ -121,6 +122,7 @@ namespace TithorAutomation
             ActualizarBotonNavegacion(btnProduccion, panelSeleccionado == pnlProduccion);
             ActualizarBotonNavegacion(btnConfiguracion, panelSeleccionado == pnlConfiguracion);
             ActualizarBotonNavegacion(btnEscalar, panelSeleccionado == pnlEscalar);
+            ActualizarBotonNavegacion(btnMockup, panelSeleccionado == pnlConfiguracion && tabConfiguracion.SelectedTab == tabMockups);
 
             pnlEstadoCorelGlobal.Visible = true;
             pnlEstadoCorelGlobal.BringToFront();
