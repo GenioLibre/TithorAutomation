@@ -217,8 +217,8 @@ namespace TithorAutomation
 
         private void btnMockup_Click(object sender, EventArgs e)
             {
-            MostrarPanel(pnlConfiguracion);
             tabConfiguracion.SelectedTab = tabMockups;
+            MostrarPanel(pnlConfiguracion);
             }
         }
     }
