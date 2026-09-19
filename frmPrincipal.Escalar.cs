@@ -310,8 +310,12 @@ namespace TithorAutomation
 
                 VGCore.ShapeRange seleccion = documento.SelectionRange;
 
-                if (seleccion.Count != 1 || seleccion[1].Type != VGCore.cdrShapeType.cdrGroupShape)
-                    throw new InvalidOperationException("Seleccione un único diseño agrupado para " + tarea.Diseno + " - " + tarea.Pieza + ".");
+                bool seleccionValida = seleccion.Count == 1 &&
+                    (seleccion[1].Type == VGCore.cdrShapeType.cdrGroupShape ||
+                     (seleccion[1].PowerClip != null && seleccion[1].PowerClip.Shapes.Count > 0));
+
+                if (!seleccionValida)
+                    throw new InvalidOperationException("Seleccione un único grupo o PowerClip plantilla para " + tarea.Diseno + " - " + tarea.Pieza + ".");
 
                 List<PiezaEscalable> destinos = chkReemplazarContenidoEscalar.Checked
                     ? tarea.Destinos
