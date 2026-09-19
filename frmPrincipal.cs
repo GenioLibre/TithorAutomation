@@ -114,7 +114,7 @@ namespace TithorAutomation
 
             foreach (string nombre in nombres)
                 {
-                Control[] encontrados = pnlContenido.Controls.Find(nombre, true);
+                System.Windows.Forms.Control[] encontrados = pnlContenido.Controls.Find(nombre, true);
 
                 if (encontrados.Length > 0 && encontrados[0] is System.Windows.Forms.Panel)
                     return (System.Windows.Forms.Panel)encontrados[0];
