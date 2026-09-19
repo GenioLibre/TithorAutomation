@@ -30,6 +30,9 @@ namespace TithorAutomation.Servicios
             if (plan.Moldes == null || plan.Moldes.Count == 0)
                 throw new InvalidOperationException("El plan de producción no contiene moldes.");
 
+            ValidarNombresDisponibles(
+                plan, EscaladorPowerClip.ObtenerGruposProduccion(documentoDestino).Keys);
+
             if (UsaSeleccionDePiezas(plan))
                 return CopiarSeleccionDePiezas(corelApp, documentoDestino, rutaMaster, plan, progreso);
 
@@ -207,6 +210,19 @@ namespace TithorAutomation.Servicios
                 catch
                     {
                     }
+                }
+            }
+
+        public static void ValidarNombresDisponibles(PlanProduccion plan, IEnumerable<string> nombresExistentes)
+            {
+            HashSet<string> nombres = new HashSet<string>(nombresExistentes, StringComparer.OrdinalIgnoreCase);
+            foreach (MoldeProduccion solicitud in plan.Moldes)
+                {
+                string nombre = (solicitud.NombreDestino ?? string.Empty).Trim();
+                if (nombre.Length == 0)
+                    throw new InvalidOperationException("Cada molde del pedido debe tener un nombre de destino.");
+                if (!nombres.Add(nombre))
+                    throw new InvalidOperationException("Ya existe el molde '" + nombre + "'. Para copiar nuevamente, use otro documento o deshaga la copia anterior. No se realizaron cambios.");
                 }
             }
 

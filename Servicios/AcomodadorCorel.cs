@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.RegularExpressions;
 using TithorAutomation.Modelos;
 using VGCore;
@@ -44,6 +44,7 @@ namespace TithorAutomation.Servicios
 
             ResultadoAcomodo resultado = new ResultadoAcomodo
                 {
+                PaginaAnalizada = pagina,
                 AnchoMaterial = anchoMaterialMm,
                 Separacion = separacionMm
                 };
@@ -376,6 +377,9 @@ namespace TithorAutomation.Servicios
                 {
                 throw new InvalidOperationException("El documento no tiene una página activa.");
                 }
+
+            if (!EscaladorPowerClip.MismoObjetoCom(pagina, resultado.PaginaAnalizada))
+                throw new InvalidOperationException("La página activa cambió después del análisis. Vuelva a analizar antes de acomodar.");
 
             bool grupoComandosIniciado = false;
             bool huboCambios = false;

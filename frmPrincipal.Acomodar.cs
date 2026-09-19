@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using TithorAutomation.Modelos;
@@ -112,7 +112,7 @@ namespace TithorAutomation
                 prgAcomodar.Value = 10;
                 lblEstadoAcomodar.Text = "Analizando TITHOR_PRODUCCION...";
 
-                System.Windows.Forms.Application.DoEvents();
+                lblEstadoAcomodar.Refresh();
 
                 VGCore.Application corel = ObtenerCorel();
                 VGCore.Document documento = ObtenerDocumentoAcomodo();
@@ -295,7 +295,7 @@ namespace TithorAutomation
                 prgAcomodar.Style = ProgressBarStyle.Marquee;
                 lblEstadoAcomodar.Text = "Acomodando elementos en CorelDRAW...";
 
-                System.Windows.Forms.Application.DoEvents();
+                lblEstadoAcomodar.Refresh();
 
                 acomodadorCorel.Acomodar(corel, documentoActual, resultadoAcomodoActual);
 

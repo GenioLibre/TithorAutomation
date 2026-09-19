@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 namespace TithorAutomation.Modelos
     {
@@ -10,6 +10,7 @@ namespace TithorAutomation.Modelos
             }
 
         public List<PiezaAcomodable> Piezas { get; set; }
+        public VGCore.Page PaginaAnalizada { get; set; }
 
         public double AnchoMaterial { get; set; }
         public double Separacion { get; set; }

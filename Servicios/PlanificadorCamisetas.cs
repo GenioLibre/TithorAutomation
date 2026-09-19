@@ -42,15 +42,17 @@ namespace TithorAutomation.Servicios
                 CodigoProducto = resultado.CodigoProducto
                 };
 
+            var selecciones = new Dictionary<string, SeleccionMolde>(StringComparer.OrdinalIgnoreCase);
+
             foreach (LineaPedido linea in resultado.Lineas)
                 {
                 if (!linea.Procesable)
                     continue;
 
-                AgregarCamiseta(linea, resultado.CodigoProducto, catalogo, plan);
+                AgregarCamiseta(linea, resultado.CodigoProducto, catalogo, plan, selecciones);
 
                 if (Normalizar(linea.ObtenerCampo("prenda")) == "camiseta_short")
-                    AgregarShort(linea, resultado.CodigoProducto, catalogo, plan);
+                    AgregarShort(linea, resultado.CodigoProducto, catalogo, plan, selecciones);
                 }
 
             if (plan.Moldes.Count == 0 && plan.Advertencias.Count == 0)
@@ -59,7 +61,7 @@ namespace TithorAutomation.Servicios
             return plan;
             }
 
-        private void AgregarCamiseta(LineaPedido linea, string codigoProducto, List<Molde> catalogo, PlanProduccion plan)
+        private void AgregarCamiseta(LineaPedido linea, string codigoProducto, List<Molde> catalogo, PlanProduccion plan, Dictionary<string, SeleccionMolde> selecciones)
             {
             string prenda = Normalizar(linea.ObtenerCampo("prenda"));
             string modelo = prenda == "bividi" ? "bividi" : Normalizar(linea.ObtenerCampo("modelo"));
@@ -69,7 +71,7 @@ namespace TithorAutomation.Servicios
             string cuello = NormalizarCuello(linea.ObtenerCampo("cuello"));
 
             List<List<string>> piezasRequeridas = ObtenerPiezasCamiseta(modelo, manga, cuello);
-            SeleccionMolde seleccion = BuscarSeleccion(catalogo, modelo, corte, talla, false, piezasRequeridas);
+            SeleccionMolde seleccion = BuscarSeleccion(catalogo, modelo, corte, talla, false, piezasRequeridas, selecciones);
 
             if (seleccion == null)
                 {
@@ -80,7 +82,7 @@ namespace TithorAutomation.Servicios
             AgregarSolicitud(plan, linea, codigoProducto, seleccion, talla, "Camiseta", 1);
             }
 
-        private void AgregarShort(LineaPedido linea, string codigoProducto, List<Molde> catalogo, PlanProduccion plan)
+        private void AgregarShort(LineaPedido linea, string codigoProducto, List<Molde> catalogo, PlanProduccion plan, Dictionary<string, SeleccionMolde> selecciones)
             {
             string corte = NormalizarCorte(linea.ObtenerCampo("corte"));
             string talla = NormalizarTalla(linea.ObtenerCampo("talla_short"));
@@ -91,7 +93,7 @@ namespace TithorAutomation.Servicios
                 new List<string> { "short_derecho", "pierna_derecha" }
                 };
 
-            SeleccionMolde seleccion = BuscarSeleccion(catalogo, "short", corte, talla, true, piezasRequeridas);
+            SeleccionMolde seleccion = BuscarSeleccion(catalogo, "short", corte, talla, true, piezasRequeridas, selecciones);
 
             if (seleccion == null)
                 {
@@ -141,8 +143,15 @@ namespace TithorAutomation.Servicios
             return new List<string> { "frente" };
             }
 
-        private SeleccionMolde BuscarSeleccion(List<Molde> catalogo, string modelo, string corte, string talla, bool esShort, List<List<string>> piezasRequeridas)
+        private SeleccionMolde BuscarSeleccion(List<Molde> catalogo, string modelo, string corte, string talla, bool esShort, List<List<string>> piezasRequeridas, Dictionary<string, SeleccionMolde> selecciones)
             {
+            // La caché vive solo durante CrearPlan: nunca reutiliza un catálogo anterior.
+            var alternativas = new List<string>();
+            foreach (var piezas in piezasRequeridas) alternativas.Add(string.Join(",", piezas));
+            string clave = modelo + "|" + corte + "|" + talla + "|" + esShort + "|" + string.Join(";", alternativas);
+            SeleccionMolde guardada;
+            if (selecciones.TryGetValue(clave, out guardada)) return guardada;
+
             Dictionary<string, List<Molde>> porCapa = new Dictionary<string, List<Molde>>(StringComparer.OrdinalIgnoreCase);
 
             foreach (Molde molde in catalogo)
@@ -169,9 +178,13 @@ namespace TithorAutomation.Servicios
                 SeleccionMolde seleccion = CrearSeleccion(grupoCapa.Key, talla, grupoCapa.Value, piezasRequeridas);
 
                 if (seleccion != null)
+                    {
+                    selecciones.Add(clave, seleccion);
                     return seleccion;
+                    }
                 }
 
+            selecciones.Add(clave, null);
             return null;
             }
 

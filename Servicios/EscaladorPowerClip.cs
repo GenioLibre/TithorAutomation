@@ -87,6 +87,11 @@ namespace TithorAutomation.Servicios
 
         public static bool MismoDocumento(Document a, Document b)
         {
+            return MismoObjetoCom(a, b);
+        }
+
+        public static bool MismoObjetoCom(object a, object b)
+        {
             if (a == null || b == null) return false;
             IntPtr pa = IntPtr.Zero, pb = IntPtr.Zero;
             try
@@ -175,7 +180,7 @@ namespace TithorAutomation.Servicios
             return resultado;
         }
 
-        private Dictionary<string, Shape> ObtenerGruposProduccion(Document documento)
+        internal static Dictionary<string, Shape> ObtenerGruposProduccion(Document documento)
         {
             Dictionary<string, Shape> grupos = new Dictionary<string, Shape>(StringComparer.OrdinalIgnoreCase);
 
@@ -193,10 +198,12 @@ namespace TithorAutomation.Servicios
                     for (int i = 1; i <= capa.Shapes.Count; i++)
                     {
                         Shape objeto = capa.Shapes[i];
-                        string nombre = ObtenerNombreSeguro(objeto);
+                        string nombre = (objeto.Name ?? string.Empty).Trim();
 
-                        if (!string.IsNullOrWhiteSpace(nombre) && !grupos.ContainsKey(nombre))
-                            grupos.Add(nombre, objeto);
+                        if (string.IsNullOrWhiteSpace(nombre)) continue;
+                        if (grupos.ContainsKey(nombre))
+                            throw new InvalidOperationException("El nombre de producción '" + nombre + "' está duplicado. Separe los pedidos en documentos distintos o elimine las copias sobrantes antes de escalar.");
+                        grupos.Add(nombre, objeto);
                     }
                 }
             }
@@ -408,12 +415,17 @@ namespace TithorAutomation.Servicios
                 }
         }
 
-        private Shape CrearCopiaDiseno(Shape diseno)
+        private Shape CrearCopiaDiseno(Shape diseno, Action registrarCambio)
             {
             if (diseno.PowerClip == null)
-                return diseno.Duplicate(0, 0);
+                {
+                Shape copia = diseno.Duplicate(0, 0);
+                registrarCambio();
+                return copia;
+                }
 
             Shape marcoTemporal = diseno.Duplicate(0, 0);
+            registrarCambio();
             ShapeRange contenido = marcoTemporal.PowerClip.ExtractShapes();
             marcoTemporal.Delete();
 
@@ -437,11 +449,15 @@ namespace TithorAutomation.Servicios
             bool huboCambios = false;
             bool eventosDesactivados = false;
             bool optimizacionActivada = false;
+            bool eventosOriginales = true;
+            bool optimizacionOriginal = false;
 
             try
                 {
                 if (corelApp != null)
                     {
+                    eventosOriginales = corelApp.EventsEnabled;
+                    optimizacionOriginal = corelApp.Optimization;
                     corelApp.EventsEnabled = false;
                     eventosDesactivados = true;
                     corelApp.Optimization = true;
@@ -469,8 +485,7 @@ namespace TithorAutomation.Servicios
 
                         CalcularTamanoCobertura(anchoDiseno, altoDiseno, anchoContenedor, altoContenedor, out anchoFinal, out altoFinal);
 
-                        Shape copia = CrearCopiaDiseno(diseno);
-                        huboCambios = true;
+                        Shape copia = CrearCopiaDiseno(diseno, () => huboCambios = true);
                         ReemplazarVariables(copia, destino);
 
                         if (reemplazar && contenedor.PowerClip != null)
@@ -552,7 +567,7 @@ namespace TithorAutomation.Servicios
                     try
                         {
                         if (optimizacionActivada)
-                            corelApp.Optimization = false;
+                            corelApp.Optimization = optimizacionOriginal;
                         }
                     catch
                         {
@@ -561,7 +576,7 @@ namespace TithorAutomation.Servicios
                     try
                         {
                         if (eventosDesactivados)
-                            corelApp.EventsEnabled = true;
+                            corelApp.EventsEnabled = eventosOriginales;
                         }
                     catch
                         {

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -188,10 +188,10 @@ namespace TithorAutomation.Servicios
                 );
                 }
 
-            string textoCantidad = ObtenerTexto(hoja, numeroFila, columnas, "cantidad");
+            IXLCell celdaCantidad = hoja.Cell(numeroFila, columnas["cantidad"]);
             int cantidad;
 
-            if (!IntentarLeerCantidad(textoCantidad, out cantidad))
+            if (!IntentarLeerCantidad(celdaCantidad, out cantidad))
                 {
                 linea.MarcarNoProcesable(
                     "La cantidad debe ser un número entero mayor que cero."
@@ -206,20 +206,24 @@ namespace TithorAutomation.Servicios
             return linea;
             }
 
-        private bool IntentarLeerCantidad(string texto, out int cantidad)
+        private bool IntentarLeerCantidad(IXLCell celda, out int cantidad)
             {
             cantidad = 0;
-            decimal valor;
-
-            bool convertido =
-                decimal.TryParse(texto, NumberStyles.Number, CultureInfo.CurrentCulture, out valor) ||
-                decimal.TryParse(texto, NumberStyles.Number, CultureInfo.InvariantCulture, out valor);
-
-            if (!convertido || valor <= 0 || valor != decimal.Truncate(valor) || valor > int.MaxValue)
-                return false;
-
-            cantidad = Convert.ToInt32(valor);
-            return true;
+            // Value evalúa también fórmulas. El formato visual nunca determina la cantidad.
+            XLCellValue valor = celda.Value;
+            if (valor.IsNumber)
+                {
+                double numero = valor.GetNumber();
+                if (double.IsNaN(numero) || double.IsInfinity(numero) ||
+                    numero <= 0 || numero > int.MaxValue || numero != Math.Truncate(numero))
+                    return false;
+                cantidad = (int)numero;
+                return true;
+                }
+            // En texto solo se aceptan dígitos enteros, sin separadores ambiguos.
+            return valor.IsText &&
+                int.TryParse(valor.GetText().Trim(), NumberStyles.None,
+                    CultureInfo.InvariantCulture, out cantidad) && cantidad > 0;
             }
 
         private void GuardarTodosLosCampos(IXLWorksheet hoja, int numeroFila, Dictionary<string, int> columnas, LineaPedido linea)
