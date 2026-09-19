@@ -39,19 +39,6 @@ namespace TithorAutomation
 
         private void ConfigurarModuloEscalar()
             {
-            cboPiezaEscalar.Items.Clear();
-            cboPiezaEscalar.Items.AddRange(new object[]
-                {
-                "Frente",
-                "Lateral derecho",
-                "Lateral izquierdo",
-                "Espalda"
-                });
-
-            cboTallaEscalar.Items.Clear();
-            cboTallaEscalar.Items.AddRange(new object[] { "Todas", "S", "M", "L" });
-            cboPiezaEscalar.SelectedIndex = 0;
-            cboTallaEscalar.SelectedIndex = 0;
             chkReemplazarContenidoEscalar.Checked = false;
 
             cboTareaEscalar.SelectedIndexChanged -= cboTareaEscalar_SelectedIndexChanged;
@@ -183,12 +170,10 @@ namespace TithorAutomation
                 AgregarColumnaEscalar("colEstadoEscalarManual", "Estado", 100F, 100);
                 }
 
-            cboPiezaEscalar.Visible = !guiado;
-            cboTallaEscalar.Visible = !guiado;
-            lblTallaEscalar.Visible = !guiado;
-            cboTareaEscalar.Visible = guiado;
+            lblTallaEscalar.Visible = false;
+            cboTareaEscalar.Visible = true;
             lblPiezaEscalar.Visible = true;
-            lblPiezaEscalar.Text = guiado ? "Tarea:" : "Pieza:";
+            lblPiezaEscalar.Text = "Tarea:";
             btnAplicarEscalar.Text = "Aplicar diseño";
             }
 
@@ -422,12 +407,13 @@ namespace TithorAutomation
                 lblEstadoEscalar.Text = "Analizando los moldes...";
 
                 documentoEscalar = DocumentoActivoEscalar();
-                modoGuiadoEscalar = planProduccionActual != null && planProduccionActual.Moldes != null && planProduccionActual.Moldes.Count > 0;
-                ConfigurarColumnasEscalar(modoGuiadoEscalar);
+                if (planProduccionActual == null || planProduccionActual.Moldes == null || planProduccionActual.Moldes.Count == 0)
+                    throw new InvalidOperationException("No existe un pedido activo. Analice o recupere primero el Excel desde Moldes.");
 
-                List<PiezaEscalable> piezas = modoGuiadoEscalar
-                    ? escalador.AnalizarPedido(documentoEscalar, planProduccionActual)
-                    : escalador.Analizar(documentoEscalar);
+                modoGuiadoEscalar = true;
+                ConfigurarColumnasEscalar(true);
+
+                List<PiezaEscalable> piezas = escalador.AnalizarPedido(documentoEscalar, planProduccionActual);
 
                 MostrarAnalisisEscalar(piezas);
                 }
@@ -448,202 +434,18 @@ namespace TithorAutomation
 
         private void btnAplicarEscalar_Click(object sender, EventArgs e)
             {
-            if (modoGuiadoEscalar)
+            if (!modoGuiadoEscalar)
                 {
-                AplicarTareaGuiada();
+                MessageBox.Show(
+                    this,
+                    "Analice primero el pedido desde Moldes y después analice el documento en Escalar.",
+                    "Escalar",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
                 }
 
-            try
-                {
-                VGCore.Document documento = DocumentoActivoEscalar();
-
-                if (documentoEscalar == null ||
-                    firmaEscalar == null ||
-                    !EscaladorPowerClip.MismoDocumento(
-                        documento,
-                        documentoEscalar))
-                    {
-                    throw new InvalidOperationException(
-                        "El documento activo cambió. Vuelve a analizarlo.");
-                    }
-
-                List<PiezaEscalable> piezas =
-                    escalador.Analizar(documento);
-
-                string firmaActual = FirmaEscalar(piezas);
-
-                if (firmaActual != firmaEscalar)
-                    {
-                    MostrarAnalisisEscalar(piezas);
-
-                    throw new InvalidOperationException(
-                        "Los moldes cambiaron. Se actualizó la lista; revisa los destinos y vuelve a aplicar.");
-                    }
-
-                VGCore.ShapeRange seleccion = documento.SelectionRange;
-
-                if (seleccion.Count != 1)
-                    {
-                    throw new InvalidOperationException(
-                        "Selecciona un único diseño agrupado en CorelDRAW.");
-                    }
-
-                if (cboPiezaEscalar.SelectedItem == null)
-                    {
-                    throw new InvalidOperationException(
-                        "Selecciona una pieza.");
-                    }
-
-                if (cboTallaEscalar.SelectedItem == null)
-                    {
-                    throw new InvalidOperationException(
-                        "Selecciona una talla.");
-                    }
-
-                VGCore.Shape diseno = seleccion[1];
-
-                string pieza =
-                    cboPiezaEscalar.SelectedItem.ToString();
-
-                string talla =
-                    cboTallaEscalar.SelectedItem.ToString();
-
-                List<PiezaEscalable> destinos = piezas
-                    .Where(x =>
-                        string.Equals(
-                            x.Pieza,
-                            pieza,
-                            StringComparison.OrdinalIgnoreCase) &&
-                        (talla == "Todas" ||
-                         string.Equals(
-                             x.Talla,
-                             talla,
-                             StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
-
-                if (destinos.Count == 0)
-                    {
-                    throw new InvalidOperationException(
-                        "No se encontraron moldes para la pieza y talla seleccionadas.");
-                    }
-
-                escalador.Validar(
-                    diseno,
-                    destinos,
-                    chkReemplazarContenidoEscalar.Checked);
-
-                string aviso =
-                    "Se aplicará el diseño a " +
-                    destinos.Count +
-                    " piezas de " +
-                    pieza +
-                    " (talla: " +
-                    talla +
-                    ").\n\n" +
-                    "El diseño se escalará proporcionalmente hasta cubrir cada PowerClip, quedará centrado y el original se conservará.";
-
-                int conContenido =
-                    destinos.Count(x => x.TieneContenido);
-
-                if (conContenido > 0)
-                    {
-                    if (chkReemplazarContenidoEscalar.Checked)
-                        {
-                        aviso +=
-                            "\n\nSe reemplazará el contenido existente de " +
-                            conContenido +
-                            " PowerClips.";
-                        }
-                    else
-                        {
-                        aviso +=
-                            "\n\n" +
-                            conContenido +
-                            " PowerClips ya tienen contenido y no serán reemplazados.";
-                        }
-                    }
-
-                DialogResult confirmacion = MessageBox.Show(
-                    this,
-                    aviso,
-                    "Aplicar diseño",
-                    MessageBoxButtons.OKCancel,
-                    MessageBoxIcon.Question);
-
-                if (confirmacion != DialogResult.OK)
-                    {
-                    return;
-                    }
-
-                VGCore.Document documentoConfirmado =
-                    DocumentoActivoEscalar();
-
-                if (!EscaladorPowerClip.MismoDocumento(
-                        documentoConfirmado,
-                        documento) ||
-                    FirmaEscalar(escalador.Analizar(documento)) !=
-                    firmaEscalar)
-                    {
-                    throw new InvalidOperationException(
-                        "El documento cambió durante la confirmación. Analízalo nuevamente.");
-                    }
-
-                btnAnalizarEscalar.Enabled = false;
-                btnAplicarEscalar.Enabled = false;
-                UseWaitCursor = true;
-                Cursor = Cursors.WaitCursor;
-                lblEstadoEscalar.Text = "Aplicando el diseño...";
-
-                int total = escalador.Aplicar(
-                    documento,
-                    diseno,
-                    destinos,
-                    chkReemplazarContenidoEscalar.Checked,
-                    null,
-                    ObtenerCorel());
-
-                List<PiezaEscalable> resultado =
-                    escalador.Analizar(documento);
-
-                MostrarAnalisisEscalar(resultado);
-
-                lblEstadoEscalar.Text =
-                    "Diseño aplicado a " +
-                    total +
-                    " piezas. Ctrl+Z deshace la operación.";
-
-                Activate();
-                BringToFront();
-
-                MessageBox.Show(
-                    this,
-                    "Terminó de aplicar el diseño a " + total + " piezas.",
-                    "Diseño aplicado",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
-                }
-            catch (Exception ex)
-                {
-                firmaEscalar = null;
-
-                btnAplicarEscalar.Enabled = false;
-                lblEstadoEscalar.Text =
-                    "Revisa el mensaje y vuelve a analizar.";
-
-                MessageBox.Show(
-                    this,
-                    ex.Message,
-                    "Escalar",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Warning);
-                }
-            finally
-                {
-                UseWaitCursor = false;
-                Cursor = Cursors.Default;
-                btnAnalizarEscalar.Enabled = true;
-                }
+            AplicarTareaGuiada();
             }
         }
     }

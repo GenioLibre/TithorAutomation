@@ -108,6 +108,21 @@ namespace TithorAutomation
             {
             RestaurarUltimoPedidoProduccion();
             }
+        private System.Windows.Forms.Panel BuscarPanelMockups()
+            {
+            string[] nombres = { "pnlMockups", "pnlMockup" };
+
+            foreach (string nombre in nombres)
+                {
+                Control[] encontrados = pnlContenido.Controls.Find(nombre, true);
+
+                if (encontrados.Length > 0 && encontrados[0] is System.Windows.Forms.Panel)
+                    return (System.Windows.Forms.Panel)encontrados[0];
+                }
+
+            return null;
+            }
+
         private void MostrarPanel(System.Windows.Forms.Panel panelSeleccionado)
             {
             pnlPantonear.Visible = false;
@@ -116,14 +131,19 @@ namespace TithorAutomation
             pnlAcomodar.Visible = false;
             pnlConfiguracion.Visible = false;
 
+            System.Windows.Forms.Panel panelMockups = BuscarPanelMockups();
+
+            if (panelMockups != null && panelMockups != panelSeleccionado)
+                panelMockups.Visible = false;
+
             panelSeleccionado.Visible = true;
             panelSeleccionado.BringToFront();
 
             ActualizarBotonNavegacion(btnPantonear, panelSeleccionado == pnlPantonear);
             ActualizarBotonNavegacion(btnProduccion, panelSeleccionado == pnlProduccion);
-            ActualizarBotonNavegacion(btnConfiguracion, panelSeleccionado == pnlConfiguracion && tabConfiguracion.SelectedTab != tabMockups);
+            ActualizarBotonNavegacion(btnConfiguracion, panelSeleccionado == pnlConfiguracion);
             ActualizarBotonNavegacion(btnEscalar, panelSeleccionado == pnlEscalar);
-            ActualizarBotonNavegacion(btnMockup, panelSeleccionado == pnlConfiguracion && tabConfiguracion.SelectedTab == tabMockups);
+            ActualizarBotonNavegacion(btnMockup, panelMockups != null && panelSeleccionado == panelMockups);
 
             pnlEstadoCorelGlobal.Visible = true;
             pnlEstadoCorelGlobal.BringToFront();
@@ -146,6 +166,7 @@ namespace TithorAutomation
             }
         private void btnConfiguracion_Click(object sender, EventArgs e)
             {
+            tabConfiguracion.SelectedTab = tabMoldes;
             MostrarPanel(pnlConfiguracion);
             }
         private void btnProduccion_Click(object sender, EventArgs e)
