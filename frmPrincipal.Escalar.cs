@@ -78,6 +78,21 @@ namespace TithorAutomation
         private void btnEscalar_Click(object sender, EventArgs e)
             {
             MostrarPanel(pnlEscalar);
+
+            if (planProduccionActual == null || documentoEscalar != null)
+                return;
+
+            try
+                {
+                VGCore.Application corel = ObtenerCorel();
+
+                if (corel != null && corel.Documents.Count > 0)
+                    btnAnalizarEscalar_Click(null, EventArgs.Empty);
+                }
+            catch
+                {
+                lblEstadoEscalar.Text = "Abra el documento del pedido y presione Analizar documento.";
+                }
             }
 
         private VGCore.Document DocumentoActivoEscalar()
