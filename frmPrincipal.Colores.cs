@@ -237,7 +237,7 @@ namespace TithorAutomation
 
                 if (corel.Documents.Count == 0)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "No hay ningún documento abierto en CorelDRAW.",
                         "Tithor Automation",
                         MessageBoxButtons.OK,
@@ -255,7 +255,7 @@ namespace TithorAutomation
 
                 if (seleccion == null || seleccion.Count == 0)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "Seleccione uno o más objetos en CorelDRAW.",
                         "Tithor Automation",
                         MessageBoxButtons.OK,
@@ -293,7 +293,7 @@ namespace TithorAutomation
                 lblEstadoProceso.Text =
                     "Error durante el análisis";
 
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     $"Tipo: {ex.GetType().FullName}\n" +
                     $"Código: 0x{ex.HResult:X8}\n\n" +
                     ex.Message,
@@ -930,7 +930,7 @@ namespace TithorAutomation
                 "Desagrúpelos en CorelDRAW y vuelva a analizar."
             );
 
-            MessageBox.Show(
+            MessageBox.Show(this, 
                 mensaje.ToString(),
                 "Grupos complejos encontrados",
                 MessageBoxButtons.OK,
@@ -1084,7 +1084,7 @@ namespace TithorAutomation
             {
             if (dgvColores.Rows.Count == 0)
                 {
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     "Primero debe analizar una selección.",
                     "Tithor Automation",
                     MessageBoxButtons.OK,
@@ -1101,7 +1101,7 @@ namespace TithorAutomation
                 return;
 
             DialogResult confirmacion =
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     "¿Desea aplicar los nuevos valores CMYK?\n\n" +
                     "Se modificarán los rellenos, degradados y trazos " +
                     "encontrados durante el análisis.",
@@ -1121,6 +1121,10 @@ namespace TithorAutomation
                     return;
                 }
 
+            btnAplicar.Enabled = false;
+            UseWaitCursor = true;
+            Cursor = Cursors.WaitCursor;
+
             VGCore.Application corel = null;
             VGCore.Document documento = null;
 
@@ -1135,7 +1139,7 @@ namespace TithorAutomation
 
                 if (corel.Documents.Count == 0)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "No hay ningún documento abierto.",
                         "Tithor Automation",
                         MessageBoxButtons.OK,
@@ -1248,7 +1252,7 @@ namespace TithorAutomation
                 lblEstadoProceso.Text =
                     "Error al aplicar los cambios";
 
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     $"Tipo: {ex.GetType().FullName}\n" +
                     $"Código: 0x{ex.HResult:X8}\n\n" +
                     ex.Message,
@@ -1298,9 +1302,16 @@ namespace TithorAutomation
                     ProgressBarStyle.Blocks;
 
                 prgProceso.Value = 0;
+
+                UseWaitCursor = false;
+                Cursor = Cursors.Default;
+                btnAplicar.Enabled = dgvColores.Rows.Count > 0;
+
+                Activate();
+                BringToFront();
                 }
 
-            MessageBox.Show(
+            MessageBox.Show(this, 
                 "Proceso terminado.\n\n" +
                 $"Colores modificados: {coloresModificados}\n" +
                 $"Transparencias procesadas: {transparenciasEliminadas}\n" +
@@ -1346,7 +1357,7 @@ namespace TithorAutomation
                         dgvColores.CurrentCell =
                             fila.Cells[nombreColumna];
 
-                        MessageBox.Show(
+                        MessageBox.Show(this, 
                             "Todos los valores CMYK deben ser " +
                             "números entre 0 y 100.",
                             "Valor CMYK incorrecto",
@@ -1463,7 +1474,7 @@ namespace TithorAutomation
                 }
             catch (Exception ex)
                 {
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     "No se pudo restaurar la vista previa.\n\n" +
                     ex.Message,
                     "Tithor Automation",
@@ -1505,7 +1516,7 @@ namespace TithorAutomation
 
                 if (corel.Documents.Count == 0)
                     {
-                    MessageBox.Show(
+                    MessageBox.Show(this, 
                         "No hay ningún documento abierto.",
                         "Tithor Automation",
                         MessageBoxButtons.OK,
@@ -1543,7 +1554,7 @@ namespace TithorAutomation
                 }
             catch (Exception ex)
                 {
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     $"No se pudo generar la vista previa.\n\n" +
                     $"Tipo: {ex.GetType().FullName}\n" +
                     $"Código: 0x{ex.HResult:X8}\n\n" +
@@ -1607,7 +1618,7 @@ namespace TithorAutomation
                 lblEstadoProceso.Text =
                     "Vista previa activa";
 
-                MessageBox.Show(
+                MessageBox.Show(this, 
                     "Vista previa aplicada.\n\n" +
                     "Revise el resultado en CorelDRAW.\n" +
                     "No edite el documento mientras la vista previa esté activa.\n\n" +
