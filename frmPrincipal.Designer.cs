@@ -144,6 +144,9 @@ namespace TithorAutomation
             this.lblTituloConfiguracion = new System.Windows.Forms.Label();
             this.lblSubtituloConfiguracion = new System.Windows.Forms.Label();
             this.pnlContenido = new System.Windows.Forms.Panel();
+            this.pnlMockups = new System.Windows.Forms.Panel();
+            this.lblTituloModuloMockups = new System.Windows.Forms.Label();
+            this.lblDescripcionModuloMockups = new System.Windows.Forms.Label();
             this.pnlAcomodar = new System.Windows.Forms.Panel();
             this.panel9 = new System.Windows.Forms.Panel();
             this.dgvAcomodo = new System.Windows.Forms.DataGridView();
@@ -1511,6 +1514,7 @@ namespace TithorAutomation
             // 
             // pnlContenido
             // 
+            this.pnlContenido.Controls.Add(this.pnlMockups);
             this.pnlContenido.Controls.Add(this.pnlConfiguracion);
             this.pnlContenido.Controls.Add(this.pnlPantonear);
             this.pnlContenido.Controls.Add(this.pnlAcomodar);
@@ -1523,6 +1527,39 @@ namespace TithorAutomation
             this.pnlContenido.Size = new System.Drawing.Size(896, 611);
             this.pnlContenido.TabIndex = 12;
             this.pnlContenido.Visible = false;
+            // 
+            // pnlMockups
+            // 
+            this.pnlMockups.BackColor = System.Drawing.Color.White;
+            this.pnlMockups.Controls.Add(this.lblDescripcionModuloMockups);
+            this.pnlMockups.Controls.Add(this.lblTituloModuloMockups);
+            this.pnlMockups.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlMockups.Location = new System.Drawing.Point(0, 0);
+            this.pnlMockups.Name = "pnlMockups";
+            this.pnlMockups.Size = new System.Drawing.Size(896, 611);
+            this.pnlMockups.TabIndex = 36;
+            this.pnlMockups.Visible = false;
+            // 
+            // lblTituloModuloMockups
+            // 
+            this.lblTituloModuloMockups.AutoSize = true;
+            this.lblTituloModuloMockups.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Bold);
+            this.lblTituloModuloMockups.Location = new System.Drawing.Point(20, 18);
+            this.lblTituloModuloMockups.Name = "lblTituloModuloMockups";
+            this.lblTituloModuloMockups.Size = new System.Drawing.Size(143, 32);
+            this.lblTituloModuloMockups.TabIndex = 0;
+            this.lblTituloModuloMockups.Text = "MOCKUPS";
+            // 
+            // lblDescripcionModuloMockups
+            // 
+            this.lblDescripcionModuloMockups.AutoSize = true;
+            this.lblDescripcionModuloMockups.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.lblDescripcionModuloMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.lblDescripcionModuloMockups.Location = new System.Drawing.Point(23, 55);
+            this.lblDescripcionModuloMockups.Name = "lblDescripcionModuloMockups";
+            this.lblDescripcionModuloMockups.Size = new System.Drawing.Size(316, 15);
+            this.lblDescripcionModuloMockups.TabIndex = 1;
+            this.lblDescripcionModuloMockups.Text = "Selecciona y prepara los mockups para el pedido activo.";
             // 
             // pnlAcomodar
             // 
@@ -3371,6 +3408,9 @@ namespace TithorAutomation
         private System.Windows.Forms.Panel pnlPantonear_footer;
         private System.Windows.Forms.Panel pnlConfiguracion;
         private System.Windows.Forms.Panel pnlContenido;
+        private System.Windows.Forms.Panel pnlMockups;
+        private System.Windows.Forms.Label lblTituloModuloMockups;
+        private System.Windows.Forms.Label lblDescripcionModuloMockups;
         private System.Windows.Forms.ComboBox cboProductoConfiguracion;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button btnEliminarProducto;
