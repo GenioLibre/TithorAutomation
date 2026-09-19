@@ -1526,7 +1526,7 @@ namespace TithorAutomation
             this.pnlContenido.Name = "pnlContenido";
             this.pnlContenido.Size = new System.Drawing.Size(896, 611);
             this.pnlContenido.TabIndex = 12;
-            this.pnlContenido.Visible = false;
+            this.pnlContenido.Visible = true;
             // 
             // pnlMockups
             // 
@@ -2425,6 +2425,7 @@ namespace TithorAutomation
             this.pnlEscalar.Name = "pnlEscalar";
             this.pnlEscalar.Size = new System.Drawing.Size(896, 611);
             this.pnlEscalar.TabIndex = 40;
+            this.pnlEscalar.Visible = true;
             // 
             // dgvEscalar
             // 
