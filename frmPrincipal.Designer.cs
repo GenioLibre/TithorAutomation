@@ -2886,9 +2886,9 @@ namespace TithorAutomation
             this.groupBox1.Controls.Add(this.lblTallaEscalar);
             this.groupBox1.Controls.Add(this.lblPiezaEscalar);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox1.Location = new System.Drawing.Point(0, 495);
+            this.groupBox1.Location = new System.Drawing.Point(0, 475);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(880, 100);
+            this.groupBox1.Size = new System.Drawing.Size(880, 120);
             this.groupBox1.TabIndex = 31;
             this.groupBox1.TabStop = false;
             // 
@@ -2896,7 +2896,7 @@ namespace TithorAutomation
             // 
             this.lblEstadoEscalar.AutoSize = true;
             this.lblEstadoEscalar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.lblEstadoEscalar.Location = new System.Drawing.Point(17, 71);
+            this.lblEstadoEscalar.Location = new System.Drawing.Point(17, 93);
             this.lblEstadoEscalar.Name = "lblEstadoEscalar";
             this.lblEstadoEscalar.Size = new System.Drawing.Size(376, 17);
             this.lblEstadoEscalar.TabIndex = 42;
