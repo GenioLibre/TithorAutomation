@@ -262,9 +262,11 @@ namespace TithorAutomation
         private TareaLoteEscalar CrearTareaLoteEscalar(string diseno, List<TareaEscalar> tareas)
             {
             bool incluyeShort = tareas.Any(x => AnalizadorMasterCorel.NormalizarCodigo(x.Pieza).Contains("short"));
+            bool esFunda = planProduccionActual != null &&
+                (planProduccionActual.CodigoProducto ?? string.Empty).IndexOf("FUNDA", StringComparison.OrdinalIgnoreCase) >= 0;
             TareaLoteEscalar lote = new TareaLoteEscalar();
             lote.Diseno = string.IsNullOrWhiteSpace(diseno) ? "sin nombre" : diseno;
-            lote.TipoPedido = incluyeShort ? "camiseta y short" : "camiseta";
+            lote.TipoPedido = esFunda ? "funda" : (incluyeShort ? "camiseta y short" : "camiseta");
             lote.Tareas = tareas;
 
             if (tareas.Any(x => x.Estado == "Con error"))
@@ -413,7 +415,7 @@ namespace TithorAutomation
             string codigo = AnalizadorMasterCorel.NormalizarCodigo(objeto.Name ?? string.Empty);
             if (codigo.StartsWith("diseno_"))
                 {
-                string pieza = codigo.Substring("diseno_".Length);
+                string pieza = NormalizarReferenciaLote(codigo.Substring("diseno_".Length));
                 if (!referencias.ContainsKey(pieza)) referencias[pieza] = new List<VGCore.Shape>();
                 referencias[pieza].Add(objeto);
                 }
@@ -425,9 +427,27 @@ namespace TithorAutomation
                 }
             }
 
+        private string NormalizarReferenciaLote(string codigo)
+            {
+            string valor = AnalizadorMasterCorel.NormalizarCodigo(codigo ?? string.Empty);
+
+            if (valor.StartsWith("funda_"))
+                {
+                valor = valor.Substring("funda_".Length);
+                string[] partes = valor.Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (partes.Length > 1 && (partes[0] == "s" || partes[0] == "m" || partes[0] == "l"))
+                    valor = string.Join("_", partes.Skip(1));
+                }
+
+            if (valor == "lado_izquierdo") valor = "lateral_izquierdo";
+            if (valor == "lado_derecho") valor = "lateral_derecho";
+            return valor;
+            }
+
         private string CodigoReferenciaLote(string pieza)
             {
-            return AnalizadorMasterCorel.NormalizarCodigo(pieza ?? string.Empty);
+            return NormalizarReferenciaLote(pieza);
             }
 
         private void AplicarLoteGuiado()
