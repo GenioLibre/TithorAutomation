@@ -47,6 +47,10 @@ namespace TithorAutomation
             {
             InitializeComponent();
 
+            // El diseñador solo debe construir los controles, sin cargar datos ni iniciar Corel.
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime)
+                return;
+
             ConfigurarFiltrosCatalogo();
             ConfigurarModuloMockups();
             ConfigurarModuloAcomodar();
@@ -106,6 +110,9 @@ namespace TithorAutomation
             }
         private void frmPrincipal_Load(object sender, EventArgs e)
             {
+            if (System.ComponentModel.LicenseManager.UsageMode == System.ComponentModel.LicenseUsageMode.Designtime || DesignMode)
+                return;
+
             RestaurarUltimoPedidoProduccion();
             }
         private System.Windows.Forms.Panel BuscarPanelMockups()
@@ -136,6 +143,9 @@ namespace TithorAutomation
             if (panelMockups != null && panelMockups != panelSeleccionado)
                 panelMockups.Visible = false;
 
+            // En el diseñador los paneles son libres; al navegar ocupan el área del módulo.
+            panelSeleccionado.Dock = DockStyle.Fill;
+            panelSeleccionado.Location = System.Drawing.Point.Empty;
             panelSeleccionado.Visible = true;
             panelSeleccionado.BringToFront();
 

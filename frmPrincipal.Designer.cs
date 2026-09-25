@@ -565,7 +565,7 @@ namespace TithorAutomation
             this.pnlPantonear.Controls.Add(this.pnlPantonear_footer);
             this.pnlPantonear.Controls.Add(this.tableLayoutPanel1);
             this.pnlPantonear.Controls.Add(this.pnlEstadoCorel);
-            this.pnlPantonear.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlPantonear.Dock = System.Windows.Forms.DockStyle.None;
             this.pnlPantonear.Location = new System.Drawing.Point(0, 0);
             this.pnlPantonear.Name = "pnlPantonear";
             this.pnlPantonear.Size = new System.Drawing.Size(896, 611);
@@ -1009,7 +1009,7 @@ namespace TithorAutomation
             // 
             // tmrConexionCorel
             // 
-            this.tmrConexionCorel.Enabled = true;
+            this.tmrConexionCorel.Enabled = false;
             this.tmrConexionCorel.Interval = 1000;
             this.tmrConexionCorel.Tick += new System.EventHandler(this.TemporizadorCorel_Tick);
             // 
@@ -1017,7 +1017,7 @@ namespace TithorAutomation
             // 
             this.pnlConfiguracion.Controls.Add(this.tabConfiguracion);
             this.pnlConfiguracion.Controls.Add(this.pnlConfiguracion_Header);
-            this.pnlConfiguracion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlConfiguracion.Dock = System.Windows.Forms.DockStyle.None;
             this.pnlConfiguracion.Location = new System.Drawing.Point(0, 0);
             this.pnlConfiguracion.Name = "pnlConfiguracion";
             this.pnlConfiguracion.Size = new System.Drawing.Size(896, 611);
@@ -1907,7 +1907,7 @@ namespace TithorAutomation
             // 
             this.pnlMockups.BackColor = System.Drawing.Color.White;
             this.pnlMockups.Controls.Add(this.panel17);
-            this.pnlMockups.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlMockups.Dock = System.Windows.Forms.DockStyle.None;
             this.pnlMockups.Location = new System.Drawing.Point(0, 0);
             this.pnlMockups.Name = "pnlMockups";
             this.pnlMockups.Size = new System.Drawing.Size(896, 611);
@@ -1951,7 +1951,7 @@ namespace TithorAutomation
             this.pnlAcomodar.Controls.Add(this.groupBox2);
             this.pnlAcomodar.Controls.Add(this.grpConfiguracionAcomodo);
             this.pnlAcomodar.Controls.Add(this.panel14);
-            this.pnlAcomodar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlAcomodar.Dock = System.Windows.Forms.DockStyle.None;
             this.pnlAcomodar.Location = new System.Drawing.Point(0, 0);
             this.pnlAcomodar.Name = "pnlAcomodar";
             this.pnlAcomodar.Size = new System.Drawing.Size(896, 611);
@@ -2424,7 +2424,7 @@ namespace TithorAutomation
             this.pnlProduccion.Controls.Add(this.panel8);
             this.pnlProduccion.Controls.Add(this.grpPedidoProduccion);
             this.pnlProduccion.Controls.Add(this.panel3);
-            this.pnlProduccion.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlProduccion.Dock = System.Windows.Forms.DockStyle.None;
             this.pnlProduccion.Location = new System.Drawing.Point(0, 0);
             this.pnlProduccion.Name = "pnlProduccion";
             this.pnlProduccion.Size = new System.Drawing.Size(896, 611);
@@ -2823,6 +2823,7 @@ namespace TithorAutomation
             this.pnlEscalar.Controls.Add(this.dgvEscalar);
             this.pnlEscalar.Controls.Add(this.groupBox1);
             this.pnlEscalar.Controls.Add(this.panel12);
+            this.pnlEscalar.Dock = System.Windows.Forms.DockStyle.None;
             this.pnlEscalar.Location = new System.Drawing.Point(8, 8);
             this.pnlEscalar.Name = "pnlEscalar";
             this.pnlEscalar.Size = new System.Drawing.Size(880, 595);
