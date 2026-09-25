@@ -30,27 +30,27 @@ namespace TithorAutomation
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmPrincipal));
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle17 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle18 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle19 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle20 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle21 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle64 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle65 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle66 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle67 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle68 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle69 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle70 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle71 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle72 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle73 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle74 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle75 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle76 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle77 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle78 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle79 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle80 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle81 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle82 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle83 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle84 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lblTituloApp = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pnlEstadoCorel = new System.Windows.Forms.Panel();
@@ -173,10 +173,57 @@ namespace TithorAutomation
             this.lblTituloConfiguracion = new System.Windows.Forms.Label();
             this.lblSubtituloConfiguracion = new System.Windows.Forms.Label();
             this.pnlContenido = new System.Windows.Forms.Panel();
-            this.pnlMockups = new System.Windows.Forms.Panel();
-            this.panel17 = new System.Windows.Forms.Panel();
-            this.lblDescripcionModuloMockups = new System.Windows.Forms.Label();
-            this.lblTituloModuloMockups = new System.Windows.Forms.Label();
+            this.pnlEscalar = new System.Windows.Forms.Panel();
+            this.dgvEscalar = new System.Windows.Forms.DataGridView();
+            this.colPiezaEscalar = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colTallaEscalar = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colCantidadEscalar = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colContenidoEscalar = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEstadoEscalar = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.prgEscalar = new System.Windows.Forms.ProgressBar();
+            this.lblEstadoEscalar = new System.Windows.Forms.Label();
+            this.btnAnalizarEscalar = new System.Windows.Forms.Button();
+            this.btnAplicarEscalar = new System.Windows.Forms.Button();
+            this.chkReemplazoPorLote = new System.Windows.Forms.CheckBox();
+            this.chkReemplazarContenidoEscalar = new System.Windows.Forms.CheckBox();
+            this.cboTareaEscalar = new System.Windows.Forms.ComboBox();
+            this.lblPiezaEscalar = new System.Windows.Forms.Label();
+            this.panel12 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.pnlProduccion = new System.Windows.Forms.Panel();
+            this.dgvPedidoProduccion = new System.Windows.Forms.DataGridView();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.prgMoldes = new System.Windows.Forms.ProgressBar();
+            this.btnNuevoPedido = new System.Windows.Forms.Button();
+            this.btnCopiarMoldesPedido = new System.Windows.Forms.Button();
+            this.lblResultadoPedido = new System.Windows.Forms.Label();
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.grpPedidoProduccion = new System.Windows.Forms.GroupBox();
+            this.lblEstadoExcelProduccion = new System.Windows.Forms.Label();
+            this.lblExcelProduccion = new System.Windows.Forms.Label();
+            this.lblProductoProduccion = new System.Windows.Forms.Label();
+            this.cboProductoProduccion = new System.Windows.Forms.ComboBox();
+            this.btnAnalizarExcelProduccion = new System.Windows.Forms.Button();
+            this.btnCargarExcelProduccion = new System.Windows.Forms.Button();
+            this.pnlResumenProduccion = new System.Windows.Forms.TableLayoutPanel();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.lblFilasPedidoValor = new System.Windows.Forms.Label();
+            this.lblFilasPedidoTitulo = new System.Windows.Forms.Label();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.lblDisenosPedidoValor = new System.Windows.Forms.Label();
+            this.lblDisenosPedidoTitulo = new System.Windows.Forms.Label();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.lblUnidadesPedidoValor = new System.Windows.Forms.Label();
+            this.lblUnidadesPedidoTitulo = new System.Windows.Forms.Label();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.lblAdvertenciasPedidoValor = new System.Windows.Forms.Label();
+            this.lblAdvertenciasPedidoTitulo = new System.Windows.Forms.Label();
+            this.txtRutaExcelProduccion = new System.Windows.Forms.TextBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.lblTituloProduccion = new System.Windows.Forms.Label();
+            this.lblSubtituloProduccion = new System.Windows.Forms.Label();
             this.pnlAcomodar = new System.Windows.Forms.Panel();
             this.panel9 = new System.Windows.Forms.Panel();
             this.dgvAcomodo = new System.Windows.Forms.DataGridView();
@@ -214,57 +261,10 @@ namespace TithorAutomation
             this.panel14 = new System.Windows.Forms.Panel();
             this.lblTituloAcomodar = new System.Windows.Forms.Label();
             this.lblSubtituloAcomodar = new System.Windows.Forms.Label();
-            this.pnlProduccion = new System.Windows.Forms.Panel();
-            this.dgvPedidoProduccion = new System.Windows.Forms.DataGridView();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.prgMoldes = new System.Windows.Forms.ProgressBar();
-            this.btnNuevoPedido = new System.Windows.Forms.Button();
-            this.btnCopiarMoldesPedido = new System.Windows.Forms.Button();
-            this.lblResultadoPedido = new System.Windows.Forms.Label();
-            this.panel8 = new System.Windows.Forms.Panel();
-            this.grpPedidoProduccion = new System.Windows.Forms.GroupBox();
-            this.lblEstadoExcelProduccion = new System.Windows.Forms.Label();
-            this.lblExcelProduccion = new System.Windows.Forms.Label();
-            this.lblProductoProduccion = new System.Windows.Forms.Label();
-            this.cboProductoProduccion = new System.Windows.Forms.ComboBox();
-            this.btnAnalizarExcelProduccion = new System.Windows.Forms.Button();
-            this.btnCargarExcelProduccion = new System.Windows.Forms.Button();
-            this.pnlResumenProduccion = new System.Windows.Forms.TableLayoutPanel();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.lblFilasPedidoValor = new System.Windows.Forms.Label();
-            this.lblFilasPedidoTitulo = new System.Windows.Forms.Label();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.lblDisenosPedidoValor = new System.Windows.Forms.Label();
-            this.lblDisenosPedidoTitulo = new System.Windows.Forms.Label();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.lblUnidadesPedidoValor = new System.Windows.Forms.Label();
-            this.lblUnidadesPedidoTitulo = new System.Windows.Forms.Label();
-            this.panel7 = new System.Windows.Forms.Panel();
-            this.lblAdvertenciasPedidoValor = new System.Windows.Forms.Label();
-            this.lblAdvertenciasPedidoTitulo = new System.Windows.Forms.Label();
-            this.txtRutaExcelProduccion = new System.Windows.Forms.TextBox();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.lblTituloProduccion = new System.Windows.Forms.Label();
-            this.lblSubtituloProduccion = new System.Windows.Forms.Label();
-            this.pnlEscalar = new System.Windows.Forms.Panel();
-            this.dgvEscalar = new System.Windows.Forms.DataGridView();
-            this.colPiezaEscalar = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colTallaEscalar = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colCantidadEscalar = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colContenidoEscalar = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.colEstadoEscalar = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.prgEscalar = new System.Windows.Forms.ProgressBar();
-            this.lblEstadoEscalar = new System.Windows.Forms.Label();
-            this.btnAnalizarEscalar = new System.Windows.Forms.Button();
-            this.btnAplicarEscalar = new System.Windows.Forms.Button();
-            this.chkReemplazoPorLote = new System.Windows.Forms.CheckBox();
-            this.chkReemplazarContenidoEscalar = new System.Windows.Forms.CheckBox();
-            this.cboTareaEscalar = new System.Windows.Forms.ComboBox();
-            this.lblPiezaEscalar = new System.Windows.Forms.Label();
-            this.panel12 = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.pnlMockups = new System.Windows.Forms.Panel();
+            this.panel17 = new System.Windows.Forms.Panel();
+            this.lblDescripcionModuloMockups = new System.Windows.Forms.Label();
+            this.lblTituloModuloMockups = new System.Windows.Forms.Label();
             this.pnlEstadoCorelGlobal = new System.Windows.Forms.Panel();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -326,8 +326,20 @@ namespace TithorAutomation
             this.pnlErroresMockups.SuspendLayout();
             this.pnlConfiguracion_Header.SuspendLayout();
             this.pnlContenido.SuspendLayout();
-            this.pnlMockups.SuspendLayout();
-            this.panel17.SuspendLayout();
+            this.pnlEscalar.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEscalar)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.panel12.SuspendLayout();
+            this.pnlProduccion.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPedidoProduccion)).BeginInit();
+            this.groupBox4.SuspendLayout();
+            this.grpPedidoProduccion.SuspendLayout();
+            this.pnlResumenProduccion.SuspendLayout();
+            this.panel4.SuspendLayout();
+            this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
+            this.panel7.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.pnlAcomodar.SuspendLayout();
             this.panel9.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvAcomodo)).BeginInit();
@@ -340,20 +352,8 @@ namespace TithorAutomation
             this.panel11.SuspendLayout();
             this.panel13.SuspendLayout();
             this.panel14.SuspendLayout();
-            this.pnlProduccion.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvPedidoProduccion)).BeginInit();
-            this.groupBox4.SuspendLayout();
-            this.grpPedidoProduccion.SuspendLayout();
-            this.pnlResumenProduccion.SuspendLayout();
-            this.panel4.SuspendLayout();
-            this.panel5.SuspendLayout();
-            this.panel6.SuspendLayout();
-            this.panel7.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.pnlEscalar.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvEscalar)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.panel12.SuspendLayout();
+            this.pnlMockups.SuspendLayout();
+            this.panel17.SuspendLayout();
             this.pnlEstadoCorelGlobal.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -564,15 +564,10 @@ namespace TithorAutomation
             this.pnlPantonear.Controls.Add(this.pnlPantonear_footer);
             this.pnlPantonear.Controls.Add(this.tableLayoutPanel1);
             this.pnlPantonear.Controls.Add(this.pnlEstadoCorel);
-<<<<<<< HEAD
             this.pnlPantonear.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlPantonear.Location = new System.Drawing.Point(0, 69);
-=======
-            this.pnlPantonear.Dock = System.Windows.Forms.DockStyle.None;
             this.pnlPantonear.Location = new System.Drawing.Point(0, 0);
->>>>>>> aeaefe14dc2f1548488f4b52c4493713d21638ff
             this.pnlPantonear.Name = "pnlPantonear";
-            this.pnlPantonear.Size = new System.Drawing.Size(896, 542);
+            this.pnlPantonear.Size = new System.Drawing.Size(896, 611);
             this.pnlPantonear.TabIndex = 4;
             // 
             // pnlPantonear_grid
@@ -582,7 +577,7 @@ namespace TithorAutomation
             this.pnlPantonear_grid.Location = new System.Drawing.Point(0, 149);
             this.pnlPantonear_grid.Name = "pnlPantonear_grid";
             this.pnlPantonear_grid.Padding = new System.Windows.Forms.Padding(8);
-            this.pnlPantonear_grid.Size = new System.Drawing.Size(896, 293);
+            this.pnlPantonear_grid.Size = new System.Drawing.Size(896, 362);
             this.pnlPantonear_grid.TabIndex = 24;
             // 
             // dgvColores
@@ -591,22 +586,22 @@ namespace TithorAutomation
             this.dgvColores.AllowUserToDeleteRows = false;
             this.dgvColores.AllowUserToResizeColumns = false;
             this.dgvColores.AllowUserToResizeRows = false;
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
-            this.dgvColores.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle64.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
+            this.dgvColores.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle64;
             this.dgvColores.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvColores.BackgroundColor = System.Drawing.Color.White;
             this.dgvColores.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvColores.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvColores.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvColores.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle65.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle65.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle65.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle65.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle65.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle65.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle65.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle65.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvColores.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle65;
             this.dgvColores.ColumnHeadersHeight = 42;
             this.dgvColores.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvColores.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -619,15 +614,15 @@ namespace TithorAutomation
             this.colApariciones,
             this.colTipo});
             this.dgvColores.Cursor = System.Windows.Forms.Cursors.Default;
-            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle3.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle3.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
-            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvColores.DefaultCellStyle = dataGridViewCellStyle3;
+            dataGridViewCellStyle66.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle66.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle66.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle66.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle66.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle66.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
+            dataGridViewCellStyle66.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle66.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvColores.DefaultCellStyle = dataGridViewCellStyle66;
             this.dgvColores.EnableHeadersVisualStyles = false;
             this.dgvColores.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dgvColores.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
@@ -702,7 +697,7 @@ namespace TithorAutomation
             // 
             this.pnlPantonear_footer.Controls.Add(this.groupBox3);
             this.pnlPantonear_footer.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlPantonear_footer.Location = new System.Drawing.Point(0, 442);
+            this.pnlPantonear_footer.Location = new System.Drawing.Point(0, 511);
             this.pnlPantonear_footer.Name = "pnlPantonear_footer";
             this.pnlPantonear_footer.Size = new System.Drawing.Size(896, 100);
             this.pnlPantonear_footer.TabIndex = 23;
@@ -734,9 +729,9 @@ namespace TithorAutomation
             this.chkIncluirGrupos.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
             this.chkIncluirGrupos.Location = new System.Drawing.Point(8, 15);
             this.chkIncluirGrupos.Name = "chkIncluirGrupos";
-            this.chkIncluirGrupos.Size = new System.Drawing.Size(210, 21);
+            this.chkIncluirGrupos.Size = new System.Drawing.Size(123, 21);
             this.chkIncluirGrupos.TabIndex = 11;
-            this.chkIncluirGrupos.Text = "Analizar grupos como conjunto";
+            this.chkIncluirGrupos.Text = "Analizar grupos ";
             this.chkIncluirGrupos.UseVisualStyleBackColor = true;
             // 
             // chkEliminarTransparencias
@@ -746,7 +741,7 @@ namespace TithorAutomation
             this.chkEliminarTransparencias.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkEliminarTransparencias.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkEliminarTransparencias.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            this.chkEliminarTransparencias.Location = new System.Drawing.Point(248, 15);
+            this.chkEliminarTransparencias.Location = new System.Drawing.Point(134, 15);
             this.chkEliminarTransparencias.Name = "chkEliminarTransparencias";
             this.chkEliminarTransparencias.Size = new System.Drawing.Size(162, 21);
             this.chkEliminarTransparencias.TabIndex = 12;
@@ -761,11 +756,11 @@ namespace TithorAutomation
             this.btnAplicar.Enabled = false;
             this.btnAplicar.FlatAppearance.BorderSize = 0;
             this.btnAplicar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAplicar.Location = new System.Drawing.Point(760, 40);
+            this.btnAplicar.Location = new System.Drawing.Point(794, 21);
             this.btnAplicar.Name = "btnAplicar";
-            this.btnAplicar.Size = new System.Drawing.Size(130, 40);
+            this.btnAplicar.Size = new System.Drawing.Size(93, 40);
             this.btnAplicar.TabIndex = 18;
-            this.btnAplicar.Text = "Aplicar cambios";
+            this.btnAplicar.Text = "Aplicar";
             this.btnAplicar.UseVisualStyleBackColor = false;
             this.btnAplicar.Click += new System.EventHandler(this.btnAplicar_Click);
             // 
@@ -776,7 +771,7 @@ namespace TithorAutomation
             this.chkIncluirTrazos.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkIncluirTrazos.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkIncluirTrazos.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            this.chkIncluirTrazos.Location = new System.Drawing.Point(645, 15);
+            this.chkIncluirTrazos.Location = new System.Drawing.Point(422, 15);
             this.chkIncluirTrazos.Name = "chkIncluirTrazos";
             this.chkIncluirTrazos.Size = new System.Drawing.Size(101, 21);
             this.chkIncluirTrazos.TabIndex = 21;
@@ -789,9 +784,9 @@ namespace TithorAutomation
             | System.Windows.Forms.AnchorStyles.Right)));
             this.prgProceso.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(221)))), ((int)(((byte)(225)))), ((int)(((byte)(234)))));
             this.prgProceso.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(216)))), ((int)(((byte)(68)))));
-            this.prgProceso.Location = new System.Drawing.Point(8, 49);
+            this.prgProceso.Location = new System.Drawing.Point(7, 70);
             this.prgProceso.Name = "prgProceso";
-            this.prgProceso.Size = new System.Drawing.Size(436, 23);
+            this.prgProceso.Size = new System.Drawing.Size(881, 16);
             this.prgProceso.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.prgProceso.TabIndex = 19;
             // 
@@ -802,11 +797,11 @@ namespace TithorAutomation
             this.chkModificarBlancoNegro.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkModificarBlancoNegro.Cursor = System.Windows.Forms.Cursors.Hand;
             this.chkModificarBlancoNegro.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            this.chkModificarBlancoNegro.Location = new System.Drawing.Point(440, 15);
+            this.chkModificarBlancoNegro.Location = new System.Drawing.Point(302, 15);
             this.chkModificarBlancoNegro.Name = "chkModificarBlancoNegro";
-            this.chkModificarBlancoNegro.Size = new System.Drawing.Size(175, 21);
+            this.chkModificarBlancoNegro.Size = new System.Drawing.Size(114, 21);
             this.chkModificarBlancoNegro.TabIndex = 13;
-            this.chkModificarBlancoNegro.Text = "Modificar blanco y negro";
+            this.chkModificarBlancoNegro.Text = "Blanco y negro";
             this.chkModificarBlancoNegro.UseVisualStyleBackColor = true;
             // 
             // btnVistaPrevia
@@ -818,9 +813,9 @@ namespace TithorAutomation
             this.btnVistaPrevia.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
             this.btnVistaPrevia.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnVistaPrevia.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.btnVistaPrevia.Location = new System.Drawing.Point(620, 40);
+            this.btnVistaPrevia.Location = new System.Drawing.Point(694, 21);
             this.btnVistaPrevia.Name = "btnVistaPrevia";
-            this.btnVistaPrevia.Size = new System.Drawing.Size(130, 40);
+            this.btnVistaPrevia.Size = new System.Drawing.Size(93, 40);
             this.btnVistaPrevia.TabIndex = 16;
             this.btnVistaPrevia.Text = "Vista previa";
             this.btnVistaPrevia.UseVisualStyleBackColor = false;
@@ -829,9 +824,9 @@ namespace TithorAutomation
             // lblEstadoProceso
             // 
             this.lblEstadoProceso.AutoSize = true;
-            this.lblEstadoProceso.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblEstadoProceso.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.lblEstadoProceso.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.lblEstadoProceso.Location = new System.Drawing.Point(8, 54);
+            this.lblEstadoProceso.Location = new System.Drawing.Point(6, 48);
             this.lblEstadoProceso.Name = "lblEstadoProceso";
             this.lblEstadoProceso.Size = new System.Drawing.Size(100, 13);
             this.lblEstadoProceso.TabIndex = 20;
@@ -845,9 +840,9 @@ namespace TithorAutomation
             this.btnAnalizar.FlatAppearance.BorderSize = 0;
             this.btnAnalizar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnAnalizar.ForeColor = System.Drawing.Color.White;
-            this.btnAnalizar.Location = new System.Drawing.Point(450, 40);
+            this.btnAnalizar.Location = new System.Drawing.Point(548, 21);
             this.btnAnalizar.Name = "btnAnalizar";
-            this.btnAnalizar.Size = new System.Drawing.Size(160, 40);
+            this.btnAnalizar.Size = new System.Drawing.Size(139, 40);
             this.btnAnalizar.TabIndex = 14;
             this.btnAnalizar.Text = "Analizar Documento";
             this.btnAnalizar.UseVisualStyleBackColor = false;
@@ -1013,16 +1008,13 @@ namespace TithorAutomation
             // 
             // tmrConexionCorel
             // 
-            this.tmrConexionCorel.Enabled = false;
             this.tmrConexionCorel.Interval = 1000;
             this.tmrConexionCorel.Tick += new System.EventHandler(this.TemporizadorCorel_Tick);
             // 
             // pnlConfiguracion
             // 
-            this.pnlConfiguracion.Controls.Add(this.pnlPantonear);
             this.pnlConfiguracion.Controls.Add(this.tabConfiguracion);
             this.pnlConfiguracion.Controls.Add(this.pnlConfiguracion_Header);
-            this.pnlConfiguracion.Dock = System.Windows.Forms.DockStyle.None;
             this.pnlConfiguracion.Location = new System.Drawing.Point(0, 0);
             this.pnlConfiguracion.Name = "pnlConfiguracion";
             this.pnlConfiguracion.Size = new System.Drawing.Size(896, 611);
@@ -1094,22 +1086,22 @@ namespace TithorAutomation
             this.dgvCatalogoMoldes.AllowUserToDeleteRows = false;
             this.dgvCatalogoMoldes.AllowUserToResizeColumns = false;
             this.dgvCatalogoMoldes.AllowUserToResizeRows = false;
-            dataGridViewCellStyle13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
-            this.dgvCatalogoMoldes.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle67.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
+            this.dgvCatalogoMoldes.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle67;
             this.dgvCatalogoMoldes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvCatalogoMoldes.BackgroundColor = System.Drawing.Color.White;
             this.dgvCatalogoMoldes.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvCatalogoMoldes.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvCatalogoMoldes.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle14.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle14.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle14.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle14.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle14.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvCatalogoMoldes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle68.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle68.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle68.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle68.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle68.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle68.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle68.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle68.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvCatalogoMoldes.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle68;
             this.dgvCatalogoMoldes.ColumnHeadersHeight = 42;
             this.dgvCatalogoMoldes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvCatalogoMoldes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -1123,15 +1115,15 @@ namespace TithorAutomation
             this.colPaginaMolde,
             this.colCapaMolde});
             this.dgvCatalogoMoldes.Cursor = System.Windows.Forms.Cursors.Default;
-            dataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle15.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle15.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle15.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle15.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
-            dataGridViewCellStyle15.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvCatalogoMoldes.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle69.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle69.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle69.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle69.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle69.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle69.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
+            dataGridViewCellStyle69.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle69.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvCatalogoMoldes.DefaultCellStyle = dataGridViewCellStyle69;
             this.dgvCatalogoMoldes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvCatalogoMoldes.EnableHeadersVisualStyles = false;
             this.dgvCatalogoMoldes.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1251,9 +1243,10 @@ namespace TithorAutomation
             // 
             this.lblResumenCatalogo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblResumenCatalogo.AutoSize = true;
-            this.lblResumenCatalogo.Location = new System.Drawing.Point(740, 15);
+            this.lblResumenCatalogo.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.lblResumenCatalogo.Location = new System.Drawing.Point(757, 19);
             this.lblResumenCatalogo.Name = "lblResumenCatalogo";
-            this.lblResumenCatalogo.Size = new System.Drawing.Size(133, 17);
+            this.lblResumenCatalogo.Size = new System.Drawing.Size(114, 13);
             this.lblResumenCatalogo.TabIndex = 28;
             this.lblResumenCatalogo.Text = "0 moldes registrados";
             // 
@@ -1475,7 +1468,7 @@ namespace TithorAutomation
             // lblRutaMasterTitulo
             // 
             this.lblRutaMasterTitulo.AutoSize = true;
-            this.lblRutaMasterTitulo.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRutaMasterTitulo.Font = new System.Drawing.Font("Segoe UI", 8F);
             this.lblRutaMasterTitulo.ForeColor = System.Drawing.Color.Gray;
             this.lblRutaMasterTitulo.Location = new System.Drawing.Point(7, 68);
             this.lblRutaMasterTitulo.Name = "lblRutaMasterTitulo";
@@ -1602,22 +1595,22 @@ namespace TithorAutomation
             this.dgvCatalogoMockups.AllowUserToDeleteRows = false;
             this.dgvCatalogoMockups.AllowUserToResizeColumns = false;
             this.dgvCatalogoMockups.AllowUserToResizeRows = false;
-            dataGridViewCellStyle16.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
-            this.dgvCatalogoMockups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle70.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
+            this.dgvCatalogoMockups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle70;
             this.dgvCatalogoMockups.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvCatalogoMockups.BackgroundColor = System.Drawing.Color.White;
             this.dgvCatalogoMockups.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvCatalogoMockups.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvCatalogoMockups.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle17.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle17.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle17.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle17.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle17.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle17.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle17.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle17.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvCatalogoMockups.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle17;
+            dataGridViewCellStyle71.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle71.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle71.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle71.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle71.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle71.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle71.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle71.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvCatalogoMockups.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle71;
             this.dgvCatalogoMockups.ColumnHeadersHeight = 42;
             this.dgvCatalogoMockups.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgvCatalogoMockups.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
@@ -1626,15 +1619,15 @@ namespace TithorAutomation
             this.colProductoMockup,
             this.colNombreGrupoMockup});
             this.dgvCatalogoMockups.Cursor = System.Windows.Forms.Cursors.Default;
-            dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle18.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle18.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle18.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle18.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
-            dataGridViewCellStyle18.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle18.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvCatalogoMockups.DefaultCellStyle = dataGridViewCellStyle18;
+            dataGridViewCellStyle72.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle72.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle72.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle72.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle72.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle72.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
+            dataGridViewCellStyle72.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle72.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvCatalogoMockups.DefaultCellStyle = dataGridViewCellStyle72;
             this.dgvCatalogoMockups.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvCatalogoMockups.EnableHeadersVisualStyles = false;
             this.dgvCatalogoMockups.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1895,11 +1888,11 @@ namespace TithorAutomation
             // 
             // pnlContenido
             // 
-            this.pnlContenido.Controls.Add(this.pnlEscalar);
-            this.pnlContenido.Controls.Add(this.pnlProduccion);
-            this.pnlContenido.Controls.Add(this.pnlAcomodar);
             this.pnlContenido.Controls.Add(this.pnlConfiguracion);
             this.pnlContenido.Controls.Add(this.pnlMockups);
+            this.pnlContenido.Controls.Add(this.pnlProduccion);
+            this.pnlContenido.Controls.Add(this.pnlAcomodar);
+            this.pnlContenido.Controls.Add(this.pnlPantonear);
             this.pnlContenido.Controls.Add(this.pnlEstadoCorelGlobal);
             this.pnlContenido.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlContenido.Location = new System.Drawing.Point(225, 0);
@@ -1907,501 +1900,229 @@ namespace TithorAutomation
             this.pnlContenido.Size = new System.Drawing.Size(896, 611);
             this.pnlContenido.TabIndex = 12;
             // 
-            // pnlMockups
+            // pnlEscalar
             // 
-            this.pnlMockups.BackColor = System.Drawing.Color.White;
-            this.pnlMockups.Controls.Add(this.panel17);
-            this.pnlMockups.Dock = System.Windows.Forms.DockStyle.None;
-            this.pnlMockups.Location = new System.Drawing.Point(0, 0);
-            this.pnlMockups.Name = "pnlMockups";
-            this.pnlMockups.Size = new System.Drawing.Size(896, 611);
-            this.pnlMockups.TabIndex = 36;
+            this.pnlEscalar.Controls.Add(this.dgvEscalar);
+            this.pnlEscalar.Controls.Add(this.groupBox1);
+            this.pnlEscalar.Controls.Add(this.panel12);
+            this.pnlEscalar.Location = new System.Drawing.Point(0, 0);
+            this.pnlEscalar.Name = "pnlEscalar";
+            this.pnlEscalar.Size = new System.Drawing.Size(896, 611);
+            this.pnlEscalar.TabIndex = 40;
             // 
-            // panel17
+            // dgvEscalar
             // 
-            this.panel17.BackColor = System.Drawing.Color.White;
-            this.panel17.Controls.Add(this.lblDescripcionModuloMockups);
-            this.panel17.Controls.Add(this.lblTituloModuloMockups);
-            this.panel17.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel17.Location = new System.Drawing.Point(0, 0);
-            this.panel17.Name = "panel17";
-            this.panel17.Size = new System.Drawing.Size(896, 69);
-            this.panel17.TabIndex = 26;
+            this.dgvEscalar.AllowUserToAddRows = false;
+            this.dgvEscalar.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle73.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
+            this.dgvEscalar.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle73;
+            this.dgvEscalar.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvEscalar.BackgroundColor = System.Drawing.Color.White;
+            this.dgvEscalar.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvEscalar.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.dgvEscalar.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle74.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle74.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle74.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle74.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle74.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle74.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle74.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle74.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvEscalar.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle74;
+            this.dgvEscalar.ColumnHeadersHeight = 42;
+            this.dgvEscalar.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvEscalar.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colPiezaEscalar,
+            this.colTallaEscalar,
+            this.colCantidadEscalar,
+            this.colContenidoEscalar,
+            this.colEstadoEscalar});
+            dataGridViewCellStyle75.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle75.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle75.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle75.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle75.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle75.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
+            dataGridViewCellStyle75.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle75.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvEscalar.DefaultCellStyle = dataGridViewCellStyle75;
+            this.dgvEscalar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvEscalar.EnableHeadersVisualStyles = false;
+            this.dgvEscalar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgvEscalar.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
+            this.dgvEscalar.Location = new System.Drawing.Point(0, 69);
+            this.dgvEscalar.Name = "dgvEscalar";
+            this.dgvEscalar.ReadOnly = true;
+            this.dgvEscalar.RowHeadersVisible = false;
+            this.dgvEscalar.RowTemplate.Height = 34;
+            this.dgvEscalar.Size = new System.Drawing.Size(896, 397);
+            this.dgvEscalar.TabIndex = 32;
             // 
-            // lblDescripcionModuloMockups
+            // colPiezaEscalar
             // 
-            this.lblDescripcionModuloMockups.AutoSize = true;
-            this.lblDescripcionModuloMockups.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.lblDescripcionModuloMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.lblDescripcionModuloMockups.Location = new System.Drawing.Point(14, 43);
-            this.lblDescripcionModuloMockups.Name = "lblDescripcionModuloMockups";
-            this.lblDescripcionModuloMockups.Size = new System.Drawing.Size(339, 17);
-            this.lblDescripcionModuloMockups.TabIndex = 1;
-            this.lblDescripcionModuloMockups.Text = "Selecciona y prepara los mockups para el pedido activo.";
+            this.colPiezaEscalar.HeaderText = "Pieza";
+            this.colPiezaEscalar.Name = "colPiezaEscalar";
+            this.colPiezaEscalar.ReadOnly = true;
             // 
-            // lblTituloModuloMockups
+            // colTallaEscalar
             // 
-            this.lblTituloModuloMockups.AutoSize = true;
-            this.lblTituloModuloMockups.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold);
-            this.lblTituloModuloMockups.Location = new System.Drawing.Point(9, 6);
-            this.lblTituloModuloMockups.Name = "lblTituloModuloMockups";
-            this.lblTituloModuloMockups.Size = new System.Drawing.Size(150, 37);
-            this.lblTituloModuloMockups.TabIndex = 0;
-            this.lblTituloModuloMockups.Text = "MOCKUPS";
+            this.colTallaEscalar.HeaderText = "Talla";
+            this.colTallaEscalar.Name = "colTallaEscalar";
+            this.colTallaEscalar.ReadOnly = true;
             // 
-            // pnlAcomodar
+            // colCantidadEscalar
             // 
-            this.pnlAcomodar.Controls.Add(this.panel9);
-            this.pnlAcomodar.Controls.Add(this.groupBox2);
-            this.pnlAcomodar.Controls.Add(this.grpConfiguracionAcomodo);
-            this.pnlAcomodar.Controls.Add(this.panel14);
-            this.pnlAcomodar.Dock = System.Windows.Forms.DockStyle.None;
-            this.pnlAcomodar.Location = new System.Drawing.Point(0, 0);
-            this.pnlAcomodar.Name = "pnlAcomodar";
-            this.pnlAcomodar.Size = new System.Drawing.Size(896, 611);
-            this.pnlAcomodar.TabIndex = 39;
+            this.colCantidadEscalar.HeaderText = "Cantidad";
+            this.colCantidadEscalar.Name = "colCantidadEscalar";
+            this.colCantidadEscalar.ReadOnly = true;
             // 
-            // panel9
+            // colContenidoEscalar
             // 
-            this.panel9.Controls.Add(this.dgvAcomodo);
-            this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel9.Location = new System.Drawing.Point(0, 240);
-            this.panel9.Margin = new System.Windows.Forms.Padding(0);
-            this.panel9.Name = "panel9";
-            this.panel9.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
-            this.panel9.Size = new System.Drawing.Size(896, 271);
-            this.panel9.TabIndex = 44;
+            this.colContenidoEscalar.HeaderText = "Con contenido";
+            this.colContenidoEscalar.Name = "colContenidoEscalar";
+            this.colContenidoEscalar.ReadOnly = true;
             // 
-            // dgvAcomodo
+            // colEstadoEscalar
             // 
-            this.dgvAcomodo.AllowUserToAddRows = false;
-            this.dgvAcomodo.AllowUserToDeleteRows = false;
-            this.dgvAcomodo.AllowUserToResizeRows = false;
-            dataGridViewCellStyle10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
-            this.dgvAcomodo.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle10;
-            this.dgvAcomodo.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvAcomodo.BackgroundColor = System.Drawing.Color.White;
-            this.dgvAcomodo.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvAcomodo.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            this.dgvAcomodo.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle11.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle11.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle11.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle11.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvAcomodo.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle11;
-            this.dgvAcomodo.ColumnHeadersHeight = 42;
-            this.dgvAcomodo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvAcomodo.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colEstadoAcomodo,
-            this.colPiezaAcomodo,
-            this.colTallaAcomodo,
-            this.colAnchoAcomodo,
-            this.colAltoAcomodo,
-            this.colRotacionAcomodo,
-            this.colGrupoAcomodo});
-            dataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle12.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle12.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle12.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle12.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle12.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
-            dataGridViewCellStyle12.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvAcomodo.DefaultCellStyle = dataGridViewCellStyle12;
-            this.dgvAcomodo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvAcomodo.EnableHeadersVisualStyles = false;
-            this.dgvAcomodo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvAcomodo.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
-            this.dgvAcomodo.Location = new System.Drawing.Point(8, 0);
-            this.dgvAcomodo.MultiSelect = false;
-            this.dgvAcomodo.Name = "dgvAcomodo";
-            this.dgvAcomodo.ReadOnly = true;
-            this.dgvAcomodo.RowHeadersVisible = false;
-            this.dgvAcomodo.RowTemplate.Height = 34;
-            this.dgvAcomodo.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvAcomodo.Size = new System.Drawing.Size(880, 271);
-            this.dgvAcomodo.TabIndex = 43;
+            this.colEstadoEscalar.HeaderText = "Estado";
+            this.colEstadoEscalar.Name = "colEstadoEscalar";
+            this.colEstadoEscalar.ReadOnly = true;
             // 
-            // colEstadoAcomodo
+            // groupBox1
             // 
-            this.colEstadoAcomodo.HeaderText = "Estado";
-            this.colEstadoAcomodo.Name = "colEstadoAcomodo";
-            this.colEstadoAcomodo.ReadOnly = true;
+            this.groupBox1.Controls.Add(this.prgEscalar);
+            this.groupBox1.Controls.Add(this.lblEstadoEscalar);
+            this.groupBox1.Controls.Add(this.btnAnalizarEscalar);
+            this.groupBox1.Controls.Add(this.btnAplicarEscalar);
+            this.groupBox1.Controls.Add(this.chkReemplazoPorLote);
+            this.groupBox1.Controls.Add(this.chkReemplazarContenidoEscalar);
+            this.groupBox1.Controls.Add(this.cboTareaEscalar);
+            this.groupBox1.Controls.Add(this.lblPiezaEscalar);
+            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.groupBox1.Location = new System.Drawing.Point(0, 466);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(896, 145);
+            this.groupBox1.TabIndex = 31;
+            this.groupBox1.TabStop = false;
             // 
-            // colPiezaAcomodo
+            // prgEscalar
             // 
-            this.colPiezaAcomodo.HeaderText = "Pieza";
-            this.colPiezaAcomodo.Name = "colPiezaAcomodo";
-            this.colPiezaAcomodo.ReadOnly = true;
-            // 
-            // colTallaAcomodo
-            // 
-            this.colTallaAcomodo.HeaderText = "Talla";
-            this.colTallaAcomodo.Name = "colTallaAcomodo";
-            this.colTallaAcomodo.ReadOnly = true;
-            // 
-            // colAnchoAcomodo
-            // 
-            this.colAnchoAcomodo.HeaderText = "Ancho";
-            this.colAnchoAcomodo.Name = "colAnchoAcomodo";
-            this.colAnchoAcomodo.ReadOnly = true;
-            // 
-            // colAltoAcomodo
-            // 
-            this.colAltoAcomodo.HeaderText = "Alto";
-            this.colAltoAcomodo.Name = "colAltoAcomodo";
-            this.colAltoAcomodo.ReadOnly = true;
-            // 
-            // colRotacionAcomodo
-            // 
-            this.colRotacionAcomodo.HeaderText = "Rotación";
-            this.colRotacionAcomodo.Name = "colRotacionAcomodo";
-            this.colRotacionAcomodo.ReadOnly = true;
-            // 
-            // colGrupoAcomodo
-            // 
-            this.colGrupoAcomodo.HeaderText = "Grupo";
-            this.colGrupoAcomodo.Name = "colGrupoAcomodo";
-            this.colGrupoAcomodo.ReadOnly = true;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.btnAnalizarAcomodo);
-            this.groupBox2.Controls.Add(this.btnAcomodarElementos);
-            this.groupBox2.Controls.Add(this.lblEstadoAcomodar);
-            this.groupBox2.Controls.Add(this.prgAcomodar);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox2.Location = new System.Drawing.Point(0, 511);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(896, 100);
-            this.groupBox2.TabIndex = 6;
-            this.groupBox2.TabStop = false;
-            // 
-            // btnAnalizarAcomodo
-            // 
-            this.btnAnalizarAcomodo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAnalizarAcomodo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.btnAnalizarAcomodo.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnAnalizarAcomodo.FlatAppearance.BorderSize = 0;
-            this.btnAnalizarAcomodo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAnalizarAcomodo.ForeColor = System.Drawing.Color.White;
-            this.btnAnalizarAcomodo.Location = new System.Drawing.Point(579, 24);
-            this.btnAnalizarAcomodo.Name = "btnAnalizarAcomodo";
-            this.btnAnalizarAcomodo.Size = new System.Drawing.Size(130, 40);
-            this.btnAnalizarAcomodo.TabIndex = 39;
-            this.btnAnalizarAcomodo.Text = "ANALIZAR";
-            this.btnAnalizarAcomodo.UseVisualStyleBackColor = false;
-            // 
-            // btnAcomodarElementos
-            // 
-            this.btnAcomodarElementos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAcomodarElementos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(216)))), ((int)(((byte)(68)))));
-            this.btnAcomodarElementos.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnAcomodarElementos.FlatAppearance.BorderSize = 0;
-            this.btnAcomodarElementos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAcomodarElementos.Location = new System.Drawing.Point(715, 24);
-            this.btnAcomodarElementos.Name = "btnAcomodarElementos";
-            this.btnAcomodarElementos.Size = new System.Drawing.Size(174, 40);
-            this.btnAcomodarElementos.TabIndex = 38;
-            this.btnAcomodarElementos.Text = "ACOMODAR ELEMENTOS";
-            this.btnAcomodarElementos.UseVisualStyleBackColor = false;
-            // 
-            // lblEstadoAcomodar
-            // 
-            this.lblEstadoAcomodar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblEstadoAcomodar.AutoSize = true;
-            this.lblEstadoAcomodar.Location = new System.Drawing.Point(13, 36);
-            this.lblEstadoAcomodar.Name = "lblEstadoAcomodar";
-            this.lblEstadoAcomodar.Size = new System.Drawing.Size(115, 17);
-            this.lblEstadoAcomodar.TabIndex = 42;
-            this.lblEstadoAcomodar.Text = "Listo para analizar";
-            // 
-            // prgAcomodar
-            // 
-            this.prgAcomodar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.prgEscalar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.prgAcomodar.Location = new System.Drawing.Point(14, 78);
-            this.prgAcomodar.Name = "prgAcomodar";
-            this.prgAcomodar.Size = new System.Drawing.Size(874, 16);
-            this.prgAcomodar.TabIndex = 41;
+            this.prgEscalar.Location = new System.Drawing.Point(10, 117);
+            this.prgEscalar.Name = "prgEscalar";
+            this.prgEscalar.Size = new System.Drawing.Size(878, 16);
+            this.prgEscalar.TabIndex = 45;
             // 
-            // grpConfiguracionAcomodo
+            // lblEstadoEscalar
             // 
-            this.grpConfiguracionAcomodo.Controls.Add(this.lblOrigenAcomodo);
-            this.grpConfiguracionAcomodo.Controls.Add(this.chkPermitirRotacion);
-            this.grpConfiguracionAcomodo.Controls.Add(this.lblUnidadSeparacion);
-            this.grpConfiguracionAcomodo.Controls.Add(this.lblUnidadAnchoMaterial);
-            this.grpConfiguracionAcomodo.Controls.Add(this.lblSeparacionTitulo);
-            this.grpConfiguracionAcomodo.Controls.Add(this.lblAnchoMaterialTitulo);
-            this.grpConfiguracionAcomodo.Controls.Add(this.nudSeparacionElementos);
-            this.grpConfiguracionAcomodo.Controls.Add(this.nudAnchoMaterial);
-            this.grpConfiguracionAcomodo.Controls.Add(this.grpResumenAcomodo);
-            this.grpConfiguracionAcomodo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.grpConfiguracionAcomodo.Location = new System.Drawing.Point(0, 69);
-            this.grpConfiguracionAcomodo.Name = "grpConfiguracionAcomodo";
-            this.grpConfiguracionAcomodo.Size = new System.Drawing.Size(896, 171);
-            this.grpConfiguracionAcomodo.TabIndex = 40;
-            this.grpConfiguracionAcomodo.TabStop = false;
+            this.lblEstadoEscalar.AutoSize = true;
+            this.lblEstadoEscalar.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.lblEstadoEscalar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.lblEstadoEscalar.Location = new System.Drawing.Point(10, 93);
+            this.lblEstadoEscalar.Name = "lblEstadoEscalar";
+            this.lblEstadoEscalar.Size = new System.Drawing.Size(328, 13);
+            this.lblEstadoEscalar.TabIndex = 42;
+            this.lblEstadoEscalar.Text = "Aplica el diseño seleccionado en los PowerClips de cada pieza.";
             // 
-            // lblOrigenAcomodo
+            // btnAnalizarEscalar
             // 
-            this.lblOrigenAcomodo.AutoSize = true;
-            this.lblOrigenAcomodo.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOrigenAcomodo.ForeColor = System.Drawing.SystemColors.AppWorkspace;
-            this.lblOrigenAcomodo.Location = new System.Drawing.Point(14, 62);
-            this.lblOrigenAcomodo.Name = "lblOrigenAcomodo";
-            this.lblOrigenAcomodo.Size = new System.Drawing.Size(286, 13);
-            this.lblOrigenAcomodo.TabIndex = 36;
-            this.lblOrigenAcomodo.Text = "Origen: todos los elementos de TITHOR_PRODUCCION";
+            this.btnAnalizarEscalar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAnalizarEscalar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnAnalizarEscalar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAnalizarEscalar.FlatAppearance.BorderSize = 0;
+            this.btnAnalizarEscalar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAnalizarEscalar.ForeColor = System.Drawing.Color.White;
+            this.btnAnalizarEscalar.Location = new System.Drawing.Point(571, 35);
+            this.btnAnalizarEscalar.Name = "btnAnalizarEscalar";
+            this.btnAnalizarEscalar.Size = new System.Drawing.Size(149, 40);
+            this.btnAnalizarEscalar.TabIndex = 41;
+            this.btnAnalizarEscalar.Text = "Analizar documento";
+            this.btnAnalizarEscalar.UseVisualStyleBackColor = false;
             // 
-            // chkPermitirRotacion
+            // btnAplicarEscalar
             // 
-            this.chkPermitirRotacion.AutoSize = true;
-            this.chkPermitirRotacion.Location = new System.Drawing.Point(621, 31);
-            this.chkPermitirRotacion.Name = "chkPermitirRotacion";
-            this.chkPermitirRotacion.Size = new System.Drawing.Size(166, 21);
-            this.chkPermitirRotacion.TabIndex = 35;
-            this.chkPermitirRotacion.Text = "Permitir rotación de 90°";
-            this.chkPermitirRotacion.UseVisualStyleBackColor = true;
+            this.btnAplicarEscalar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAplicarEscalar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(216)))), ((int)(((byte)(68)))));
+            this.btnAplicarEscalar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAplicarEscalar.FlatAppearance.BorderSize = 0;
+            this.btnAplicarEscalar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAplicarEscalar.Location = new System.Drawing.Point(726, 35);
+            this.btnAplicarEscalar.Name = "btnAplicarEscalar";
+            this.btnAplicarEscalar.Size = new System.Drawing.Size(161, 40);
+            this.btnAplicarEscalar.TabIndex = 40;
+            this.btnAplicarEscalar.Text = "Aplicar diseño";
+            this.btnAplicarEscalar.UseVisualStyleBackColor = false;
             // 
-            // lblUnidadSeparacion
+            // chkReemplazoPorLote
             // 
-            this.lblUnidadSeparacion.AutoSize = true;
-            this.lblUnidadSeparacion.Location = new System.Drawing.Point(585, 33);
-            this.lblUnidadSeparacion.Name = "lblUnidadSeparacion";
-            this.lblUnidadSeparacion.Size = new System.Drawing.Size(30, 17);
-            this.lblUnidadSeparacion.TabIndex = 34;
-            this.lblUnidadSeparacion.Text = "mm";
+            this.chkReemplazoPorLote.AutoSize = true;
+            this.chkReemplazoPorLote.Location = new System.Drawing.Point(399, 57);
+            this.chkReemplazoPorLote.Name = "chkReemplazoPorLote";
+            this.chkReemplazoPorLote.Size = new System.Drawing.Size(143, 21);
+            this.chkReemplazoPorLote.TabIndex = 44;
+            this.chkReemplazoPorLote.Text = "Reemplazo por lote";
+            this.chkReemplazoPorLote.UseVisualStyleBackColor = true;
             // 
-            // lblUnidadAnchoMaterial
+            // chkReemplazarContenidoEscalar
             // 
-            this.lblUnidadAnchoMaterial.AutoSize = true;
-            this.lblUnidadAnchoMaterial.Location = new System.Drawing.Point(266, 33);
-            this.lblUnidadAnchoMaterial.Name = "lblUnidadAnchoMaterial";
-            this.lblUnidadAnchoMaterial.Size = new System.Drawing.Size(30, 17);
-            this.lblUnidadAnchoMaterial.TabIndex = 33;
-            this.lblUnidadAnchoMaterial.Text = "mm";
+            this.chkReemplazarContenidoEscalar.AutoSize = true;
+            this.chkReemplazarContenidoEscalar.Location = new System.Drawing.Point(399, 29);
+            this.chkReemplazarContenidoEscalar.Name = "chkReemplazarContenidoEscalar";
+            this.chkReemplazarContenidoEscalar.Size = new System.Drawing.Size(158, 21);
+            this.chkReemplazarContenidoEscalar.TabIndex = 39;
+            this.chkReemplazarContenidoEscalar.Text = "Reemplazar contenido";
+            this.chkReemplazarContenidoEscalar.UseVisualStyleBackColor = true;
             // 
-            // lblSeparacionTitulo
+            // cboTareaEscalar
             // 
-            this.lblSeparacionTitulo.AutoSize = true;
-            this.lblSeparacionTitulo.Location = new System.Drawing.Point(331, 33);
-            this.lblSeparacionTitulo.Name = "lblSeparacionTitulo";
-            this.lblSeparacionTitulo.Size = new System.Drawing.Size(122, 17);
-            this.lblSeparacionTitulo.TabIndex = 32;
-            this.lblSeparacionTitulo.Text = "Separación mínima:";
+            this.cboTareaEscalar.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboTareaEscalar.FormattingEnabled = true;
+            this.cboTareaEscalar.Location = new System.Drawing.Point(61, 43);
+            this.cboTareaEscalar.Name = "cboTareaEscalar";
+            this.cboTareaEscalar.Size = new System.Drawing.Size(330, 25);
+            this.cboTareaEscalar.TabIndex = 43;
             // 
-            // lblAnchoMaterialTitulo
+            // lblPiezaEscalar
             // 
-            this.lblAnchoMaterialTitulo.AutoSize = true;
-            this.lblAnchoMaterialTitulo.Location = new System.Drawing.Point(14, 33);
-            this.lblAnchoMaterialTitulo.Name = "lblAnchoMaterialTitulo";
-            this.lblAnchoMaterialTitulo.Size = new System.Drawing.Size(120, 17);
-            this.lblAnchoMaterialTitulo.TabIndex = 31;
-            this.lblAnchoMaterialTitulo.Text = "Ancho del material:";
+            this.lblPiezaEscalar.AutoSize = true;
+            this.lblPiezaEscalar.Location = new System.Drawing.Point(14, 47);
+            this.lblPiezaEscalar.Name = "lblPiezaEscalar";
+            this.lblPiezaEscalar.Size = new System.Drawing.Size(43, 17);
+            this.lblPiezaEscalar.TabIndex = 35;
+            this.lblPiezaEscalar.Text = "Tarea:";
             // 
-            // nudSeparacionElementos
+            // panel12
             // 
-            this.nudSeparacionElementos.DecimalPlaces = 1;
-            this.nudSeparacionElementos.Increment = new decimal(new int[] {
-            5,
-            0,
-            0,
-            65536});
-            this.nudSeparacionElementos.Location = new System.Drawing.Point(459, 29);
-            this.nudSeparacionElementos.Maximum = new decimal(new int[] {
-            500,
-            0,
-            0,
-            0});
-            this.nudSeparacionElementos.Name = "nudSeparacionElementos";
-            this.nudSeparacionElementos.Size = new System.Drawing.Size(120, 25);
-            this.nudSeparacionElementos.TabIndex = 30;
-            this.nudSeparacionElementos.Value = new decimal(new int[] {
-            5,
-            0,
-            0,
-            0});
+            this.panel12.BackColor = System.Drawing.Color.White;
+            this.panel12.Controls.Add(this.label1);
+            this.panel12.Controls.Add(this.label2);
+            this.panel12.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel12.Location = new System.Drawing.Point(0, 0);
+            this.panel12.Name = "panel12";
+            this.panel12.Size = new System.Drawing.Size(896, 69);
+            this.panel12.TabIndex = 30;
             // 
-            // nudAnchoMaterial
+            // label1
             // 
-            this.nudAnchoMaterial.Increment = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
-            this.nudAnchoMaterial.Location = new System.Drawing.Point(140, 29);
-            this.nudAnchoMaterial.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.nudAnchoMaterial.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudAnchoMaterial.Name = "nudAnchoMaterial";
-            this.nudAnchoMaterial.Size = new System.Drawing.Size(120, 25);
-            this.nudAnchoMaterial.TabIndex = 29;
-            this.nudAnchoMaterial.Value = new decimal(new int[] {
-            1600,
-            0,
-            0,
-            0});
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(9, 6);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(240, 37);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "ESCALAR DISEÑO";
             // 
-            // grpResumenAcomodo
+            // label2
             // 
-            this.grpResumenAcomodo.ColumnCount = 3;
-            this.grpResumenAcomodo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.grpResumenAcomodo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.grpResumenAcomodo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.grpResumenAcomodo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-            this.grpResumenAcomodo.Controls.Add(this.panel10, 0, 0);
-            this.grpResumenAcomodo.Controls.Add(this.panel11, 1, 0);
-            this.grpResumenAcomodo.Controls.Add(this.panel13, 3, 0);
-            this.grpResumenAcomodo.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.grpResumenAcomodo.Location = new System.Drawing.Point(3, 91);
-            this.grpResumenAcomodo.Name = "grpResumenAcomodo";
-            this.grpResumenAcomodo.Padding = new System.Windows.Forms.Padding(5);
-            this.grpResumenAcomodo.RowCount = 1;
-            this.grpResumenAcomodo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.grpResumenAcomodo.Size = new System.Drawing.Size(890, 77);
-            this.grpResumenAcomodo.TabIndex = 28;
-            // 
-            // panel10
-            // 
-            this.panel10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.panel10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel10.Controls.Add(this.lblCantidadPiezasAcomodar);
-            this.panel10.Controls.Add(this.lblPiezasDetectadasTitulo);
-            this.panel10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel10.Location = new System.Drawing.Point(8, 8);
-            this.panel10.Name = "panel10";
-            this.panel10.Size = new System.Drawing.Size(287, 61);
-            this.panel10.TabIndex = 8;
-            // 
-            // lblCantidadPiezasAcomodar
-            // 
-            this.lblCantidadPiezasAcomodar.AutoSize = true;
-            this.lblCantidadPiezasAcomodar.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCantidadPiezasAcomodar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            this.lblCantidadPiezasAcomodar.Location = new System.Drawing.Point(8, 17);
-            this.lblCantidadPiezasAcomodar.Name = "lblCantidadPiezasAcomodar";
-            this.lblCantidadPiezasAcomodar.Size = new System.Drawing.Size(34, 40);
-            this.lblCantidadPiezasAcomodar.TabIndex = 8;
-            this.lblCantidadPiezasAcomodar.Text = "0";
-            // 
-            // lblPiezasDetectadasTitulo
-            // 
-            this.lblPiezasDetectadasTitulo.AutoSize = true;
-            this.lblPiezasDetectadasTitulo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.lblPiezasDetectadasTitulo.Location = new System.Drawing.Point(8, 2);
-            this.lblPiezasDetectadasTitulo.Name = "lblPiezasDetectadasTitulo";
-            this.lblPiezasDetectadasTitulo.Size = new System.Drawing.Size(115, 17);
-            this.lblPiezasDetectadasTitulo.TabIndex = 7;
-            this.lblPiezasDetectadasTitulo.Text = "Piezas detectadas:";
-            // 
-            // panel11
-            // 
-            this.panel11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.panel11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel11.Controls.Add(this.lblAltoResultado);
-            this.panel11.Controls.Add(this.lblAltoEstimadoTitulo);
-            this.panel11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel11.Location = new System.Drawing.Point(301, 8);
-            this.panel11.Name = "panel11";
-            this.panel11.Size = new System.Drawing.Size(287, 61);
-            this.panel11.TabIndex = 9;
-            // 
-            // lblAltoResultado
-            // 
-            this.lblAltoResultado.AutoSize = true;
-            this.lblAltoResultado.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAltoResultado.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(166)))), ((int)(((byte)(111)))));
-            this.lblAltoResultado.Location = new System.Drawing.Point(8, 17);
-            this.lblAltoResultado.Name = "lblAltoResultado";
-            this.lblAltoResultado.Size = new System.Drawing.Size(96, 40);
-            this.lblAltoResultado.TabIndex = 8;
-            this.lblAltoResultado.Text = "0 mm";
-            // 
-            // lblAltoEstimadoTitulo
-            // 
-            this.lblAltoEstimadoTitulo.AutoSize = true;
-            this.lblAltoEstimadoTitulo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.lblAltoEstimadoTitulo.Location = new System.Drawing.Point(8, 2);
-            this.lblAltoEstimadoTitulo.Name = "lblAltoEstimadoTitulo";
-            this.lblAltoEstimadoTitulo.Size = new System.Drawing.Size(92, 17);
-            this.lblAltoEstimadoTitulo.TabIndex = 7;
-            this.lblAltoEstimadoTitulo.Text = "Alto estimado:";
-            // 
-            // panel13
-            // 
-            this.panel13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
-            this.panel13.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel13.Controls.Add(this.lblNoProcesablesAcomodar);
-            this.panel13.Controls.Add(this.lblNoProcesablesTitulo);
-            this.panel13.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel13.Location = new System.Drawing.Point(594, 8);
-            this.panel13.Name = "panel13";
-            this.panel13.Size = new System.Drawing.Size(288, 61);
-            this.panel13.TabIndex = 9;
-            // 
-            // lblNoProcesablesAcomodar
-            // 
-            this.lblNoProcesablesAcomodar.AutoSize = true;
-            this.lblNoProcesablesAcomodar.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNoProcesablesAcomodar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(217)))), ((int)(((byte)(83)))), ((int)(((byte)(79)))));
-            this.lblNoProcesablesAcomodar.Location = new System.Drawing.Point(8, 17);
-            this.lblNoProcesablesAcomodar.Name = "lblNoProcesablesAcomodar";
-            this.lblNoProcesablesAcomodar.Size = new System.Drawing.Size(34, 40);
-            this.lblNoProcesablesAcomodar.TabIndex = 8;
-            this.lblNoProcesablesAcomodar.Text = "0";
-            // 
-            // lblNoProcesablesTitulo
-            // 
-            this.lblNoProcesablesTitulo.AutoSize = true;
-            this.lblNoProcesablesTitulo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.lblNoProcesablesTitulo.Location = new System.Drawing.Point(8, 2);
-            this.lblNoProcesablesTitulo.Name = "lblNoProcesablesTitulo";
-            this.lblNoProcesablesTitulo.Size = new System.Drawing.Size(104, 17);
-            this.lblNoProcesablesTitulo.TabIndex = 7;
-            this.lblNoProcesablesTitulo.Text = "No procesables:";
-            // 
-            // panel14
-            // 
-            this.panel14.BackColor = System.Drawing.Color.White;
-            this.panel14.Controls.Add(this.lblTituloAcomodar);
-            this.panel14.Controls.Add(this.lblSubtituloAcomodar);
-            this.panel14.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel14.Location = new System.Drawing.Point(0, 0);
-            this.panel14.Name = "panel14";
-            this.panel14.Size = new System.Drawing.Size(896, 69);
-            this.panel14.TabIndex = 29;
-            // 
-            // lblTituloAcomodar
-            // 
-            this.lblTituloAcomodar.AutoSize = true;
-            this.lblTituloAcomodar.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTituloAcomodar.Location = new System.Drawing.Point(9, 6);
-            this.lblTituloAcomodar.Name = "lblTituloAcomodar";
-            this.lblTituloAcomodar.Size = new System.Drawing.Size(176, 37);
-            this.lblTituloAcomodar.TabIndex = 6;
-            this.lblTituloAcomodar.Text = "ACOMODAR";
-            // 
-            // lblSubtituloAcomodar
-            // 
-            this.lblSubtituloAcomodar.AutoSize = true;
-            this.lblSubtituloAcomodar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.lblSubtituloAcomodar.Location = new System.Drawing.Point(14, 43);
-            this.lblSubtituloAcomodar.Name = "lblSubtituloAcomodar";
-            this.lblSubtituloAcomodar.Size = new System.Drawing.Size(341, 17);
-            this.lblSubtituloAcomodar.TabIndex = 7;
-            this.lblSubtituloAcomodar.Text = "Distribuye las piezas aprovechando el ancho del material";
+            this.label2.AutoSize = true;
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.label2.Location = new System.Drawing.Point(14, 43);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(376, 17);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Aplica el diseño seleccionado en los PowerClips de cada pieza.";
             // 
             // pnlProduccion
             // 
@@ -2410,7 +2131,6 @@ namespace TithorAutomation
             this.pnlProduccion.Controls.Add(this.panel8);
             this.pnlProduccion.Controls.Add(this.grpPedidoProduccion);
             this.pnlProduccion.Controls.Add(this.panel3);
-            this.pnlProduccion.Dock = System.Windows.Forms.DockStyle.None;
             this.pnlProduccion.Location = new System.Drawing.Point(0, 0);
             this.pnlProduccion.Name = "pnlProduccion";
             this.pnlProduccion.Size = new System.Drawing.Size(896, 611);
@@ -2419,32 +2139,32 @@ namespace TithorAutomation
             // 
             // dgvPedidoProduccion
             // 
-            dataGridViewCellStyle7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
-            this.dgvPedidoProduccion.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle76.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
+            this.dgvPedidoProduccion.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle76;
             this.dgvPedidoProduccion.BackgroundColor = System.Drawing.Color.White;
             this.dgvPedidoProduccion.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvPedidoProduccion.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dgvPedidoProduccion.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle8.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvPedidoProduccion.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle8;
+            dataGridViewCellStyle77.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle77.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle77.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle77.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle77.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle77.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle77.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle77.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPedidoProduccion.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle77;
             this.dgvPedidoProduccion.ColumnHeadersHeight = 42;
             this.dgvPedidoProduccion.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle9.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle9.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle9.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle9.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle9.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
-            dataGridViewCellStyle9.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvPedidoProduccion.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle78.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle78.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle78.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle78.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle78.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle78.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
+            dataGridViewCellStyle78.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle78.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvPedidoProduccion.DefaultCellStyle = dataGridViewCellStyle78;
             this.dgvPedidoProduccion.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvPedidoProduccion.EnableHeadersVisualStyles = false;
             this.dgvPedidoProduccion.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -2474,9 +2194,9 @@ namespace TithorAutomation
             // 
             this.prgMoldes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.prgMoldes.Location = new System.Drawing.Point(11, 78);
+            this.prgMoldes.Location = new System.Drawing.Point(10, 72);
             this.prgMoldes.Name = "prgMoldes";
-            this.prgMoldes.Size = new System.Drawing.Size(874, 16);
+            this.prgMoldes.Size = new System.Drawing.Size(875, 16);
             this.prgMoldes.TabIndex = 45;
             // 
             // btnNuevoPedido
@@ -2513,9 +2233,10 @@ namespace TithorAutomation
             // lblResultadoPedido
             // 
             this.lblResultadoPedido.AutoSize = true;
-            this.lblResultadoPedido.Location = new System.Drawing.Point(13, 36);
+            this.lblResultadoPedido.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.lblResultadoPedido.Location = new System.Drawing.Point(13, 51);
             this.lblResultadoPedido.Name = "lblResultadoPedido";
-            this.lblResultadoPedido.Size = new System.Drawing.Size(118, 17);
+            this.lblResultadoPedido.Size = new System.Drawing.Size(104, 13);
             this.lblResultadoPedido.TabIndex = 37;
             this.lblResultadoPedido.Text = "Pedido sin analizar";
             // 
@@ -2813,234 +2534,501 @@ namespace TithorAutomation
             this.lblSubtituloProduccion.TabIndex = 7;
             this.lblSubtituloProduccion.Text = "Carga el pedido, analiza el Excel y copia los moldes necesarios";
             // 
-            // pnlEscalar
+            // pnlAcomodar
             // 
-            this.pnlEscalar.Controls.Add(this.dgvEscalar);
-            this.pnlEscalar.Controls.Add(this.groupBox1);
-            this.pnlEscalar.Controls.Add(this.panel12);
-<<<<<<< HEAD
-            this.pnlEscalar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlEscalar.Location = new System.Drawing.Point(0, 0);
-=======
-            this.pnlEscalar.Dock = System.Windows.Forms.DockStyle.None;
-            this.pnlEscalar.Location = new System.Drawing.Point(8, 8);
->>>>>>> aeaefe14dc2f1548488f4b52c4493713d21638ff
-            this.pnlEscalar.Name = "pnlEscalar";
-            this.pnlEscalar.Size = new System.Drawing.Size(896, 611);
-            this.pnlEscalar.TabIndex = 40;
+            this.pnlAcomodar.Controls.Add(this.pnlEscalar);
+            this.pnlAcomodar.Controls.Add(this.panel9);
+            this.pnlAcomodar.Controls.Add(this.groupBox2);
+            this.pnlAcomodar.Controls.Add(this.grpConfiguracionAcomodo);
+            this.pnlAcomodar.Controls.Add(this.panel14);
+            this.pnlAcomodar.Location = new System.Drawing.Point(0, 0);
+            this.pnlAcomodar.Name = "pnlAcomodar";
+            this.pnlAcomodar.Size = new System.Drawing.Size(896, 611);
+            this.pnlAcomodar.TabIndex = 39;
             // 
-            // dgvEscalar
+            // panel9
             // 
-            this.dgvEscalar.AllowUserToAddRows = false;
-            this.dgvEscalar.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
-            this.dgvEscalar.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
-            this.dgvEscalar.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dgvEscalar.BackgroundColor = System.Drawing.Color.White;
-            this.dgvEscalar.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvEscalar.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
-            this.dgvEscalar.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle5.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvEscalar.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            this.dgvEscalar.ColumnHeadersHeight = 42;
-            this.dgvEscalar.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dgvEscalar.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.colPiezaEscalar,
-            this.colTallaEscalar,
-            this.colCantidadEscalar,
-            this.colContenidoEscalar,
-            this.colEstadoEscalar});
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle6.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvEscalar.DefaultCellStyle = dataGridViewCellStyle6;
-            this.dgvEscalar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvEscalar.EnableHeadersVisualStyles = false;
-            this.dgvEscalar.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.dgvEscalar.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
-            this.dgvEscalar.Location = new System.Drawing.Point(0, 69);
-            this.dgvEscalar.Name = "dgvEscalar";
-            this.dgvEscalar.ReadOnly = true;
-            this.dgvEscalar.RowHeadersVisible = false;
-            this.dgvEscalar.RowTemplate.Height = 34;
-            this.dgvEscalar.Size = new System.Drawing.Size(896, 397);
-            this.dgvEscalar.TabIndex = 32;
+            this.panel9.Controls.Add(this.dgvAcomodo);
+            this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel9.Location = new System.Drawing.Point(0, 240);
+            this.panel9.Margin = new System.Windows.Forms.Padding(0);
+            this.panel9.Name = "panel9";
+            this.panel9.Padding = new System.Windows.Forms.Padding(8, 0, 8, 0);
+            this.panel9.Size = new System.Drawing.Size(896, 271);
+            this.panel9.TabIndex = 44;
             // 
-            // colPiezaEscalar
+            // dgvAcomodo
             // 
-            this.colPiezaEscalar.HeaderText = "Pieza";
-            this.colPiezaEscalar.Name = "colPiezaEscalar";
-            this.colPiezaEscalar.ReadOnly = true;
+            this.dgvAcomodo.AllowUserToAddRows = false;
+            this.dgvAcomodo.AllowUserToDeleteRows = false;
+            this.dgvAcomodo.AllowUserToResizeRows = false;
+            dataGridViewCellStyle79.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
+            this.dgvAcomodo.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle79;
+            this.dgvAcomodo.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvAcomodo.BackgroundColor = System.Drawing.Color.White;
+            this.dgvAcomodo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvAcomodo.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
+            this.dgvAcomodo.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle80.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle80.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle80.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle80.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle80.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle80.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle80.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle80.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvAcomodo.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle80;
+            this.dgvAcomodo.ColumnHeadersHeight = 42;
+            this.dgvAcomodo.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvAcomodo.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.colEstadoAcomodo,
+            this.colPiezaAcomodo,
+            this.colTallaAcomodo,
+            this.colAnchoAcomodo,
+            this.colAltoAcomodo,
+            this.colRotacionAcomodo,
+            this.colGrupoAcomodo});
+            dataGridViewCellStyle81.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle81.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle81.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle81.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle81.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle81.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
+            dataGridViewCellStyle81.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle81.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvAcomodo.DefaultCellStyle = dataGridViewCellStyle81;
+            this.dgvAcomodo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvAcomodo.EnableHeadersVisualStyles = false;
+            this.dgvAcomodo.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dgvAcomodo.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
+            this.dgvAcomodo.Location = new System.Drawing.Point(8, 0);
+            this.dgvAcomodo.MultiSelect = false;
+            this.dgvAcomodo.Name = "dgvAcomodo";
+            this.dgvAcomodo.ReadOnly = true;
+            this.dgvAcomodo.RowHeadersVisible = false;
+            this.dgvAcomodo.RowTemplate.Height = 34;
+            this.dgvAcomodo.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvAcomodo.Size = new System.Drawing.Size(880, 271);
+            this.dgvAcomodo.TabIndex = 43;
             // 
-            // colTallaEscalar
+            // colEstadoAcomodo
             // 
-            this.colTallaEscalar.HeaderText = "Talla";
-            this.colTallaEscalar.Name = "colTallaEscalar";
-            this.colTallaEscalar.ReadOnly = true;
+            this.colEstadoAcomodo.HeaderText = "Estado";
+            this.colEstadoAcomodo.Name = "colEstadoAcomodo";
+            this.colEstadoAcomodo.ReadOnly = true;
             // 
-            // colCantidadEscalar
+            // colPiezaAcomodo
             // 
-            this.colCantidadEscalar.HeaderText = "Cantidad";
-            this.colCantidadEscalar.Name = "colCantidadEscalar";
-            this.colCantidadEscalar.ReadOnly = true;
+            this.colPiezaAcomodo.HeaderText = "Pieza";
+            this.colPiezaAcomodo.Name = "colPiezaAcomodo";
+            this.colPiezaAcomodo.ReadOnly = true;
             // 
-            // colContenidoEscalar
+            // colTallaAcomodo
             // 
-            this.colContenidoEscalar.HeaderText = "Con contenido";
-            this.colContenidoEscalar.Name = "colContenidoEscalar";
-            this.colContenidoEscalar.ReadOnly = true;
+            this.colTallaAcomodo.HeaderText = "Talla";
+            this.colTallaAcomodo.Name = "colTallaAcomodo";
+            this.colTallaAcomodo.ReadOnly = true;
             // 
-            // colEstadoEscalar
+            // colAnchoAcomodo
             // 
-            this.colEstadoEscalar.HeaderText = "Estado";
-            this.colEstadoEscalar.Name = "colEstadoEscalar";
-            this.colEstadoEscalar.ReadOnly = true;
+            this.colAnchoAcomodo.HeaderText = "Ancho";
+            this.colAnchoAcomodo.Name = "colAnchoAcomodo";
+            this.colAnchoAcomodo.ReadOnly = true;
             // 
-            // groupBox1
+            // colAltoAcomodo
             // 
-            this.groupBox1.Controls.Add(this.prgEscalar);
-            this.groupBox1.Controls.Add(this.lblEstadoEscalar);
-            this.groupBox1.Controls.Add(this.btnAnalizarEscalar);
-            this.groupBox1.Controls.Add(this.btnAplicarEscalar);
-            this.groupBox1.Controls.Add(this.chkReemplazoPorLote);
-            this.groupBox1.Controls.Add(this.chkReemplazarContenidoEscalar);
-            this.groupBox1.Controls.Add(this.cboTareaEscalar);
-            this.groupBox1.Controls.Add(this.lblPiezaEscalar);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox1.Location = new System.Drawing.Point(0, 466);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(896, 145);
-            this.groupBox1.TabIndex = 31;
-            this.groupBox1.TabStop = false;
+            this.colAltoAcomodo.HeaderText = "Alto";
+            this.colAltoAcomodo.Name = "colAltoAcomodo";
+            this.colAltoAcomodo.ReadOnly = true;
             // 
-            // prgEscalar
+            // colRotacionAcomodo
             // 
-            this.prgEscalar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.colRotacionAcomodo.HeaderText = "Rotación";
+            this.colRotacionAcomodo.Name = "colRotacionAcomodo";
+            this.colRotacionAcomodo.ReadOnly = true;
+            // 
+            // colGrupoAcomodo
+            // 
+            this.colGrupoAcomodo.HeaderText = "Grupo";
+            this.colGrupoAcomodo.Name = "colGrupoAcomodo";
+            this.colGrupoAcomodo.ReadOnly = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.btnAnalizarAcomodo);
+            this.groupBox2.Controls.Add(this.btnAcomodarElementos);
+            this.groupBox2.Controls.Add(this.lblEstadoAcomodar);
+            this.groupBox2.Controls.Add(this.prgAcomodar);
+            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.groupBox2.Location = new System.Drawing.Point(0, 511);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(896, 100);
+            this.groupBox2.TabIndex = 6;
+            this.groupBox2.TabStop = false;
+            // 
+            // btnAnalizarAcomodo
+            // 
+            this.btnAnalizarAcomodo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAnalizarAcomodo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
+            this.btnAnalizarAcomodo.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAnalizarAcomodo.FlatAppearance.BorderSize = 0;
+            this.btnAnalizarAcomodo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAnalizarAcomodo.ForeColor = System.Drawing.Color.White;
+            this.btnAnalizarAcomodo.Location = new System.Drawing.Point(575, 24);
+            this.btnAnalizarAcomodo.Name = "btnAnalizarAcomodo";
+            this.btnAnalizarAcomodo.Size = new System.Drawing.Size(130, 40);
+            this.btnAnalizarAcomodo.TabIndex = 39;
+            this.btnAnalizarAcomodo.Text = "ANALIZAR";
+            this.btnAnalizarAcomodo.UseVisualStyleBackColor = false;
+            // 
+            // btnAcomodarElementos
+            // 
+            this.btnAcomodarElementos.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnAcomodarElementos.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(216)))), ((int)(((byte)(68)))));
+            this.btnAcomodarElementos.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnAcomodarElementos.FlatAppearance.BorderSize = 0;
+            this.btnAcomodarElementos.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAcomodarElementos.Location = new System.Drawing.Point(711, 24);
+            this.btnAcomodarElementos.Name = "btnAcomodarElementos";
+            this.btnAcomodarElementos.Size = new System.Drawing.Size(174, 40);
+            this.btnAcomodarElementos.TabIndex = 38;
+            this.btnAcomodarElementos.Text = "ACOMODAR ELEMENTOS";
+            this.btnAcomodarElementos.UseVisualStyleBackColor = false;
+            // 
+            // lblEstadoAcomodar
+            // 
+            this.lblEstadoAcomodar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblEstadoAcomodar.AutoSize = true;
+            this.lblEstadoAcomodar.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.lblEstadoAcomodar.Location = new System.Drawing.Point(10, 51);
+            this.lblEstadoAcomodar.Name = "lblEstadoAcomodar";
+            this.lblEstadoAcomodar.Size = new System.Drawing.Size(100, 13);
+            this.lblEstadoAcomodar.TabIndex = 42;
+            this.lblEstadoAcomodar.Text = "Listo para analizar";
+            // 
+            // prgAcomodar
+            // 
+            this.prgAcomodar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.prgEscalar.Location = new System.Drawing.Point(13, 117);
-            this.prgEscalar.Name = "prgEscalar";
-            this.prgEscalar.Size = new System.Drawing.Size(874, 16);
-            this.prgEscalar.TabIndex = 45;
+            this.prgAcomodar.Location = new System.Drawing.Point(10, 72);
+            this.prgAcomodar.Name = "prgAcomodar";
+            this.prgAcomodar.Size = new System.Drawing.Size(875, 16);
+            this.prgAcomodar.TabIndex = 41;
             // 
-            // lblEstadoEscalar
+            // grpConfiguracionAcomodo
             // 
-            this.lblEstadoEscalar.AutoSize = true;
-            this.lblEstadoEscalar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.lblEstadoEscalar.Location = new System.Drawing.Point(17, 93);
-            this.lblEstadoEscalar.Name = "lblEstadoEscalar";
-            this.lblEstadoEscalar.Size = new System.Drawing.Size(376, 17);
-            this.lblEstadoEscalar.TabIndex = 42;
-            this.lblEstadoEscalar.Text = "Aplica el diseño seleccionado en los PowerClips de cada pieza.";
+            this.grpConfiguracionAcomodo.Controls.Add(this.lblOrigenAcomodo);
+            this.grpConfiguracionAcomodo.Controls.Add(this.chkPermitirRotacion);
+            this.grpConfiguracionAcomodo.Controls.Add(this.lblUnidadSeparacion);
+            this.grpConfiguracionAcomodo.Controls.Add(this.lblUnidadAnchoMaterial);
+            this.grpConfiguracionAcomodo.Controls.Add(this.lblSeparacionTitulo);
+            this.grpConfiguracionAcomodo.Controls.Add(this.lblAnchoMaterialTitulo);
+            this.grpConfiguracionAcomodo.Controls.Add(this.nudSeparacionElementos);
+            this.grpConfiguracionAcomodo.Controls.Add(this.nudAnchoMaterial);
+            this.grpConfiguracionAcomodo.Controls.Add(this.grpResumenAcomodo);
+            this.grpConfiguracionAcomodo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.grpConfiguracionAcomodo.Location = new System.Drawing.Point(0, 69);
+            this.grpConfiguracionAcomodo.Name = "grpConfiguracionAcomodo";
+            this.grpConfiguracionAcomodo.Size = new System.Drawing.Size(896, 171);
+            this.grpConfiguracionAcomodo.TabIndex = 40;
+            this.grpConfiguracionAcomodo.TabStop = false;
             // 
-            // btnAnalizarEscalar
+            // lblOrigenAcomodo
             // 
-            this.btnAnalizarEscalar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAnalizarEscalar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(48)))), ((int)(((byte)(82)))));
-            this.btnAnalizarEscalar.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnAnalizarEscalar.FlatAppearance.BorderSize = 0;
-            this.btnAnalizarEscalar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAnalizarEscalar.ForeColor = System.Drawing.Color.White;
-            this.btnAnalizarEscalar.Location = new System.Drawing.Point(571, 35);
-            this.btnAnalizarEscalar.Name = "btnAnalizarEscalar";
-            this.btnAnalizarEscalar.Size = new System.Drawing.Size(149, 40);
-            this.btnAnalizarEscalar.TabIndex = 41;
-            this.btnAnalizarEscalar.Text = "Analizar documento";
-            this.btnAnalizarEscalar.UseVisualStyleBackColor = false;
+            this.lblOrigenAcomodo.AutoSize = true;
+            this.lblOrigenAcomodo.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOrigenAcomodo.ForeColor = System.Drawing.SystemColors.AppWorkspace;
+            this.lblOrigenAcomodo.Location = new System.Drawing.Point(14, 62);
+            this.lblOrigenAcomodo.Name = "lblOrigenAcomodo";
+            this.lblOrigenAcomodo.Size = new System.Drawing.Size(286, 13);
+            this.lblOrigenAcomodo.TabIndex = 36;
+            this.lblOrigenAcomodo.Text = "Origen: todos los elementos de TITHOR_PRODUCCION";
             // 
-            // btnAplicarEscalar
+            // chkPermitirRotacion
             // 
-            this.btnAplicarEscalar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAplicarEscalar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(250)))), ((int)(((byte)(216)))), ((int)(((byte)(68)))));
-            this.btnAplicarEscalar.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnAplicarEscalar.FlatAppearance.BorderSize = 0;
-            this.btnAplicarEscalar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAplicarEscalar.Location = new System.Drawing.Point(726, 35);
-            this.btnAplicarEscalar.Name = "btnAplicarEscalar";
-            this.btnAplicarEscalar.Size = new System.Drawing.Size(161, 40);
-            this.btnAplicarEscalar.TabIndex = 40;
-            this.btnAplicarEscalar.Text = "Aplicar diseño";
-            this.btnAplicarEscalar.UseVisualStyleBackColor = false;
+            this.chkPermitirRotacion.AutoSize = true;
+            this.chkPermitirRotacion.Location = new System.Drawing.Point(621, 31);
+            this.chkPermitirRotacion.Name = "chkPermitirRotacion";
+            this.chkPermitirRotacion.Size = new System.Drawing.Size(166, 21);
+            this.chkPermitirRotacion.TabIndex = 35;
+            this.chkPermitirRotacion.Text = "Permitir rotación de 90°";
+            this.chkPermitirRotacion.UseVisualStyleBackColor = true;
             // 
-            // chkReemplazoPorLote
+            // lblUnidadSeparacion
             // 
-            this.chkReemplazoPorLote.AutoSize = true;
-            this.chkReemplazoPorLote.Location = new System.Drawing.Point(399, 57);
-            this.chkReemplazoPorLote.Name = "chkReemplazoPorLote";
-            this.chkReemplazoPorLote.Size = new System.Drawing.Size(143, 21);
-            this.chkReemplazoPorLote.TabIndex = 44;
-            this.chkReemplazoPorLote.Text = "Reemplazo por lote";
-            this.chkReemplazoPorLote.UseVisualStyleBackColor = true;
+            this.lblUnidadSeparacion.AutoSize = true;
+            this.lblUnidadSeparacion.Location = new System.Drawing.Point(585, 33);
+            this.lblUnidadSeparacion.Name = "lblUnidadSeparacion";
+            this.lblUnidadSeparacion.Size = new System.Drawing.Size(30, 17);
+            this.lblUnidadSeparacion.TabIndex = 34;
+            this.lblUnidadSeparacion.Text = "mm";
             // 
-            // chkReemplazarContenidoEscalar
+            // lblUnidadAnchoMaterial
             // 
-            this.chkReemplazarContenidoEscalar.AutoSize = true;
-            this.chkReemplazarContenidoEscalar.Location = new System.Drawing.Point(399, 29);
-            this.chkReemplazarContenidoEscalar.Name = "chkReemplazarContenidoEscalar";
-            this.chkReemplazarContenidoEscalar.Size = new System.Drawing.Size(158, 21);
-            this.chkReemplazarContenidoEscalar.TabIndex = 39;
-            this.chkReemplazarContenidoEscalar.Text = "Reemplazar contenido";
-            this.chkReemplazarContenidoEscalar.UseVisualStyleBackColor = true;
+            this.lblUnidadAnchoMaterial.AutoSize = true;
+            this.lblUnidadAnchoMaterial.Location = new System.Drawing.Point(266, 33);
+            this.lblUnidadAnchoMaterial.Name = "lblUnidadAnchoMaterial";
+            this.lblUnidadAnchoMaterial.Size = new System.Drawing.Size(30, 17);
+            this.lblUnidadAnchoMaterial.TabIndex = 33;
+            this.lblUnidadAnchoMaterial.Text = "mm";
             // 
-            // cboTareaEscalar
+            // lblSeparacionTitulo
             // 
-            this.cboTareaEscalar.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboTareaEscalar.FormattingEnabled = true;
-            this.cboTareaEscalar.Location = new System.Drawing.Point(61, 43);
-            this.cboTareaEscalar.Name = "cboTareaEscalar";
-            this.cboTareaEscalar.Size = new System.Drawing.Size(330, 25);
-            this.cboTareaEscalar.TabIndex = 43;
+            this.lblSeparacionTitulo.AutoSize = true;
+            this.lblSeparacionTitulo.Location = new System.Drawing.Point(331, 33);
+            this.lblSeparacionTitulo.Name = "lblSeparacionTitulo";
+            this.lblSeparacionTitulo.Size = new System.Drawing.Size(122, 17);
+            this.lblSeparacionTitulo.TabIndex = 32;
+            this.lblSeparacionTitulo.Text = "Separación mínima:";
             // 
-            // lblPiezaEscalar
+            // lblAnchoMaterialTitulo
             // 
-            this.lblPiezaEscalar.AutoSize = true;
-            this.lblPiezaEscalar.Location = new System.Drawing.Point(14, 47);
-            this.lblPiezaEscalar.Name = "lblPiezaEscalar";
-            this.lblPiezaEscalar.Size = new System.Drawing.Size(43, 17);
-            this.lblPiezaEscalar.TabIndex = 35;
-            this.lblPiezaEscalar.Text = "Tarea:";
+            this.lblAnchoMaterialTitulo.AutoSize = true;
+            this.lblAnchoMaterialTitulo.Location = new System.Drawing.Point(14, 33);
+            this.lblAnchoMaterialTitulo.Name = "lblAnchoMaterialTitulo";
+            this.lblAnchoMaterialTitulo.Size = new System.Drawing.Size(120, 17);
+            this.lblAnchoMaterialTitulo.TabIndex = 31;
+            this.lblAnchoMaterialTitulo.Text = "Ancho del material:";
             // 
-            // panel12
+            // nudSeparacionElementos
             // 
-            this.panel12.BackColor = System.Drawing.Color.White;
-            this.panel12.Controls.Add(this.label1);
-            this.panel12.Controls.Add(this.label2);
-            this.panel12.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel12.Location = new System.Drawing.Point(0, 0);
-            this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(896, 69);
-            this.panel12.TabIndex = 30;
+            this.nudSeparacionElementos.DecimalPlaces = 1;
+            this.nudSeparacionElementos.Increment = new decimal(new int[] {
+            5,
+            0,
+            0,
+            65536});
+            this.nudSeparacionElementos.Location = new System.Drawing.Point(459, 29);
+            this.nudSeparacionElementos.Maximum = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
+            this.nudSeparacionElementos.Name = "nudSeparacionElementos";
+            this.nudSeparacionElementos.Size = new System.Drawing.Size(120, 25);
+            this.nudSeparacionElementos.TabIndex = 30;
+            this.nudSeparacionElementos.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
             // 
-            // label1
+            // nudAnchoMaterial
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(9, 6);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(240, 37);
-            this.label1.TabIndex = 6;
-            this.label1.Text = "ESCALAR DISEÑO";
+            this.nudAnchoMaterial.Increment = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.nudAnchoMaterial.Location = new System.Drawing.Point(140, 29);
+            this.nudAnchoMaterial.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.nudAnchoMaterial.Minimum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudAnchoMaterial.Name = "nudAnchoMaterial";
+            this.nudAnchoMaterial.Size = new System.Drawing.Size(120, 25);
+            this.nudAnchoMaterial.TabIndex = 29;
+            this.nudAnchoMaterial.Value = new decimal(new int[] {
+            1600,
+            0,
+            0,
+            0});
             // 
-            // label2
+            // grpResumenAcomodo
             // 
-            this.label2.AutoSize = true;
-            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
-            this.label2.Location = new System.Drawing.Point(14, 43);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(376, 17);
-            this.label2.TabIndex = 7;
-            this.label2.Text = "Aplica el diseño seleccionado en los PowerClips de cada pieza.";
+            this.grpResumenAcomodo.ColumnCount = 3;
+            this.grpResumenAcomodo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.grpResumenAcomodo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.grpResumenAcomodo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.grpResumenAcomodo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.grpResumenAcomodo.Controls.Add(this.panel10, 0, 0);
+            this.grpResumenAcomodo.Controls.Add(this.panel11, 1, 0);
+            this.grpResumenAcomodo.Controls.Add(this.panel13, 3, 0);
+            this.grpResumenAcomodo.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.grpResumenAcomodo.Location = new System.Drawing.Point(3, 91);
+            this.grpResumenAcomodo.Name = "grpResumenAcomodo";
+            this.grpResumenAcomodo.Padding = new System.Windows.Forms.Padding(5);
+            this.grpResumenAcomodo.RowCount = 1;
+            this.grpResumenAcomodo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.grpResumenAcomodo.Size = new System.Drawing.Size(890, 77);
+            this.grpResumenAcomodo.TabIndex = 28;
+            // 
+            // panel10
+            // 
+            this.panel10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
+            this.panel10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel10.Controls.Add(this.lblCantidadPiezasAcomodar);
+            this.panel10.Controls.Add(this.lblPiezasDetectadasTitulo);
+            this.panel10.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel10.Location = new System.Drawing.Point(8, 8);
+            this.panel10.Name = "panel10";
+            this.panel10.Size = new System.Drawing.Size(287, 61);
+            this.panel10.TabIndex = 8;
+            // 
+            // lblCantidadPiezasAcomodar
+            // 
+            this.lblCantidadPiezasAcomodar.AutoSize = true;
+            this.lblCantidadPiezasAcomodar.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCantidadPiezasAcomodar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            this.lblCantidadPiezasAcomodar.Location = new System.Drawing.Point(8, 17);
+            this.lblCantidadPiezasAcomodar.Name = "lblCantidadPiezasAcomodar";
+            this.lblCantidadPiezasAcomodar.Size = new System.Drawing.Size(34, 40);
+            this.lblCantidadPiezasAcomodar.TabIndex = 8;
+            this.lblCantidadPiezasAcomodar.Text = "0";
+            // 
+            // lblPiezasDetectadasTitulo
+            // 
+            this.lblPiezasDetectadasTitulo.AutoSize = true;
+            this.lblPiezasDetectadasTitulo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.lblPiezasDetectadasTitulo.Location = new System.Drawing.Point(8, 2);
+            this.lblPiezasDetectadasTitulo.Name = "lblPiezasDetectadasTitulo";
+            this.lblPiezasDetectadasTitulo.Size = new System.Drawing.Size(115, 17);
+            this.lblPiezasDetectadasTitulo.TabIndex = 7;
+            this.lblPiezasDetectadasTitulo.Text = "Piezas detectadas:";
+            // 
+            // panel11
+            // 
+            this.panel11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
+            this.panel11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel11.Controls.Add(this.lblAltoResultado);
+            this.panel11.Controls.Add(this.lblAltoEstimadoTitulo);
+            this.panel11.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel11.Location = new System.Drawing.Point(301, 8);
+            this.panel11.Name = "panel11";
+            this.panel11.Size = new System.Drawing.Size(287, 61);
+            this.panel11.TabIndex = 9;
+            // 
+            // lblAltoResultado
+            // 
+            this.lblAltoResultado.AutoSize = true;
+            this.lblAltoResultado.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAltoResultado.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(46)))), ((int)(((byte)(166)))), ((int)(((byte)(111)))));
+            this.lblAltoResultado.Location = new System.Drawing.Point(8, 17);
+            this.lblAltoResultado.Name = "lblAltoResultado";
+            this.lblAltoResultado.Size = new System.Drawing.Size(96, 40);
+            this.lblAltoResultado.TabIndex = 8;
+            this.lblAltoResultado.Text = "0 mm";
+            // 
+            // lblAltoEstimadoTitulo
+            // 
+            this.lblAltoEstimadoTitulo.AutoSize = true;
+            this.lblAltoEstimadoTitulo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.lblAltoEstimadoTitulo.Location = new System.Drawing.Point(8, 2);
+            this.lblAltoEstimadoTitulo.Name = "lblAltoEstimadoTitulo";
+            this.lblAltoEstimadoTitulo.Size = new System.Drawing.Size(92, 17);
+            this.lblAltoEstimadoTitulo.TabIndex = 7;
+            this.lblAltoEstimadoTitulo.Text = "Alto estimado:";
+            // 
+            // panel13
+            // 
+            this.panel13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(252)))));
+            this.panel13.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel13.Controls.Add(this.lblNoProcesablesAcomodar);
+            this.panel13.Controls.Add(this.lblNoProcesablesTitulo);
+            this.panel13.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel13.Location = new System.Drawing.Point(594, 8);
+            this.panel13.Name = "panel13";
+            this.panel13.Size = new System.Drawing.Size(288, 61);
+            this.panel13.TabIndex = 9;
+            // 
+            // lblNoProcesablesAcomodar
+            // 
+            this.lblNoProcesablesAcomodar.AutoSize = true;
+            this.lblNoProcesablesAcomodar.Font = new System.Drawing.Font("Segoe UI", 21.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNoProcesablesAcomodar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(217)))), ((int)(((byte)(83)))), ((int)(((byte)(79)))));
+            this.lblNoProcesablesAcomodar.Location = new System.Drawing.Point(8, 17);
+            this.lblNoProcesablesAcomodar.Name = "lblNoProcesablesAcomodar";
+            this.lblNoProcesablesAcomodar.Size = new System.Drawing.Size(34, 40);
+            this.lblNoProcesablesAcomodar.TabIndex = 8;
+            this.lblNoProcesablesAcomodar.Text = "0";
+            // 
+            // lblNoProcesablesTitulo
+            // 
+            this.lblNoProcesablesTitulo.AutoSize = true;
+            this.lblNoProcesablesTitulo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.lblNoProcesablesTitulo.Location = new System.Drawing.Point(8, 2);
+            this.lblNoProcesablesTitulo.Name = "lblNoProcesablesTitulo";
+            this.lblNoProcesablesTitulo.Size = new System.Drawing.Size(104, 17);
+            this.lblNoProcesablesTitulo.TabIndex = 7;
+            this.lblNoProcesablesTitulo.Text = "No procesables:";
+            // 
+            // panel14
+            // 
+            this.panel14.BackColor = System.Drawing.Color.White;
+            this.panel14.Controls.Add(this.lblTituloAcomodar);
+            this.panel14.Controls.Add(this.lblSubtituloAcomodar);
+            this.panel14.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel14.Location = new System.Drawing.Point(0, 0);
+            this.panel14.Name = "panel14";
+            this.panel14.Size = new System.Drawing.Size(896, 69);
+            this.panel14.TabIndex = 29;
+            // 
+            // lblTituloAcomodar
+            // 
+            this.lblTituloAcomodar.AutoSize = true;
+            this.lblTituloAcomodar.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTituloAcomodar.Location = new System.Drawing.Point(9, 6);
+            this.lblTituloAcomodar.Name = "lblTituloAcomodar";
+            this.lblTituloAcomodar.Size = new System.Drawing.Size(176, 37);
+            this.lblTituloAcomodar.TabIndex = 6;
+            this.lblTituloAcomodar.Text = "ACOMODAR";
+            // 
+            // lblSubtituloAcomodar
+            // 
+            this.lblSubtituloAcomodar.AutoSize = true;
+            this.lblSubtituloAcomodar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.lblSubtituloAcomodar.Location = new System.Drawing.Point(14, 43);
+            this.lblSubtituloAcomodar.Name = "lblSubtituloAcomodar";
+            this.lblSubtituloAcomodar.Size = new System.Drawing.Size(341, 17);
+            this.lblSubtituloAcomodar.TabIndex = 7;
+            this.lblSubtituloAcomodar.Text = "Distribuye las piezas aprovechando el ancho del material";
+            // 
+            // pnlMockups
+            // 
+            this.pnlMockups.BackColor = System.Drawing.Color.White;
+            this.pnlMockups.Controls.Add(this.panel17);
+            this.pnlMockups.Location = new System.Drawing.Point(0, 0);
+            this.pnlMockups.Name = "pnlMockups";
+            this.pnlMockups.Size = new System.Drawing.Size(896, 611);
+            this.pnlMockups.TabIndex = 36;
+            // 
+            // panel17
+            // 
+            this.panel17.BackColor = System.Drawing.Color.White;
+            this.panel17.Controls.Add(this.lblDescripcionModuloMockups);
+            this.panel17.Controls.Add(this.lblTituloModuloMockups);
+            this.panel17.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel17.Location = new System.Drawing.Point(0, 0);
+            this.panel17.Name = "panel17";
+            this.panel17.Size = new System.Drawing.Size(896, 69);
+            this.panel17.TabIndex = 26;
+            // 
+            // lblDescripcionModuloMockups
+            // 
+            this.lblDescripcionModuloMockups.AutoSize = true;
+            this.lblDescripcionModuloMockups.Font = new System.Drawing.Font("Segoe UI", 9.75F);
+            this.lblDescripcionModuloMockups.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(112)))), ((int)(((byte)(137)))));
+            this.lblDescripcionModuloMockups.Location = new System.Drawing.Point(14, 43);
+            this.lblDescripcionModuloMockups.Name = "lblDescripcionModuloMockups";
+            this.lblDescripcionModuloMockups.Size = new System.Drawing.Size(339, 17);
+            this.lblDescripcionModuloMockups.TabIndex = 1;
+            this.lblDescripcionModuloMockups.Text = "Selecciona y prepara los mockups para el pedido activo.";
+            // 
+            // lblTituloModuloMockups
+            // 
+            this.lblTituloModuloMockups.AutoSize = true;
+            this.lblTituloModuloMockups.Font = new System.Drawing.Font("Segoe UI", 20.25F, System.Drawing.FontStyle.Bold);
+            this.lblTituloModuloMockups.Location = new System.Drawing.Point(9, 6);
+            this.lblTituloModuloMockups.Name = "lblTituloModuloMockups";
+            this.lblTituloModuloMockups.Size = new System.Drawing.Size(150, 37);
+            this.lblTituloModuloMockups.TabIndex = 0;
+            this.lblTituloModuloMockups.Text = "MOCKUPS";
             // 
             // pnlEstadoCorelGlobal
             // 
@@ -3148,33 +3136,33 @@ namespace TithorAutomation
             this.dataGridView1.AllowUserToDeleteRows = false;
             this.dataGridView1.AllowUserToResizeColumns = false;
             this.dataGridView1.AllowUserToResizeRows = false;
-            dataGridViewCellStyle19.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
-            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle19;
+            dataGridViewCellStyle82.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
+            this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle82;
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.BackgroundColor = System.Drawing.Color.White;
             this.dataGridView1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dataGridView1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.dataGridView1.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle20.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle20.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle20.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle20.ForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle20.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle20.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
-            dataGridViewCellStyle20.SelectionForeColor = System.Drawing.Color.White;
-            dataGridViewCellStyle20.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle20;
+            dataGridViewCellStyle83.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle83.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle83.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle83.ForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle83.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle83.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(49)))), ((int)(((byte)(82)))));
+            dataGridViewCellStyle83.SelectionForeColor = System.Drawing.Color.White;
+            dataGridViewCellStyle83.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle83;
             this.dataGridView1.ColumnHeadersHeight = 42;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            dataGridViewCellStyle21.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle21.BackColor = System.Drawing.Color.White;
-            dataGridViewCellStyle21.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle21.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
-            dataGridViewCellStyle21.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
-            dataGridViewCellStyle21.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
-            dataGridViewCellStyle21.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle21;
+            dataGridViewCellStyle84.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle84.BackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle84.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle84.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle84.Padding = new System.Windows.Forms.Padding(8, 0, 6, 0);
+            dataGridViewCellStyle84.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(241)))), ((int)(((byte)(178)))));
+            dataGridViewCellStyle84.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(38)))), ((int)(((byte)(55)))));
+            dataGridViewCellStyle84.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridView1.DefaultCellStyle = dataGridViewCellStyle84;
             this.dataGridView1.EnableHeadersVisualStyles = false;
             this.dataGridView1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.dataGridView1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
@@ -3347,9 +3335,29 @@ namespace TithorAutomation
             this.pnlConfiguracion_Header.ResumeLayout(false);
             this.pnlConfiguracion_Header.PerformLayout();
             this.pnlContenido.ResumeLayout(false);
-            this.pnlMockups.ResumeLayout(false);
-            this.panel17.ResumeLayout(false);
-            this.panel17.PerformLayout();
+            this.pnlEscalar.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvEscalar)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.panel12.ResumeLayout(false);
+            this.panel12.PerformLayout();
+            this.pnlProduccion.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPedidoProduccion)).EndInit();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
+            this.grpPedidoProduccion.ResumeLayout(false);
+            this.grpPedidoProduccion.PerformLayout();
+            this.pnlResumenProduccion.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.pnlAcomodar.ResumeLayout(false);
             this.panel9.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvAcomodo)).EndInit();
@@ -3368,29 +3376,9 @@ namespace TithorAutomation
             this.panel13.PerformLayout();
             this.panel14.ResumeLayout(false);
             this.panel14.PerformLayout();
-            this.pnlProduccion.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvPedidoProduccion)).EndInit();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
-            this.grpPedidoProduccion.ResumeLayout(false);
-            this.grpPedidoProduccion.PerformLayout();
-            this.pnlResumenProduccion.ResumeLayout(false);
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
-            this.panel5.ResumeLayout(false);
-            this.panel5.PerformLayout();
-            this.panel6.ResumeLayout(false);
-            this.panel6.PerformLayout();
-            this.panel7.ResumeLayout(false);
-            this.panel7.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
-            this.pnlEscalar.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvEscalar)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.panel12.ResumeLayout(false);
-            this.panel12.PerformLayout();
+            this.pnlMockups.ResumeLayout(false);
+            this.panel17.ResumeLayout(false);
+            this.panel17.PerformLayout();
             this.pnlEstadoCorelGlobal.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
