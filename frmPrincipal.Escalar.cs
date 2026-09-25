@@ -210,7 +210,6 @@ namespace TithorAutomation
                 AgregarColumnaEscalar("colEstadoEscalarManual", "Estado", 100F, 100);
                 }
 
-            lblTallaEscalar.Visible = false;
             cboTareaEscalar.Visible = true;
             lblPiezaEscalar.Visible = true;
             lblPiezaEscalar.Text = "Tarea:";
