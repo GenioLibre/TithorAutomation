@@ -349,16 +349,15 @@ namespace TithorAutomation.Servicios
 
             return nombre.Replace("_", " ");
             }
-        public ResultadoAcomodo AcomodarPaginaActiva(Application corel, Document documento,
-            double anchoMaterialMm, double separacionMm, bool permitirRotacion)
+        public ResultadoAcomodo AcomodarPaginaActiva(Application corel, Document documento, double anchoMaterialMm, double separacionMm, bool permitirRotacion, Action<int, int> progreso = null)
             {
             // Analizar y aplicar en una sola operación: nunca usar formas de una vista previa anterior.
             ResultadoAcomodo resultado = Analizar(corel, documento, anchoMaterialMm, separacionMm, permitirRotacion);
-            Acomodar(corel, documento, resultado);
+            Acomodar(corel, documento, resultado, progreso);
             return resultado;
             }
 
-        private void Acomodar(Application corel, Document documento, ResultadoAcomodo resultado)
+        private void Acomodar(Application corel, Document documento, ResultadoAcomodo resultado, Action<int, int> progreso)
             {
             if (corel == null)
                 {
@@ -407,6 +406,9 @@ namespace TithorAutomation.Servicios
                 double limiteSuperior = pagina.TopY;
 
                 DesagruparGruposSuperiores(resultado);
+                int colocadas = 0;
+                int totalColocar = resultado.Piezas.Count(x => x.Procesable && x.Forma != null);
+                progreso?.Invoke(0, totalColocar);
 
                 foreach (PiezaAcomodable pieza in resultado.Piezas)
                     {
@@ -425,6 +427,7 @@ namespace TithorAutomation.Servicios
 
                     pieza.Forma.CenterX = xDestino;
                     pieza.Forma.CenterY = yDestino;
+                    progreso?.Invoke(++colocadas, totalColocar);
                     }
                 }
             catch (Exception ex)

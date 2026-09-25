@@ -149,6 +149,7 @@ namespace TithorAutomation
             lblAdvertenciasPedidoValor.Text = "0";
 
             lblResultadoPedido.Text = "Pedido sin analizar";
+            MostrarProgresoOperacion(prgMoldes, 0, 1);
             lblEstadoExcelProduccion.Text = "Seleccione un producto y un archivo Excel.";
 
             btnAnalizarExcelProduccion.Enabled =
@@ -256,6 +257,7 @@ namespace TithorAutomation
             try
                 {
                 btnAnalizarExcelProduccion.Enabled = false;
+                MostrarProgresoOperacion(prgMoldes, 0, 0);
                 lblEstadoExcelProduccion.Text = "Analizando archivo Excel...";
 
                 lblEstadoExcelProduccion.Refresh();
@@ -271,6 +273,7 @@ namespace TithorAutomation
 
                 btnCopiarMoldesPedido.Enabled = resultadoPedidoActual.PuedeAprobar;
 
+                MostrarProgresoOperacion(prgMoldes, 1, 1);
                 lblEstadoExcelProduccion.Text = "Análisis terminado.";
                 btnNuevoPedido.Enabled = true;
 
@@ -284,6 +287,7 @@ namespace TithorAutomation
                 {
                 LimpiarPedidoProduccion(false);
 
+                MostrarProgresoOperacion(prgMoldes, 0, 1);
                 lblEstadoExcelProduccion.Text = "Error durante el análisis.";
 
                 MessageBox.Show(this, 
@@ -650,6 +654,7 @@ namespace TithorAutomation
                 btnAnalizarExcelProduccion.Enabled = false;
                 lblResultadoPedido.Text = $"Preparando {plan.TotalMoldes} moldes...";
 
+                MostrarProgresoOperacion(prgMoldes, 0, 0);
                 int totalCopiado = copiadorMoldesCorel.Copiar(
                     corel,
                     documentoDestino,
@@ -657,6 +662,7 @@ namespace TithorAutomation
                     plan,
                     delegate (int actual, int total)
                         {
+                            MostrarProgresoOperacion(prgMoldes, actual, total);
                             lblResultadoPedido.Text = $"Copiando molde {actual} de {total}...";
 
                             if (actual % 5 == 0 || actual == total)
@@ -665,6 +671,7 @@ namespace TithorAutomation
                 );
 
                 planProduccionActual = plan;
+                MostrarProgresoOperacion(prgMoldes, 1, 1);
 
                 lblResultadoPedido.Text =
                     $"Moldes preparados: {totalCopiado} conjuntos copiados en {documentoDestino.Name}.";
@@ -688,6 +695,7 @@ namespace TithorAutomation
                 }
             catch (Exception ex)
                 {
+                MostrarProgresoOperacion(prgMoldes, 0, 1);
                 lblResultadoPedido.Text = "No se pudieron copiar los moldes.";
                 Activate();
                 BringToFront();

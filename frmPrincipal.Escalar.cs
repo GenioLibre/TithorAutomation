@@ -59,6 +59,14 @@ namespace TithorAutomation
                 }
             }
 
+        private void MostrarProgresoOperacion(System.Windows.Forms.ProgressBar barra, int actual, int total)
+            {
+            barra.Style = total <= 0 ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
+            barra.MarqueeAnimationSpeed = total <= 0 ? 30 : 0;
+            barra.Value = total <= 0 ? 0 : (int)Math.Max(0, Math.Min(100, (long)actual * 100 / total));
+            barra.Refresh();
+            }
+
         private void ConfigurarModuloEscalar()
             {
             if (System.ComponentModel.LicenseManager.UsageMode != System.ComponentModel.LicenseUsageMode.Designtime)
@@ -262,9 +270,11 @@ namespace TithorAutomation
         private TareaLoteEscalar CrearTareaLoteEscalar(string diseno, List<TareaEscalar> tareas)
             {
             bool incluyeShort = tareas.Any(x => AnalizadorMasterCorel.NormalizarCodigo(x.Pieza).Contains("short"));
+            bool esFunda = planProduccionActual != null &&
+                (planProduccionActual.CodigoProducto ?? string.Empty).IndexOf("FUNDA", StringComparison.OrdinalIgnoreCase) >= 0;
             TareaLoteEscalar lote = new TareaLoteEscalar();
             lote.Diseno = string.IsNullOrWhiteSpace(diseno) ? "sin nombre" : diseno;
-            lote.TipoPedido = incluyeShort ? "camiseta y short" : "camiseta";
+            lote.TipoPedido = esFunda ? "funda" : (incluyeShort ? "camiseta y short" : "camiseta");
             lote.Tareas = tareas;
 
             if (tareas.Any(x => x.Estado == "Con error"))
@@ -413,7 +423,7 @@ namespace TithorAutomation
             string codigo = AnalizadorMasterCorel.NormalizarCodigo(objeto.Name ?? string.Empty);
             if (codigo.StartsWith("diseno_"))
                 {
-                string pieza = codigo.Substring("diseno_".Length);
+                string pieza = NormalizarReferenciaLote(codigo.Substring("diseno_".Length));
                 if (!referencias.ContainsKey(pieza)) referencias[pieza] = new List<VGCore.Shape>();
                 referencias[pieza].Add(objeto);
                 }
@@ -425,9 +435,27 @@ namespace TithorAutomation
                 }
             }
 
+        private string NormalizarReferenciaLote(string codigo)
+            {
+            string valor = AnalizadorMasterCorel.NormalizarCodigo(codigo ?? string.Empty);
+
+            if (valor.StartsWith("funda_"))
+                {
+                valor = valor.Substring("funda_".Length);
+                string[] partes = valor.Split(new[] { '_' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (partes.Length > 1 && (partes[0] == "s" || partes[0] == "m" || partes[0] == "l"))
+                    valor = string.Join("_", partes.Skip(1));
+                }
+
+            if (valor == "lado_izquierdo") valor = "lateral_izquierdo";
+            if (valor == "lado_derecho") valor = "lateral_derecho";
+            return valor;
+            }
+
         private string CodigoReferenciaLote(string pieza)
             {
-            return AnalizadorMasterCorel.NormalizarCodigo(pieza ?? string.Empty);
+            return NormalizarReferenciaLote(pieza);
             }
 
         private void AplicarLoteGuiado()
@@ -465,6 +493,7 @@ namespace TithorAutomation
                 if (tareasAplicar.Count == 0)
                     throw new InvalidOperationException("Este diseño ya está completado. Active Reemplazar contenido para corregirlo.");
 
+                int totalLote = tareasAplicar.Sum(x => x.Destinos.Count(y => chkReemplazarContenidoEscalar.Checked || !y.TieneContenido));
                 Dictionary<string, List<VGCore.Shape>> referencias = new Dictionary<string, List<VGCore.Shape>>(StringComparer.OrdinalIgnoreCase);
                 BuscarReferenciasLote(seleccion[1], referencias);
                 List<string> errores = new List<string>();
@@ -491,6 +520,7 @@ namespace TithorAutomation
                     escalador.Validar(referencias[CodigoReferenciaLote(tarea.Pieza)][0], destinos, chkReemplazarContenidoEscalar.Checked);
                     }
 
+                MostrarProgresoOperacion(prgEscalar, 0, totalLote);
                 btnAnalizarEscalar.Enabled = false;
                 btnAplicarEscalar.Enabled = false;
                 chkReemplazoPorLote.Enabled = false;
@@ -517,6 +547,7 @@ namespace TithorAutomation
                             chkReemplazarContenidoEscalar.Checked,
                             delegate (int actual, int cantidad)
                                 {
+                                MostrarProgresoOperacion(prgEscalar, destinosProcesados + actual, totalLote);
                                 lblEstadoEscalar.Text = "Aplicando " + lote.Diseno + " - " + tarea.Pieza + ": " + actual + " de " + cantidad + "...";
                                 lblEstadoEscalar.Refresh();
                                 },
@@ -532,6 +563,7 @@ namespace TithorAutomation
 
                 List<PiezaEscalable> resultado = escalador.AnalizarPedido(documento, planProduccionActual);
                 MostrarAnalisisEscalar(resultado);
+                MostrarProgresoOperacion(prgEscalar, 1, 1);
                 lblEstadoEscalar.Text = "Lote " + lote.Diseno + " completado. Se procesaron " + destinosProcesados + " destinos.";
 
                 Activate();
@@ -545,6 +577,7 @@ namespace TithorAutomation
                 }
             catch (Exception ex)
                 {
+                MostrarProgresoOperacion(prgEscalar, 0, 1);
                 lblEstadoEscalar.Text = tareasProcesadas > 0
                     ? "Lote pausado después de " + tareasProcesadas + " partes. Corrija el error y continúe."
                     : "Lote detenido. Corrija las referencias y vuelva a aplicar.";
@@ -606,6 +639,7 @@ namespace TithorAutomation
                 btnAplicarEscalar.Enabled = false;
                 UseWaitCursor = true;
                 Cursor = Cursors.WaitCursor;
+                MostrarProgresoOperacion(prgEscalar, 0, destinos.Count);
                 lblEstadoEscalar.Text = "Aplicando " + tarea.Diseno + " - " + tarea.Pieza + "...";
 
                 bool temporizadorActivo = tmrConexionCorel.Enabled;
@@ -622,6 +656,7 @@ namespace TithorAutomation
                         chkReemplazarContenidoEscalar.Checked,
                         delegate (int actual, int cantidad)
                             {
+                            MostrarProgresoOperacion(prgEscalar, actual, cantidad);
                             lblEstadoEscalar.Text =
                                 "Aplicando " + tarea.Diseno + " - " + tarea.Pieza +
                                 ": " + actual + " de " + cantidad + "...";
@@ -637,6 +672,7 @@ namespace TithorAutomation
 
                 List<PiezaEscalable> resultado = escalador.AnalizarPedido(documento, planProduccionActual);
                 MostrarAnalisisEscalar(resultado);
+                MostrarProgresoOperacion(prgEscalar, 1, 1);
 
                 TareaEscalar siguiente = tareasEscalar.FirstOrDefault(x => x.Estado == "Pendiente" || x.Estado == "Parcial");
                 lblEstadoEscalar.Text = siguiente == null
@@ -659,6 +695,7 @@ namespace TithorAutomation
                 }
             catch (Exception ex)
                 {
+                MostrarProgresoOperacion(prgEscalar, 0, 1);
                 lblEstadoEscalar.Text = "Revise el mensaje y continúe con la tarea pendiente.";
                 MessageBox.Show(this, ex.Message, "Escalar pedido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
@@ -683,6 +720,7 @@ namespace TithorAutomation
                 tareasEscalar.Clear();
                 tareasLoteEscalar.Clear();
                 dgvEscalar.Rows.Clear();
+                MostrarProgresoOperacion(prgEscalar, 0, 0);
                 lblEstadoEscalar.Text = "Analizando los moldes...";
 
                 documentoEscalar = DocumentoActivoEscalar();
@@ -695,9 +733,11 @@ namespace TithorAutomation
                 List<PiezaEscalable> piezas = escalador.AnalizarPedido(documentoEscalar, planProduccionActual);
 
                 MostrarAnalisisEscalar(piezas);
+                MostrarProgresoOperacion(prgEscalar, 1, 1);
                 }
             catch (Exception ex)
                 {
+                MostrarProgresoOperacion(prgEscalar, 0, 1);
                 firmaEscalar = null;
                 documentoEscalar = null;
                 btnAplicarEscalar.Enabled = false;

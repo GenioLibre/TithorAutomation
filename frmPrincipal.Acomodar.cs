@@ -66,6 +66,8 @@ namespace TithorAutomation
 
         private void InvalidarAnalisisAcomodo(string mensaje)
             {
+            prgAcomodar.Style = ProgressBarStyle.Continuous;
+            prgAcomodar.MarqueeAnimationSpeed = 0;
             resultadoAcomodoActual = null;
             documentoAcomodoActual = null;
 
@@ -109,7 +111,7 @@ namespace TithorAutomation
                 btnAcomodarElementos.Enabled = false;
 
                 dgvAcomodo.Rows.Clear();
-                prgAcomodar.Value = 10;
+                MostrarProgresoOperacion(prgAcomodar, 0, 0);
                 lblEstadoAcomodar.Text = "Analizando TITHOR_PRODUCCION...";
 
                 lblEstadoAcomodar.Refresh();
@@ -134,14 +136,14 @@ namespace TithorAutomation
                         separacion,
                         permitirRotacion);
 
-                prgAcomodar.Value = 70;
+                // El cálculo no tiene un total fijo: se mantiene indeterminado hasta finalizar.
 
                 MostrarResultadoAcomodo(resultado);
 
                 resultadoAcomodoActual = resultado;
                 documentoAcomodoActual = documento;
 
-                prgAcomodar.Value = 100;
+                MostrarProgresoOperacion(prgAcomodar, 1, 1);
 
                 if (resultado.TotalPiezas == 0)
                     {
@@ -292,7 +294,7 @@ namespace TithorAutomation
                 nudSeparacionElementos.Enabled = false;
                 chkPermitirRotacion.Enabled = false;
 
-                prgAcomodar.Style = ProgressBarStyle.Marquee;
+                MostrarProgresoOperacion(prgAcomodar, 0, 0);
                 lblEstadoAcomodar.Text = "Acomodando elementos en CorelDRAW...";
 
                 lblEstadoAcomodar.Refresh();
@@ -301,14 +303,20 @@ namespace TithorAutomation
                     corel, documentoActual,
                     Convert.ToDouble(nudAnchoMaterial.Value),
                     Convert.ToDouble(nudSeparacionElementos.Value),
-                    chkPermitirRotacion.Checked);
+                    chkPermitirRotacion.Checked,
+                    delegate (int actual, int total)
+                        {
+                        MostrarProgresoOperacion(prgAcomodar, actual, total);
+                        lblEstadoAcomodar.Text = "Acomodando pieza " + actual + " de " + total + "...";
+                        lblEstadoAcomodar.Refresh();
+                        });
 
                 MostrarResultadoAcomodo(resultadoAcomodoActual);
 
                 MarcarFilasComoAcomodadas();
 
                 prgAcomodar.Style = ProgressBarStyle.Blocks;
-                prgAcomodar.Value = 100;
+                MostrarProgresoOperacion(prgAcomodar, 1, 1);
 
                 lblAltoResultado.Text = resultadoAcomodoActual.AltoEstimado.ToString("0.0") + " mm";
                 lblEstadoAcomodar.Text = "Acomodo terminado correctamente.";

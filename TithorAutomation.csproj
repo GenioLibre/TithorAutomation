@@ -206,6 +206,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Installer\TithorAutomation.iss" />
+    <None Include="Installer\build-installer.ps1" />
+    <None Include="Installer\build-installer.bat" />
+    <None Include="Installer\README.md" />
   </ItemGroup>
   <ItemGroup>
     <COMReference Include="CorelDRAW">
@@ -216,7 +220,7 @@
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
       <EmbedInteropTypes>False</EmbedInteropTypes>
-      <Private>False</Private>
+      <Private>True</Private>
     </COMReference>
     <COMReference Include="VGCore">
       <Guid>{95E23C91-BC5A-49F3-8CD1-1FC515597048}</Guid>

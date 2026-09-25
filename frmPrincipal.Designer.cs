@@ -191,6 +191,8 @@ namespace TithorAutomation
             this.btnAnalizarAcomodo = new System.Windows.Forms.Button();
             this.btnAcomodarElementos = new System.Windows.Forms.Button();
             this.lblEstadoAcomodar = new System.Windows.Forms.Label();
+            this.prgMoldes = new System.Windows.Forms.ProgressBar();
+            this.prgEscalar = new System.Windows.Forms.ProgressBar();
             this.prgAcomodar = new System.Windows.Forms.ProgressBar();
             this.grpConfiguracionAcomodo = new System.Windows.Forms.GroupBox();
             this.lblOrigenAcomodo = new System.Windows.Forms.Label();
@@ -2114,6 +2116,24 @@ namespace TithorAutomation
             this.lblEstadoAcomodar.TabIndex = 42;
             this.lblEstadoAcomodar.Text = "Listo para analizar";
             // 
+            // prgMoldes
+            this.prgMoldes.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.prgMoldes.Location = new System.Drawing.Point(14, 78);
+            this.prgMoldes.Name = "prgMoldes";
+            this.prgMoldes.Size = new System.Drawing.Size(866, 16);
+            this.prgMoldes.Minimum = 0;
+            this.prgMoldes.Maximum = 100;
+            this.prgMoldes.TabIndex = 45;
+            this.prgMoldes.Visible = true;
+            // prgEscalar
+            this.prgEscalar.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.prgEscalar.Location = new System.Drawing.Point(14, 118);
+            this.prgEscalar.Name = "prgEscalar";
+            this.prgEscalar.Size = new System.Drawing.Size(850, 16);
+            this.prgEscalar.Minimum = 0;
+            this.prgEscalar.Maximum = 100;
+            this.prgEscalar.TabIndex = 45;
+            this.prgEscalar.Visible = true;
             // prgAcomodar
             // 
             this.prgAcomodar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
@@ -2453,6 +2473,7 @@ namespace TithorAutomation
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.prgMoldes);
             this.groupBox4.Controls.Add(this.btnNuevoPedido);
             this.groupBox4.Controls.Add(this.btnCopiarMoldesPedido);
             this.groupBox4.Controls.Add(this.lblResultadoPedido);
@@ -2888,6 +2909,7 @@ namespace TithorAutomation
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.prgEscalar);
             this.groupBox1.Controls.Add(this.lblEstadoEscalar);
             this.groupBox1.Controls.Add(this.btnAnalizarEscalar);
             this.groupBox1.Controls.Add(this.btnAplicarEscalar);
@@ -2899,7 +2921,7 @@ namespace TithorAutomation
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.groupBox1.Location = new System.Drawing.Point(0, 475);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(880, 120);
+            this.groupBox1.Size = new System.Drawing.Size(880, 145);
             this.groupBox1.TabIndex = 31;
             this.groupBox1.TabStop = false;
             // 
@@ -3544,6 +3566,8 @@ namespace TithorAutomation
         private System.Windows.Forms.Label lblTituloAcomodar;
         private System.Windows.Forms.Label lblSubtituloAcomodar;
         private System.Windows.Forms.Label lblEstadoAcomodar;
+        private System.Windows.Forms.ProgressBar prgMoldes;
+        private System.Windows.Forms.ProgressBar prgEscalar;
         private System.Windows.Forms.ProgressBar prgAcomodar;
         private System.Windows.Forms.Label lblOrigenAcomodo;
         private System.Windows.Forms.CheckBox chkPermitirRotacion;
