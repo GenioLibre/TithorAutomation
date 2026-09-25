@@ -16,7 +16,11 @@ try {
         $InnoCompiler = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
     }
     if (!$InnoCompiler -or !(Test-Path $InnoCompiler)) { throw 'Instala Inno Setup 6 o indica -InnoCompiler con la ruta de ISCC.exe.' }
-    & $msbuild (Join-Path $projectRoot 'TithorAutomation.csproj') /restore /t:Rebuild /p:RestorePackagesConfig=true /p:Configuration=Release /p:Platform=x64 /nologo
+    # NuGet packages.config necesita SolutionDir al restaurar un csproj directamente.
+    # Barras normales evitan escapar la comilla final en rutas con espacios.
+    $solutionDir = $projectRoot.Replace('\', '/') + '/'
+    $packagesDir = $solutionDir + 'packages'
+    & $msbuild (Join-Path $projectRoot 'TithorAutomation.csproj') /restore /t:Rebuild /p:RestorePackagesConfig=true "/p:SolutionDir=$solutionDir" "/p:RestoreRepositoryPath=$packagesDir" /p:Configuration=Release /p:Platform=x64 /nologo
     if ($LASTEXITCODE -ne 0) { throw 'Fallo la compilacion de TithorAutomation. No se genero un instalador nuevo.' }
     $output = Join-Path $projectRoot 'bin\x64\Release'
     foreach ($file in @('TithorAutomation.exe','TithorAutomation.exe.config','System.Data.SQLite.dll','x64\SQLite.Interop.dll','Interop.CorelDRAW.dll')) {
