@@ -92,19 +92,8 @@ namespace TithorAutomation
 
                 if (vistaPreviaActiva)
                     {
-                    DialogResult respuesta =
-                        MessageBox.Show(
-                            "La vista previa sigue activa y no pudo restaurarse.\n\n" +
-                            "¿Desea cerrar de todas maneras?",
-                            "Vista previa activa",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Warning
-                        );
-
-                    if (respuesta == DialogResult.No)
-                        {
-                        e.Cancel = true;
-                        }
+                    e.Cancel = true;
+                    MessageBox.Show(this, "Restaure el color antes de cerrar. Mantenga abierto el documento de CorelDRAW y vuelva a intentarlo.", "Resaltado pendiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
             }
@@ -132,6 +121,12 @@ namespace TithorAutomation
 
         private void MostrarPanel(System.Windows.Forms.Panel panelSeleccionado)
             {
+            if (vistaPreviaActiva && panelSeleccionado != pnlPantonear)
+                {
+                RestaurarVistaPrevia();
+                if (vistaPreviaActiva) return;
+                }
+
             pnlPantonear.Visible = false;
             pnlProduccion.Visible = false;
             pnlEscalar.Visible = false;
