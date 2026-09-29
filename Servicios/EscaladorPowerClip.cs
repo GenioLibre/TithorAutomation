@@ -146,7 +146,7 @@ namespace TithorAutomation.Servicios
                     entrada.Estado = contenedor == null ? "Sin contenedor único" :
                         noEditable || RutaBloqueada(objeto, contenedor, false) ? "Bloqueado u oculto" :
                         !Positivo(contenedor.SizeHeight) || !Positivo(contenedor.SizeWidth) ? "Dimensiones inválidas" : "Listo";
-                    entrada.TieneContenido = contenedor != null && contenedor.PowerClip != null && contenedor.PowerClip.Shapes.Count > 0;
+                    entrada.TieneContenido = TieneDisenoAplicado(contenedor);
                     resultado.Add(entrada);
                     continue;
                 }
@@ -268,7 +268,7 @@ namespace TithorAutomation.Servicios
             entrada.Estado = contenedor == null ? "Sin contenedor único" :
                 grupo.Locked || objeto.Locked || RutaBloqueada(objeto, contenedor, false) ? "Bloqueado u oculto" :
                 !Positivo(contenedor.SizeHeight) || !Positivo(contenedor.SizeWidth) ? "Dimensiones inválidas" : "Listo";
-            entrada.TieneContenido = contenedor != null && contenedor.PowerClip != null && contenedor.PowerClip.Shapes.Count > 0;
+            entrada.TieneContenido = TieneDisenoAplicado(contenedor);
             return entrada;
         }
 
@@ -361,6 +361,24 @@ namespace TithorAutomation.Servicios
             return false;
         }
 
+        // Solo los objetos insertados por Tithor se consideran diseños reemplazables.
+        // Los textos y otros elementos originales del molde se conservan.
+        private bool EsDisenoAplicado(Shape objeto)
+        {
+            return objeto != null && (objeto.Name ?? string.Empty).StartsWith("TITHOR_DISENO_", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool TieneDisenoAplicado(Shape contenedor)
+        {
+            if (contenedor == null || contenedor.PowerClip == null) return false;
+
+            Shapes contenido = contenedor.PowerClip.Shapes;
+            for (int i = 1; i <= contenido.Count; i++)
+                if (EsDisenoAplicado(contenido[i])) return true;
+
+            return false;
+        }
+
         public void Validar(Shape diseno, IList<PiezaEscalable> destinos, bool reemplazar)
         {
             bool esGrupo = diseno != null && diseno.Type == cdrShapeType.cdrGroupShape;
@@ -376,8 +394,8 @@ namespace TithorAutomation.Servicios
                 Shape contenedor = destino.Contenedor;
                 if (Contiene(diseno, contenedor) || Contiene(contenedor, diseno))
                     throw new InvalidOperationException("El diseño debe estar separado de los moldes de destino.");
-                if (destino.TieneContenido && !reemplazar)
-                    throw new InvalidOperationException("Hay PowerClips con contenido. Active Reemplazar contenido existente si desea sustituirlo.");
+                if (TieneDisenoAplicado(contenedor) && !reemplazar)
+                    throw new InvalidOperationException("Hay PowerClips con diseños aplicados. Active Reemplazar contenido existente si desea sustituir esos diseños.");
                 double anchoFinal;
                 double altoFinal;
                 CalcularTamanoCobertura(diseno.SizeWidth, diseno.SizeHeight, contenedor.SizeWidth, contenedor.SizeHeight, out anchoFinal, out altoFinal);
@@ -493,7 +511,10 @@ namespace TithorAutomation.Servicios
                             Shapes anteriores = contenedor.PowerClip.Shapes;
 
                             for (int i = anteriores.Count; i >= 1; i--)
-                                anteriores[i].Delete();
+                                {
+                                Shape anterior = anteriores[i];
+                                if (EsDisenoAplicado(anterior)) anterior.Delete();
+                                }
                             }
 
                         copia.AddToPowerClip(contenedor, cdrTriState.cdrTrue);
@@ -511,6 +532,7 @@ namespace TithorAutomation.Servicios
                         copia.CenterX = centroX;
                         copia.CenterY = centroY;
                         copia.Name = "TITHOR_DISENO_" + destino.Pieza.Replace(' ', '_');
+                        copia.OrderToBack();
                         int procesados = indiceDestino + 1;
 
                         if (procesados % 5 == 0 || procesados == destinos.Count)
