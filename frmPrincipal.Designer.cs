@@ -817,7 +817,7 @@ namespace TithorAutomation
             this.btnVistaPrevia.Name = "btnVistaPrevia";
             this.btnVistaPrevia.Size = new System.Drawing.Size(93, 40);
             this.btnVistaPrevia.TabIndex = 16;
-            this.btnVistaPrevia.Text = "Vista previa";
+            this.btnVistaPrevia.Text = "Resaltar color";
             this.btnVistaPrevia.UseVisualStyleBackColor = false;
             this.btnVistaPrevia.Click += new System.EventHandler(this.btnVistaPrevia_Click);
             // 

@@ -14,6 +14,7 @@ namespace TithorAutomation.Servicios
             {
             "camiseta",
             "camiseta_short",
+            "solo_short",
             "bividi"
             };
         private readonly HashSet<string> tallasPermitidas = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -158,8 +159,10 @@ namespace TithorAutomation.Servicios
             {
             string diseno = ObtenerTexto(hoja, numeroFila, columnas, "diseno");
             string modelo = Normalizar(ObtenerTexto(hoja, numeroFila, columnas, "modelo"));
+            if (modelo == "raglan") modelo = "ranglan";
             string nombre = ObtenerTexto(hoja, numeroFila, columnas, "nombre");
             string prenda = Normalizar(ObtenerTexto(hoja, numeroFila, columnas, "prenda"));
+            if (prenda == "short") prenda = "solo_short";
             string numero = ObtenerTexto(hoja, numeroFila, columnas, "numero");
             string tallaCamiseta = NormalizarTalla(ObtenerTexto(hoja, numeroFila, columnas, "talla_camiseta"));
             string tallaShort = NormalizarTalla(ObtenerTexto(hoja, numeroFila, columnas, "talla_short"));
@@ -167,11 +170,19 @@ namespace TithorAutomation.Servicios
             string manga = Normalizar(ObtenerTexto(hoja, numeroFila, columnas, "manga"));
             string cuello = Normalizar(ObtenerTexto(hoja, numeroFila, columnas, "cuello"));
 
+            string tipoShort = Normalizar(ObtenerTexto(hoja, numeroFila, columnas, "tipo_short"));
+            // Los Excel anteriores no tienen esta columna: conservar su selección por corte.
+            if (!columnas.ContainsKey("tipo_short")) tipoShort = corte;
+            if (tipoShort == "dama") tipoShort = "mujer";
+            if (tipoShort == "short_falda" || tipoShort == "falda") tipoShort = "falda_short";
+            bool llevaCamiseta = prenda != "solo_short";
+            bool llevaShort = prenda == "camiseta_short" || prenda == "solo_short";
+
             LineaPedido linea = new LineaPedido
                 {
                 NumeroFila = numeroFila,
                 Diseno = diseno,
-                Talla = tallaCamiseta.ToUpperInvariant(),
+                Talla = (llevaCamiseta ? tallaCamiseta : tallaShort).ToUpperInvariant(),
                 Cantidad = 1,
                 Notas = CrearNotas(nombre, numero)
                 };
@@ -184,6 +195,7 @@ namespace TithorAutomation.Servicios
             linea.AgregarCampo("numero", numero);
             linea.AgregarCampo("talla_camiseta", tallaCamiseta);
             linea.AgregarCampo("talla_short", tallaShort);
+            linea.AgregarCampo("tipo_short", tipoShort);
             linea.AgregarCampo("corte", corte);
             linea.AgregarCampo("manga", manga);
             linea.AgregarCampo("cuello", cuello);
@@ -192,7 +204,7 @@ namespace TithorAutomation.Servicios
             if (string.IsNullOrWhiteSpace(diseno))
                 linea.MarcarNoProcesable("La columna Diseño está vacía.");
 
-            if (string.IsNullOrWhiteSpace(modelo))
+            if (llevaCamiseta && string.IsNullOrWhiteSpace(modelo))
                 linea.MarcarNoProcesable("El modelo está vacío.");
 
             if (string.IsNullOrWhiteSpace(prenda))
@@ -200,33 +212,36 @@ namespace TithorAutomation.Servicios
             else if (!prendasPermitidas.Contains(prenda))
                 linea.MarcarNoProcesable("La prenda \"" + prenda + "\" no está soportada.");
 
-            if (string.IsNullOrWhiteSpace(tallaCamiseta))
+            if (llevaCamiseta && string.IsNullOrWhiteSpace(tallaCamiseta))
                 linea.MarcarNoProcesable("La talla de camiseta está vacía.");
-            else if (!tallasPermitidas.Contains(tallaCamiseta))
+            else if (llevaCamiseta && !tallasPermitidas.Contains(tallaCamiseta))
                 linea.MarcarNoProcesable("La talla de camiseta \"" + tallaCamiseta + "\" no está soportada.");
 
-            if (string.IsNullOrWhiteSpace(corte))
+            if (llevaCamiseta && modelo != "basket" && string.IsNullOrWhiteSpace(corte))
                 linea.MarcarNoProcesable("El corte está vacío.");
 
-            if ((modelo == "clasico" || modelo == "raglan") && string.IsNullOrWhiteSpace(manga))
+            if (llevaCamiseta && (modelo == "clasico" || modelo == "ranglan") && string.IsNullOrWhiteSpace(manga))
                 linea.MarcarNoProcesable("La manga está vacía.");
 
-            if ((modelo == "clasico" || modelo == "raglan") && string.IsNullOrWhiteSpace(cuello))
+            if (llevaCamiseta && (modelo == "clasico" || modelo == "ranglan" || modelo == "basket") && string.IsNullOrWhiteSpace(cuello))
                 linea.MarcarNoProcesable("El cuello está vacío.");
 
-            if (prenda == "camiseta_short")
+            if (llevaCamiseta && (modelo == "clasico" || modelo == "ranglan") && !string.IsNullOrWhiteSpace(manga) && manga != "normal" && manga != "corta" && manga != "larga" && manga != "manga_corta" && manga != "manga_larga")
+                linea.MarcarNoProcesable("Manga no reconocida. Use normal o larga.");
+
+            if (llevaShort)
                 {
+                if (string.IsNullOrWhiteSpace(tipoShort))
+                    linea.MarcarNoProcesable("La prenda requiere Tipo Short.");
                 if (string.IsNullOrWhiteSpace(tallaShort))
-                    linea.MarcarNoProcesable("La prenda camiseta_short requiere una talla de short.");
+                    linea.MarcarNoProcesable("La prenda requiere una talla de short.");
                 else if (!tallasPermitidas.Contains(tallaShort))
                     linea.MarcarNoProcesable("La talla de short \"" + tallaShort + "\" no está soportada.");
                 }
-            else if (!string.IsNullOrWhiteSpace(tallaShort))
+            else if (!string.IsNullOrWhiteSpace(tallaShort) || !string.IsNullOrWhiteSpace(ObtenerTexto(hoja, numeroFila, columnas, "tipo_short")))
                 {
                 linea.MarcarNoProcesable(
-                    "La prenda \"" + prenda + "\" no incluye short, pero Talla short contiene \"" +
-                    tallaShort.ToUpperInvariant() +
-                    "\". Use camiseta_short o elimine la talla de short."
+                    "La prenda \"" + prenda + "\" no incluye short, pero tiene Tipo Short o Talla Short. Use camiseta_short o vacíe ambos campos."
                 );
                 }
 
@@ -236,6 +251,8 @@ namespace TithorAutomation.Servicios
             if (string.IsNullOrWhiteSpace(numero))
                 linea.AgregarAdvertencia("El número está vacío.");
 
+            // Una advertencia opcional nunca debe ocultar un error de la fila.
+            if (!linea.Procesable) linea.Estado = "Con error";
             return linea;
             }
         private string CrearNotas(string nombre, string numero)

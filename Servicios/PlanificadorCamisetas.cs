@@ -49,9 +49,11 @@ namespace TithorAutomation.Servicios
                 if (!linea.Procesable)
                     continue;
 
-                AgregarCamiseta(linea, resultado.CodigoProducto, catalogo, plan, selecciones);
+                string prenda = Normalizar(linea.ObtenerCampo("prenda"));
+                if (prenda != "solo_short" && prenda != "short")
+                    AgregarCamiseta(linea, resultado.CodigoProducto, catalogo, plan, selecciones);
 
-                if (Normalizar(linea.ObtenerCampo("prenda")) == "camiseta_short")
+                if (prenda == "camiseta_short" || prenda == "solo_short" || prenda == "short")
                     AgregarShort(linea, resultado.CodigoProducto, catalogo, plan, selecciones);
                 }
 
@@ -84,23 +86,32 @@ namespace TithorAutomation.Servicios
 
         private void AgregarShort(LineaPedido linea, string codigoProducto, List<Molde> catalogo, PlanProduccion plan, Dictionary<string, SeleccionMolde> selecciones)
             {
-            string corte = NormalizarCorte(linea.ObtenerCampo("corte"));
+            string tipo = Normalizar(linea.ObtenerCampo("tipo_short"));
+            if (string.IsNullOrWhiteSpace(tipo)) tipo = NormalizarCorte(linea.ObtenerCampo("corte"));
+            tipo = NormalizarCorte(tipo);
+            if (tipo == "short_falda" || tipo == "falda") tipo = "falda_short";
             string talla = NormalizarTalla(linea.ObtenerCampo("talla_short"));
-
             List<List<string>> piezasRequeridas = new List<List<string>>
                 {
                 new List<string> { "short_izquierdo", "pierna_izquierda" },
                 new List<string> { "short_derecho", "pierna_derecha" }
                 };
+            if (tipo == "falda_short")
+                {
+                piezasRequeridas.Add(new List<string> { "falda_frente" });
+                piezasRequeridas.Add(new List<string> { "falda_atras", "falda_espalda" });
+                piezasRequeridas.Add(new List<string> { "pretina" });
+                }
+            // Tipos adicionales: copiar todas las piezas registradas del grupo de talla.
+            if (tipo != "varon" && tipo != "mujer" && tipo != "basket" && tipo != "falda_short")
+                piezasRequeridas.Clear();
 
-            SeleccionMolde seleccion = BuscarSeleccion(catalogo, "short", corte, talla, true, piezasRequeridas, selecciones);
-
+            SeleccionMolde seleccion = BuscarSeleccion(catalogo, "short", tipo, talla, true, piezasRequeridas, selecciones);
             if (seleccion == null)
                 {
-                plan.Advertencias.Add(CrearMensajeMoldeFaltante(linea.NumeroFila, "short", corte, talla, piezasRequeridas));
+                plan.Advertencias.Add(CrearMensajeMoldeFaltante(linea.NumeroFila, "short", tipo, talla, piezasRequeridas));
                 return;
                 }
-
             AgregarSolicitud(plan, linea, codigoProducto, seleccion, talla, "Short", 2);
             }
 
@@ -108,7 +119,7 @@ namespace TithorAutomation.Servicios
             {
             List<List<string>> piezas = new List<List<string>>();
 
-            if (modelo == "bividi" || modelo == "manga_cero")
+            if (modelo == "bividi" || modelo == "manga_cero" || modelo == "basket")
                 {
                 piezas.Add(ObtenerOpcionesFrente(cuello));
                 piezas.Add(new List<string> { "espalda" });
@@ -140,6 +151,8 @@ namespace TithorAutomation.Servicios
             if (cuello == "redondo")
                 return new List<string> { "frente_cuello_redondo", "frente_redondo" };
 
+            if (!string.IsNullOrWhiteSpace(cuello))
+                return new List<string> { "frente_cuello_" + cuello, "frente_" + cuello };
             return new List<string> { "frente" };
             }
 
@@ -193,20 +206,22 @@ namespace TithorAutomation.Servicios
             if (string.IsNullOrWhiteSpace(capa))
                 return false;
 
-            bool contieneShort = ContieneToken(capa, "short");
+            if (esShort)
+                {
+                string tipo = corte == "falda_short" ? "falda" : corte;
+                string nombre = capa.StartsWith("moldes_") ? capa.Substring(7) : capa;
+                return nombre == "short_" + tipo || (corte == "falda_short" && nombre == "falda_short");
+                }
 
-            if (esShort != contieneShort)
+            if (ContieneToken(capa, "short") || !ContieneToken(capa, modelo))
                 return false;
-
-            if (!esShort && !ContieneToken(capa, modelo))
-                return false;
-
+            // La capa Basket del master es común y no tiene corte en su nombre.
+            if (modelo == "basket" && (capa == "moldes_basket" || capa == "basket"))
+                return true;
             if (corte == "varon")
                 return ContieneToken(capa, "varon") || ContieneToken(capa, "hombre") || ContieneToken(capa, "masculino");
-
             if (corte == "mujer")
                 return ContieneToken(capa, "mujer") || ContieneToken(capa, "dama") || ContieneToken(capa, "femenino");
-
             return false;
             }
 
@@ -217,6 +232,13 @@ namespace TithorAutomation.Servicios
                 Capa = capa,
                 CodigoGrupo = "molde_" + talla
                 };
+
+            if (piezasRequeridas.Count == 0)
+                {
+                foreach (Molde molde in moldes)
+                    if (!seleccion.Piezas.Contains(molde.NombreObjeto)) seleccion.Piezas.Add(molde.NombreObjeto);
+                return seleccion.Piezas.Count == 0 ? null : seleccion;
+                }
 
             foreach (List<string> alternativas in piezasRequeridas)
                 {
@@ -338,7 +360,7 @@ namespace TithorAutomation.Servicios
 
         private string Normalizar(string valor)
             {
-            return AnalizadorMasterCorel.NormalizarCodigo(valor);
+            return AnalizadorMasterCorel.NormalizarCodigo(valor).Replace("raglan", "ranglan");
             }
 
         private string LimpiarNombre(string valor)

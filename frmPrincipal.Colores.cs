@@ -61,6 +61,9 @@ namespace TithorAutomation
             }
         private void ConfigurarTabla()
             {
+            dgvColores.SelectionChanged += dgvColores_SelectionChanged;
+            Deactivate += frmPrincipal_DesactivarResaltado;
+
             // Validación de los valores CMYK editables
             colCNuevo.ValueType = typeof(int);
             colMNuevo.ValueType = typeof(int);
@@ -268,6 +271,7 @@ namespace TithorAutomation
                     return;
                     }
 
+                documentoAnalisisColor = corel.ActiveDocument;
                 for (int i = 1; i <= seleccion.Count; i++)
                     {
                     AnalizarObjeto(seleccion[i]);
@@ -310,6 +314,7 @@ namespace TithorAutomation
             }
         private void ReiniciarAnalisis()
             {
+            documentoAnalisisColor = null;
             LiberarMuestrasAnteriores();
 
             dgvColores.Rows.Clear();
@@ -1391,242 +1396,192 @@ namespace TithorAutomation
 
             imagenAnterior?.Dispose();
             }
-        private void AplicarColoresTemporales()
+        private sealed class ColorResaltadoOriginal
             {
-            foreach (DataGridViewRow fila
-                     in dgvColores.Rows)
-                {
-                if (fila.IsNewRow)
-                    continue;
-
-                ColorDetectado colorDetectado =
-                    fila.Tag as ColorDetectado;
-
-                if (colorDetectado == null)
-                    continue;
-
-                int c = Convert.ToInt32(
-                    fila.Cells[colCNuevo.Name].Value
-                );
-
-                int m = Convert.ToInt32(
-                    fila.Cells[colMNuevo.Name].Value
-                );
-
-                int y = Convert.ToInt32(
-                    fila.Cells[colYNuevo.Name].Value
-                );
-
-                int k = Convert.ToInt32(
-                    fila.Cells[colKNuevo.Name].Value
-                );
-
-                foreach (VGCore.Color referencia
-                         in colorDetectado.Referencias)
-                    {
-                    referencia.CMYKAssign(
-                        c,
-                        m,
-                        y,
-                        k
-                    );
-                    }
-                }
+            public VGCore.Color Referencia;
+            public VGCore.Color Original;
             }
-        private void AplicarTransparenciasTemporales()
+        private readonly List<ColorResaltadoOriginal> originalesResaltado = new List<ColorResaltadoOriginal>();
+        private ColorDetectado colorResaltadoActual;
+        private VGCore.Document documentoAnalisisColor;
+        private VGCore.Application corelResaltado;
+        private bool cambiandoResaltado;
+
+        private void dgvColores_SelectionChanged(object sender, EventArgs e)
             {
-            foreach (VGCore.Shape objeto
-                     in objetosParaCambios)
-                {
-                try
-                    {
-                    objeto.Transparency
-                        .ApplyNoTransparency();
-                    }
-                catch
-                    {
-                    // Ignorar objetos no compatibles.
-                    }
-                }
-            }
-        private void RestaurarVistaPrevia()
-            {
-            if (!vistaPreviaActiva ||
-                documentoVistaPrevia == null)
-                {
+            if (!vistaPreviaActiva || cambiandoResaltado)
                 return;
-                }
-
-            try
-                {
-                VGCore.Application corel =
-                    ObtenerCorel();
-
-                lblEstadoProceso.Text =
-                    "Restaurando diseño original...";
-
-                documentoVistaPrevia.Undo();
-
-                corel.ActiveWindow.Refresh();
-
-                lblEstadoProceso.Text =
-                    "Diseño original restaurado";
-                }
-            catch (Exception ex)
-                {
-                MessageBox.Show(this, 
-                    "No se pudo restaurar la vista previa.\n\n" +
-                    ex.Message,
-                    "Tithor Automation",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
-
+            ColorDetectado seleccionado = dgvColores.CurrentRow == null ? null : dgvColores.CurrentRow.Tag as ColorDetectado;
+            if (seleccionado == colorResaltadoActual)
                 return;
-                }
-
-            vistaPreviaActiva = false;
-            documentoVistaPrevia = null;
-
-            btnVistaPrevia.Text =
-                "Vista previa";
+            RestaurarVistaPrevia();
+            if (!vistaPreviaActiva && seleccionado != null)
+                ResaltarColorSeleccionado();
             }
-        private void btnVistaPrevia_Click(object sender, EventArgs e)
+
+        private void CorelAntesDeGuardarResaltado(VGCore.Document documento, bool guardarComo, string ruta)
             {
             if (vistaPreviaActiva)
-                {
                 RestaurarVistaPrevia();
+            }
+
+        private void CorelConsultarGuardarResaltado(VGCore.Document documento, out bool cancelar)
+            {
+            cancelar = false;
+            if (!vistaPreviaActiva)
                 return;
+            RestaurarVistaPrevia();
+            cancelar = vistaPreviaActiva;
+            }
+
+        private void frmPrincipal_DesactivarResaltado(object sender, EventArgs e)
+            {
+            // Al devolver el foco a Corel se restauran los colores antes de editar o guardar.
+            if (vistaPreviaActiva && !cambiandoResaltado)
+                RestaurarVistaPrevia();
+            }
+
+        private VGCore.Color CrearColorResaltado(ColorDetectado color, VGCore.Application corel)
+            {
+            // Complementario RGB aproximado a partir del CMYK analizado.
+            int r = (int)Math.Round(255 * (1 - color.C / 100.0) * (1 - color.K / 100.0));
+            int g = (int)Math.Round(255 * (1 - color.M / 100.0) * (1 - color.K / 100.0));
+            int b = (int)Math.Round(255 * (1 - color.Y / 100.0) * (1 - color.K / 100.0));
+            int rr = 255 - r, gg = 255 - g, bb = 255 - b;
+            if (Math.Abs(rr - r) + Math.Abs(gg - g) + Math.Abs(bb - b) < 180)
+                {
+                rr = 255;
+                gg = 0;
+                bb = 255;
                 }
+            VGCore.Color contraste = corel.CreateColor();
+            contraste.RGBAssign(rr, gg, bb);
+            return contraste;
+            }
 
-            dgvColores.EndEdit();
-
-            if (!ValidarTodosLosValoresCmyk())
+        private void RestaurarVistaPrevia()
+            {
+            if (!vistaPreviaActiva || cambiandoResaltado)
                 return;
-
-            VGCore.Application corel = null;
-            VGCore.Document documento = null;
-
-            bool grupoIniciado = false;
-            bool vistaAplicada = false;
-
+            cambiandoResaltado = true;
+            bool temporizadorActivo = tmrConexionCorel.Enabled;
+            tmrConexionCorel.Stop();
             try
                 {
-                corel = ObtenerCorel();
-
-                if (corel.Documents.Count == 0)
+                // Se conservan las copias que fallen para poder reintentar la restauración.
+                for (int i = originalesResaltado.Count - 1; i >= 0; i--)
                     {
-                    MessageBox.Show(this, 
-                        "No hay ningún documento abierto.",
-                        "Tithor Automation",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning
-                    );
-
-                    return;
+                    try
+                        {
+                        originalesResaltado[i].Referencia.CopyAssign(originalesResaltado[i].Original);
+                        originalesResaltado.RemoveAt(i);
+                        }
+                    catch (Exception ex)
+                        {
+                        Debug.WriteLine("Restaurar color: " + ex.Message);
+                        }
                     }
-
-                documento = corel.ActiveDocument;
-
-                lblEstadoProceso.Text =
-                    "Generando vista previa...";
-
-                prgProceso.Style =
-                    ProgressBarStyle.Marquee;
-
-                documento.BeginCommandGroup(
-                    "Tithor - Vista previa CMYK"
-                );
-
-                grupoIniciado = true;
-
-                corel.EventsEnabled = false;
-                corel.Optimization = true;
-
-                AplicarColoresTemporales();
-
-                if (chkEliminarTransparencias.Checked)
+                vistaPreviaActiva = originalesResaltado.Count > 0;
+                if (!vistaPreviaActiva)
                     {
-                    AplicarTransparenciasTemporales();
+                    if (corelResaltado != null)
+                        {
+                        try { corelResaltado.DocumentBeforeSave -= CorelAntesDeGuardarResaltado; } catch { }
+                        try { corelResaltado.QueryDocumentSave -= CorelConsultarGuardarResaltado; } catch { }
+                        }
+                    corelResaltado = null;
+                    documentoVistaPrevia = null;
+                    colorResaltadoActual = null;
+                    btnVistaPrevia.Text = "Resaltar color";
+                    lblEstadoProceso.Text = "Color original restaurado";
                     }
-
-                vistaAplicada = true;
-                }
-            catch (Exception ex)
-                {
-                MessageBox.Show(this, 
-                    $"No se pudo generar la vista previa.\n\n" +
-                    $"Tipo: {ex.GetType().FullName}\n" +
-                    $"Código: 0x{ex.HResult:X8}\n\n" +
-                    ex.Message,
-                    "Error de vista previa",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                );
+                else
+                    {
+                    btnVistaPrevia.Text = "Restaurar color";
+                    lblEstadoProceso.Text = "No se restauraron todos los colores. Mantenga abierto el documento y pulse Restaurar color.";
+                    }
+                try { if (corelApp != null) corelApp.ActiveWindow.Refresh(); } catch { }
                 }
             finally
                 {
-                if (corel != null)
-                    {
-                    try
-                        {
-                        corel.EventsEnabled = true;
-                        corel.Optimization = false;
-                        }
-                    catch
-                        {
-                        }
-                    }
-
-                if (grupoIniciado &&
-                    documento != null)
-                    {
-                    try
-                        {
-                        documento.EndCommandGroup();
-                        }
-                    catch
-                        {
-                        }
-                    }
-
-                if (corel != null)
-                    {
-                    try
-                        {
-                        corel.ActiveWindow.Refresh();
-                        }
-                    catch
-                        {
-                        }
-                    }
-
-                prgProceso.Style =
-                    ProgressBarStyle.Blocks;
-
-                prgProceso.Value = 0;
+                cambiandoResaltado = false;
+                if (temporizadorActivo) tmrConexionCorel.Start();
                 }
+            }
 
-            if (vistaAplicada)
+        private void btnVistaPrevia_Click(object sender, EventArgs e)
+            {
+            if (vistaPreviaActiva)
+                RestaurarVistaPrevia();
+            else
+                ResaltarColorSeleccionado();
+            }
+
+        private void ResaltarColorSeleccionado()
+            {
+            if (cambiandoResaltado || vistaPreviaActiva)
+                return;
+            ColorDetectado seleccionado = dgvColores.CurrentRow == null ? null : dgvColores.CurrentRow.Tag as ColorDetectado;
+            if (seleccionado == null)
                 {
-                vistaPreviaActiva = true;
-                documentoVistaPrevia = documento;
+                lblEstadoProceso.Text = "Seleccione un color de la tabla para resaltarlo.";
+                return;
+                }
+            cambiandoResaltado = true;
+            bool temporizadorActivo = tmrConexionCorel.Enabled;
+            tmrConexionCorel.Stop();
+            string error = null;
+            try
+                {
+                VGCore.Application corel = ObtenerCorel();
+                if (corel.Documents.Count == 0 || documentoAnalisisColor == null || !corel.ActiveDocument.Equals(documentoAnalisisColor))
+                    throw new InvalidOperationException("Vuelva al documento analizado o analice la selección del documento actual.");
+                if (!corel.EventsEnabled)
+                    throw new InvalidOperationException("CorelDRAW tiene los eventos deshabilitados. Termine la operación activa antes de resaltar.");
 
-                btnVistaPrevia.Text =
-                    "Restaurar original";
-
-                lblEstadoProceso.Text =
-                    "Vista previa activa";
-
-                MessageBox.Show(this, 
-                    "Vista previa aplicada.\n\n" +
-                    "Revise el resultado en CorelDRAW.\n" +
-                    "No edite el documento mientras la vista previa esté activa.\n\n" +
-                    "Presione “Restaurar original” para volver al diseño anterior.",
-                    "Vista previa",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
+                corelResaltado = corel;
+                // Registrar protecciones antes de modificar cualquier color.
+                corel.DocumentBeforeSave += CorelAntesDeGuardarResaltado;
+                corel.QueryDocumentSave += CorelConsultarGuardarResaltado;
+                VGCore.Color contraste = CrearColorResaltado(seleccionado, corel);
+                originalesResaltado.Clear();
+                // Capturar TODO antes de pintar: puede haber referencias repetidas.
+                foreach (VGCore.Color referencia in seleccionado.Referencias)
+                    {
+                    VGCore.Color original = corel.CreateColor();
+                    original.CopyAssign(referencia);
+                    originalesResaltado.Add(new ColorResaltadoOriginal { Referencia = referencia, Original = original });
+                    }
+                documentoVistaPrevia = documentoAnalisisColor;
+                colorResaltadoActual = seleccionado;
+                vistaPreviaActiva = originalesResaltado.Count > 0;
+                foreach (ColorResaltadoOriginal original in originalesResaltado)
+                    original.Referencia.CopyAssign(contraste);
+                btnVistaPrevia.Text = "Restaurar color";
+                lblEstadoProceso.Text = "Color resaltado. Se restaura al volver a CorelDRAW.";
+                corel.ActiveWindow.Refresh();
+                }
+            catch (Exception ex)
+                {
+                error = ex.Message;
+                // También permite restaurar una aplicación parcial.
+                vistaPreviaActiva = originalesResaltado.Count > 0;
+                }
+            finally
+                {
+                cambiandoResaltado = false;
+                if (temporizadorActivo) tmrConexionCorel.Start();
+                }
+            if (error != null)
+                {
+                RestaurarVistaPrevia();
+                if (corelResaltado != null && !vistaPreviaActiva)
+                    {
+                    try { corelResaltado.DocumentBeforeSave -= CorelAntesDeGuardarResaltado; } catch { }
+                    try { corelResaltado.QueryDocumentSave -= CorelConsultarGuardarResaltado; } catch { }
+                    corelResaltado = null;
+                    }
+                MessageBox.Show(this, "No se pudo resaltar el color.\n\n" + error, "Resaltar color", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
         private void lblDegradadosTitulo_Click(object sender, EventArgs e)
