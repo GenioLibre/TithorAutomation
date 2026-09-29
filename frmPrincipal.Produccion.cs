@@ -315,16 +315,17 @@ namespace TithorAutomation
             if (EsPedidoCamisetas(resultado))
                 {
                 AgregarColumnaPedido("colNumeroOrdenPedido", "N°", 45F, 50);
-                AgregarColumnaPedido("colModeloPedido", "Modelo", 85F, 90);
                 AgregarColumnaPedido("colDisenoCamisetaPedido", "Diseño", 105F, 110);
-                AgregarColumnaPedido("colNombrePedido", "Nombre", 110F, 110);
                 AgregarColumnaPedido("colPrendaPedido", "Prenda", 105F, 110);
+                AgregarColumnaPedido("colNombrePedido", "Nombre", 110F, 110);
                 AgregarColumnaPedido("colNumeroPedido", "Número", 55F, 65);
                 AgregarColumnaPedido("colTallaCamisetaPedido", "Talla camiseta", 75F, 90);
-                AgregarColumnaPedido("colTallaShortPedido", "Talla short", 70F, 85);
+                AgregarColumnaPedido("colModeloPedido", "Modelo", 85F, 90);
                 AgregarColumnaPedido("colCortePedido", "Corte", 70F, 75);
                 AgregarColumnaPedido("colMangaPedido", "Manga", 70F, 75);
                 AgregarColumnaPedido("colCuelloPedido", "Cuello", 70F, 75);
+                AgregarColumnaPedido("colTipoShortPedido", "Tipo Short", 80F, 90);
+                AgregarColumnaPedido("colTallaShortPedido", "Talla short", 70F, 85);
                 AgregarColumnaPedido("colObservacionesPedido", "Observaciones", 140F, 140);
                 return;
                 }
@@ -407,16 +408,17 @@ namespace TithorAutomation
                 linea.Estado,
                 linea.NumeroFila,
                 linea.ObtenerCampo("n"),
-                linea.ObtenerCampo("modelo"),
                 linea.Diseno,
-                linea.ObtenerCampo("nombre"),
                 linea.ObtenerCampo("prenda"),
+                linea.ObtenerCampo("nombre"),
                 linea.ObtenerCampo("numero"),
                 MostrarTallaPedido(linea.ObtenerCampo("talla_camiseta")),
-                MostrarTallaPedido(linea.ObtenerCampo("talla_short")),
+                linea.ObtenerCampo("modelo"),
                 linea.ObtenerCampo("corte"),
                 linea.ObtenerCampo("manga"),
                 linea.ObtenerCampo("cuello"),
+                linea.ObtenerCampo("tipo_short"),
+                MostrarTallaPedido(linea.ObtenerCampo("talla_short")),
                 linea.MensajeCompleto
                 };
             }
