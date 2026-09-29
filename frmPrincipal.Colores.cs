@@ -1459,10 +1459,60 @@ namespace TithorAutomation
             return contraste;
             }
 
+        private void LimpiarResaltadoDesconectado()
+            {
+            // Las referencias COM de un documento cerrado no se pueden restaurar.
+            VGCore.Application anterior = corelResaltado;
+            corelResaltado = null;
+            vistaPreviaActiva = false;
+            originalesResaltado.Clear();
+            documentoVistaPrevia = null;
+            documentoAnalisisColor = null;
+            colorResaltadoActual = null;
+            if (anterior != null)
+                {
+                try { anterior.DocumentBeforeSave -= CorelAntesDeGuardarResaltado; } catch { }
+                try { anterior.QueryDocumentSave -= CorelConsultarGuardarResaltado; } catch { }
+                }
+            if (IsDisposed || Disposing) return;
+            btnVistaPrevia.Text = "Resaltar color";
+            btnVistaPrevia.Enabled = false;
+            btnAplicar.Enabled = false;
+            lblEstadoProceso.Text = "Documento cerrado o CorelDRAW desconectado. Vuelva a analizar.";
+            }
+
+        private bool DocumentoResaltadoSigueAbierto()
+            {
+            if (corelResaltado == null || documentoVistaPrevia == null) return false;
+            // No basta con conservar el objeto COM: el documento debe seguir en la aplicación.
+            for (int i = 1; i <= corelResaltado.Documents.Count; i++)
+                if (EscaladorPowerClip.MismoDocumento(corelResaltado.Documents[i], documentoVistaPrevia))
+                    return true;
+            return false;
+            }
+
         private void RestaurarVistaPrevia()
             {
             if (!vistaPreviaActiva || cambiandoResaltado)
                 return;
+            try
+                {
+                if (!DocumentoResaltadoSigueAbierto())
+                    {
+                    LimpiarResaltadoDesconectado();
+                    return;
+                    }
+                }
+            catch (System.Runtime.InteropServices.COMException)
+                {
+                LimpiarResaltadoDesconectado();
+                return;
+                }
+            catch (System.Runtime.InteropServices.InvalidComObjectException)
+                {
+                LimpiarResaltadoDesconectado();
+                return;
+                }
             cambiandoResaltado = true;
             bool temporizadorActivo = tmrConexionCorel.Enabled;
             tmrConexionCorel.Stop();

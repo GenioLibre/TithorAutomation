@@ -17,6 +17,7 @@ namespace TithorAutomation
         {
         private void TemporizadorCorel_Tick(object sender, EventArgs e)
             {
+            if (IsDisposed || Disposing) return;
             ActualizarEstadoCorel();
             }
         private void ActualizarEstadoCorel()
@@ -56,6 +57,8 @@ namespace TithorAutomation
 
                 if (cantidadDocumentos == 0)
                     {
+                    if (documentoAnalisisColor != null || vistaPreviaActiva)
+                        LimpiarResaltadoDesconectado();
                     lblDocumentoActivo.Text =
                         "Sin documento abierto";
 
@@ -85,6 +88,7 @@ namespace TithorAutomation
             catch
                 {
                 corelApp = null;
+                LimpiarResaltadoDesconectado();
 
                 lblEstadoCorel.Text =
                     "● CorelDRAW desconectado";
@@ -120,6 +124,7 @@ namespace TithorAutomation
             catch
                 {
                 corelApp = null;
+                LimpiarResaltadoDesconectado();
                 }
 
             Type tipoCorel = Type.GetTypeFromProgID(
