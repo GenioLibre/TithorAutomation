@@ -412,6 +412,13 @@ namespace TithorAutomation.Servicios
 
             if (objeto.Type == cdrShapeType.cdrTextShape)
                 {
+                // Centrar antes de personalizar, conservando la ubicación de la plantilla.
+                double centroTextoX = objeto.CenterX;
+                double centroTextoY = objeto.CenterY;
+                objeto.Text.Story.Alignment = cdrAlignment.cdrCenterAlignment;
+                objeto.CenterX = centroTextoX;
+                objeto.CenterY = centroTextoY;
+
                 if (nombreObjeto == "nombre")
                     objeto.Text.Story.Text = destino.NombreVariable ?? string.Empty;
                 else if (nombreObjeto == "numero")
