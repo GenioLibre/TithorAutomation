@@ -1425,13 +1425,13 @@ namespace TithorAutomation
                 RestaurarVistaPrevia();
             }
 
-        private void CorelConsultarGuardarResaltado(VGCore.Document documento, out bool cancelar)
+        private void CorelConsultarGuardarResaltado(VGCore.Document documento, ref bool cancelar)
             {
-            cancelar = false;
             if (!vistaPreviaActiva)
                 return;
             RestaurarVistaPrevia();
-            cancelar = vistaPreviaActiva;
+            // No anular una cancelación solicitada por otro controlador.
+            cancelar = cancelar || vistaPreviaActiva;
             }
 
         private void frmPrincipal_DesactivarResaltado(object sender, EventArgs e)
