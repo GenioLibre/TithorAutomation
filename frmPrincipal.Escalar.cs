@@ -750,6 +750,126 @@ namespace TithorAutomation
                 }
             }
 
+
+        private void RecogerObjetosFinales(VGCore.Shapes objetos, bool dentroPowerClip, List<VGCore.Shape> textos, List<VGCore.Shape> grupos)
+            {
+            // Recorrido sin modificar colecciones. Grupos en orden de hijos a padres.
+            for (int i = 1; i <= objetos.Count; i++)
+                {
+                VGCore.Shape objeto = objetos[i];
+                if (objeto.Locked) throw new InvalidOperationException("Hay objetos bloqueados. Desbloquéelos antes de finalizar.");
+                if (objeto.Type == VGCore.cdrShapeType.cdrTextShape) textos.Add(objeto);
+                if (objeto.PowerClip != null)
+                    RecogerObjetosFinales(objeto.PowerClip.Shapes, true, textos, grupos);
+                else if (objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
+                    {
+                    RecogerObjetosFinales(objeto.Shapes, dentroPowerClip, textos, grupos);
+                    if (!dentroPowerClip) grupos.Add(objeto);
+                    }
+                }
+            }
+
+        private void btnFinalizarEscalar_Click(object sender, EventArgs e)
+            {
+            if (!btnAnalizarEscalar.Enabled) return;
+            VGCore.Document documento = null;
+            VGCore.Application corel = null;
+            bool abierto = false, cambios = false, estadoCapturado = false;
+            bool eventos = true, optimizacion = false;
+            bool temporizador = tmrConexionCorel.Enabled;
+            bool aplicarHabilitado = btnAplicarEscalar.Enabled;
+            bool terminado = false;
+            try
+                {
+                documento = DocumentoActivoEscalar();
+                corel = ObtenerCorel();
+                VGCore.Layer capa = null;
+                for (int i = 1; i <= documento.ActivePage.Layers.Count; i++)
+                    {
+                    VGCore.Layer candidata = documento.ActivePage.Layers[i];
+                    if (string.Equals(candidata.Name, "TITHOR_PRODUCCION", StringComparison.OrdinalIgnoreCase))
+                        { capa = candidata; break; }
+                    }
+                if (capa == null || capa.Shapes.Count == 0)
+                    throw new InvalidOperationException("No hay moldes en TITHOR_PRODUCCION en la página activa.");
+                if (!capa.Editable) throw new InvalidOperationException("La capa TITHOR_PRODUCCION está bloqueada.");
+                var textos = new List<VGCore.Shape>();
+                var grupos = new List<VGCore.Shape>();
+                RecogerObjetosFinales(capa.Shapes, false, textos, grupos);
+                int total = textos.Count + grupos.Count;
+                if (total == 0)
+                    {
+                    lblEstadoEscalar.Text = "Los elementos ya están separados y no quedan textos editables.";
+                    return;
+                    }
+                btnFinalizarEscalar.Enabled = false;
+                btnAnalizarEscalar.Enabled = false;
+                btnAplicarEscalar.Enabled = false;
+                tmrConexionCorel.Stop();
+                eventos = corel.EventsEnabled;
+                optimizacion = corel.Optimization;
+                estadoCapturado = true;
+                corel.EventsEnabled = false;
+                corel.Optimization = true;
+                documento.BeginCommandGroup("Tithor - Textos a curvas y separar moldes");
+                abierto = true;
+                int actual = 0;
+                MostrarProgresoOperacion(prgEscalar, 0, total);
+                foreach (VGCore.Shape texto in textos)
+                    {
+                    texto.ConvertToCurves();
+                    cambios = true;
+                    MostrarProgresoOperacion(prgEscalar, ++actual, total);
+                    }
+                foreach (VGCore.Shape grupo in grupos)
+                    {
+                    grupo.Ungroup();
+                    cambios = true;
+                    MostrarProgresoOperacion(prgEscalar, ++actual, total);
+                    }
+                documento.EndCommandGroup();
+                abierto = false;
+                terminado = true;
+                // Los grupos del pedido ya no existen; descartar sus referencias.
+                documentoEscalar = null;
+                firmaEscalar = null;
+                modoGuiadoEscalar = false;
+                tareasEscalar.Clear();
+                tareasLoteEscalar.Clear();
+                cboTareaEscalar.DataSource = null;
+                cboTareaEscalar.Items.Clear();
+                dgvEscalar.Rows.Clear();
+                lblEstadoEscalar.Text = textos.Count + " textos convertidos. Moldes separados para moverlos.";
+                }
+            catch (Exception ex)
+                {
+                string detalle = ex.Message;
+                try
+                    {
+                    if (abierto) { documento.EndCommandGroup(); abierto = false; }
+                    if (cambios) documento.Undo();
+                    }
+                catch (Exception rollback) { detalle += "\nNo se pudo revertir: " + rollback.Message; }
+                MostrarProgresoOperacion(prgEscalar, 0, 1);
+                MessageBox.Show(this, detalle, "Curvas y separar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            finally
+                {
+                if (estadoCapturado)
+                    {
+                    try { corel.Optimization = optimizacion; } catch { }
+                    try { corel.EventsEnabled = eventos; } catch { }
+                    try { corel.ActiveWindow.Refresh(); } catch { }
+                    }
+                if (temporizador) tmrConexionCorel.Start();
+                btnFinalizarEscalar.Enabled = true;
+                btnAnalizarEscalar.Enabled = true;
+                btnAplicarEscalar.Enabled = !terminado && aplicarHabilitado;
+                }
+            if (terminado)
+                MessageBox.Show(this, "Textos convertidos a curvas y moldes separados. Puede mover cada PowerClip.\nPuede deshacer esta operación con Ctrl+Z en CorelDRAW.", "Proceso terminado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
         private void btnAplicarEscalar_Click(object sender, EventArgs e)
             {
             if (!modoGuiadoEscalar)

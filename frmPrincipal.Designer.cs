@@ -183,6 +183,7 @@ namespace TithorAutomation
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.prgEscalar = new System.Windows.Forms.ProgressBar();
             this.lblEstadoEscalar = new System.Windows.Forms.Label();
+            this.btnFinalizarEscalar = new System.Windows.Forms.Button();
             this.btnAnalizarEscalar = new System.Windows.Forms.Button();
             this.btnAplicarEscalar = new System.Windows.Forms.Button();
             this.chkReemplazoPorLote = new System.Windows.Forms.CheckBox();
@@ -1994,6 +1995,7 @@ namespace TithorAutomation
             // 
             this.groupBox1.Controls.Add(this.prgEscalar);
             this.groupBox1.Controls.Add(this.lblEstadoEscalar);
+            this.groupBox1.Controls.Add(this.btnFinalizarEscalar);
             this.groupBox1.Controls.Add(this.btnAnalizarEscalar);
             this.groupBox1.Controls.Add(this.btnAplicarEscalar);
             this.groupBox1.Controls.Add(this.chkReemplazoPorLote);
@@ -2027,6 +2029,22 @@ namespace TithorAutomation
             this.lblEstadoEscalar.TabIndex = 42;
             this.lblEstadoEscalar.Text = "Aplica el diseño seleccionado en los PowerClips de cada pieza.";
             // 
+            // btnFinalizarEscalar
+            //
+            this.btnFinalizarEscalar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnFinalizarEscalar.BackColor = System.Drawing.Color.FromArgb(44, 48, 82);
+            this.btnFinalizarEscalar.ForeColor = System.Drawing.Color.White;
+            this.btnFinalizarEscalar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnFinalizarEscalar.FlatAppearance.BorderSize = 0;
+            this.btnFinalizarEscalar.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnFinalizarEscalar.Location = new System.Drawing.Point(781, 35);
+            this.btnFinalizarEscalar.Size = new System.Drawing.Size(106, 40);
+            this.btnFinalizarEscalar.Name = "btnFinalizarEscalar";
+            this.btnFinalizarEscalar.Text = "Curvas y separar";
+            this.btnFinalizarEscalar.TabIndex = 46;
+            this.btnFinalizarEscalar.UseVisualStyleBackColor = false;
+            this.btnFinalizarEscalar.Click += new System.EventHandler(this.btnFinalizarEscalar_Click);
+            //
             // btnAnalizarEscalar
             // 
             this.btnAnalizarEscalar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -2037,7 +2055,7 @@ namespace TithorAutomation
             this.btnAnalizarEscalar.ForeColor = System.Drawing.Color.White;
             this.btnAnalizarEscalar.Location = new System.Drawing.Point(571, 35);
             this.btnAnalizarEscalar.Name = "btnAnalizarEscalar";
-            this.btnAnalizarEscalar.Size = new System.Drawing.Size(149, 40);
+            this.btnAnalizarEscalar.Size = new System.Drawing.Size(98, 40);
             this.btnAnalizarEscalar.TabIndex = 41;
             this.btnAnalizarEscalar.Text = "Analizar documento";
             this.btnAnalizarEscalar.UseVisualStyleBackColor = false;
@@ -2049,9 +2067,9 @@ namespace TithorAutomation
             this.btnAplicarEscalar.Cursor = System.Windows.Forms.Cursors.Hand;
             this.btnAplicarEscalar.FlatAppearance.BorderSize = 0;
             this.btnAplicarEscalar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAplicarEscalar.Location = new System.Drawing.Point(726, 35);
+            this.btnAplicarEscalar.Location = new System.Drawing.Point(675, 35);
             this.btnAplicarEscalar.Name = "btnAplicarEscalar";
-            this.btnAplicarEscalar.Size = new System.Drawing.Size(161, 40);
+            this.btnAplicarEscalar.Size = new System.Drawing.Size(100, 40);
             this.btnAplicarEscalar.TabIndex = 40;
             this.btnAplicarEscalar.Text = "Aplicar diseño";
             this.btnAplicarEscalar.UseVisualStyleBackColor = false;
@@ -3575,6 +3593,7 @@ namespace TithorAutomation
         private System.Windows.Forms.Panel panel12;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button btnFinalizarEscalar;
         private System.Windows.Forms.Button btnAnalizarEscalar;
         private System.Windows.Forms.Button btnAplicarEscalar;
         private System.Windows.Forms.CheckBox chkReemplazarContenidoEscalar;
