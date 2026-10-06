@@ -17,6 +17,7 @@ UninstallDisplayIcon={app}\{#AppExe}
 OutputDir=dist
 OutputBaseFilename=TithorAutomation-Setup
 Compression=lzma2
+SetupIconFile=logo_tithor.ico
 SolidCompression=yes
 WizardStyle=modern
 ArchitecturesAllowed=x64compatible
