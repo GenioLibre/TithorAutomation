@@ -20,6 +20,8 @@ namespace TithorAutomation
         private sealed class TareaEscalar
             {
             public string Diseno { get; set; }
+            public string Corte { get; set; }
+            public string DisenoConCorte { get { return Diseno + " - " + Corte; } }
             public string Pieza { get; set; }
             public string Estado { get; set; }
             public List<PiezaEscalable> Destinos { get; set; }
@@ -27,6 +29,7 @@ namespace TithorAutomation
             public TareaEscalar()
                 {
                 Diseno = string.Empty;
+                Corte = "General";
                 Pieza = string.Empty;
                 Estado = "Pendiente";
                 Destinos = new List<PiezaEscalable>();
@@ -34,13 +37,15 @@ namespace TithorAutomation
 
             public override string ToString()
                 {
-                return "[" + Estado + "] " + Diseno + " - " + Pieza + " (" + Destinos.Count + ")";
+                return "[" + Estado + "] " + DisenoConCorte + " - " + Pieza + " (" + Destinos.Count + ")";
                 }
             }
 
         private sealed class TareaLoteEscalar
             {
             public string Diseno { get; set; }
+            public string Corte { get; set; }
+            public string DisenoConCorte { get { return Diseno + " - " + Corte; } }
             public string TipoPedido { get; set; }
             public string Estado { get; set; }
             public List<TareaEscalar> Tareas { get; set; }
@@ -48,6 +53,7 @@ namespace TithorAutomation
             public TareaLoteEscalar()
                 {
                 Diseno = string.Empty;
+                Corte = "General";
                 TipoPedido = "camiseta";
                 Estado = "Pendiente";
                 Tareas = new List<TareaEscalar>();
@@ -55,7 +61,7 @@ namespace TithorAutomation
 
             public override string ToString()
                 {
-                return "[" + Estado + "] Seleccionar diseño " + Diseno + " - " + TipoPedido;
+                return "[" + Estado + "] Seleccionar diseño " + DisenoConCorte + " - " + TipoPedido;
                 }
             }
 
@@ -129,6 +135,7 @@ namespace TithorAutomation
             return string.Join("|", piezas
                 .Select(x =>
                     (x.Diseno ?? "") + ":" +
+                    (x.Corte ?? "General") + ":" +
                     (x.NombreGrupo ?? "") + ":" +
                     x.Clave + ":" +
                     x.Pieza + ":" +
@@ -183,6 +190,7 @@ namespace TithorAutomation
                 {
                 AgregarColumnaEscalar("colEstadoTareaEscalar", "Estado", 75F, 90);
                 AgregarColumnaEscalar("colDisenoTareaEscalar", "Diseño", 120F, 120);
+                AgregarColumnaEscalar("colCorteTareaEscalar", "Corte", 80F, 85);
                 AgregarColumnaEscalar("colPiezaTareaEscalar", "Pieza", 120F, 120);
                 AgregarColumnaEscalar("colDestinosTareaEscalar", "Destinos", 65F, 75);
                 }
@@ -217,10 +225,11 @@ namespace TithorAutomation
         private void MostrarColaEscalar(List<PiezaEscalable> piezas)
             {
             tareasEscalar = piezas
-                .GroupBy(x => new { Diseno = x.Diseno ?? string.Empty, x.Pieza })
+                .GroupBy(x => new { Diseno = x.Diseno ?? string.Empty, Corte = x.Corte ?? "General", x.Pieza })
                 .Select(grupo => new TareaEscalar
                     {
                     Diseno = grupo.Key.Diseno,
+                    Corte = grupo.Key.Corte,
                     Pieza = grupo.Key.Pieza,
                     Destinos = grupo.ToList(),
                     Estado = EstadoTareaEscalar(grupo.ToList())
@@ -228,13 +237,13 @@ namespace TithorAutomation
                 .ToList();
 
             tareasLoteEscalar = tareasEscalar
-                .GroupBy(x => x.Diseno ?? string.Empty)
-                .Select(grupo => CrearTareaLoteEscalar(grupo.Key, grupo.ToList()))
+                .GroupBy(x => new { Diseno = x.Diseno ?? string.Empty, x.Corte })
+                .Select(grupo => CrearTareaLoteEscalar(grupo.Key.Diseno, grupo.Key.Corte, grupo.ToList()))
                 .ToList();
 
             foreach (TareaEscalar tarea in tareasEscalar)
                 {
-                int indice = dgvEscalar.Rows.Add(tarea.Estado, tarea.Diseno, tarea.Pieza, tarea.Destinos.Count);
+                int indice = dgvEscalar.Rows.Add(tarea.Estado, tarea.Diseno, tarea.Corte, tarea.Pieza, tarea.Destinos.Count);
                 DataGridViewRow fila = dgvEscalar.Rows[indice];
                 fila.Tag = tarea;
 
@@ -251,14 +260,18 @@ namespace TithorAutomation
             ActualizarEstadoSeleccionEscalar(piezas.Count);
             }
 
-        private TareaLoteEscalar CrearTareaLoteEscalar(string diseno, List<TareaEscalar> tareas)
+        private TareaLoteEscalar CrearTareaLoteEscalar(string diseno, string corte, List<TareaEscalar> tareas)
             {
             bool incluyeShort = tareas.Any(x => AnalizadorMasterCorel.NormalizarCodigo(x.Pieza).Contains("short"));
             bool esFunda = planProduccionActual != null &&
                 (planProduccionActual.CodigoProducto ?? string.Empty).IndexOf("FUNDA", StringComparison.OrdinalIgnoreCase) >= 0;
             TareaLoteEscalar lote = new TareaLoteEscalar();
             lote.Diseno = string.IsNullOrWhiteSpace(diseno) ? "sin nombre" : diseno;
-            lote.TipoPedido = esFunda ? "funda" : (incluyeShort ? "camiseta y short" : "camiseta");
+            bool incluyeCamiseta = planProduccionActual != null && planProduccionActual.Moldes.Any(m =>
+                string.Equals(m.Pieza, "Camiseta", StringComparison.OrdinalIgnoreCase) &&
+                tareas.Any(t => t.Destinos.Any(d => d.NombreGrupo == m.NombreDestino)));
+            lote.TipoPedido = esFunda ? "funda" : (incluyeShort ? (incluyeCamiseta ? "camiseta y short" : "short") : "camiseta");
+            lote.Corte = corte;
             lote.Tareas = tareas;
 
             if (tareas.Any(x => x.Estado == "Con error"))
@@ -313,7 +326,7 @@ namespace TithorAutomation
                 else if (!hayPendientes)
                     lblEstadoEscalar.Text = "Escalado por lote completado. Puede elegir un diseño para corregirlo.";
                 else if (lote != null)
-                    lblEstadoEscalar.Text = "Seleccione en CorelDRAW el grupo completo de " + lote.Diseno + ".";
+                    lblEstadoEscalar.Text = "Seleccione en CorelDRAW el grupo completo de " + lote.DisenoConCorte + ".";
                 btnAplicarEscalar.Enabled = lote != null && lote.Estado != "Con error";
                 return;
                 }
@@ -325,7 +338,7 @@ namespace TithorAutomation
             else if (!pendientes)
                 lblEstadoEscalar.Text = "Escalado completado. Puede elegir una tarea para corregirla.";
             else if (actual != null)
-                lblEstadoEscalar.Text = "Seleccione en CorelDRAW: " + actual.Diseno + " - " + actual.Pieza + ".";
+                lblEstadoEscalar.Text = "Seleccione en CorelDRAW: " + actual.DisenoConCorte + " - " + actual.Pieza + ".";
             btnAplicarEscalar.Enabled = actual != null && actual.Estado != "Con error";
             }
 
@@ -380,8 +393,8 @@ namespace TithorAutomation
                     }
 
                 lblEstadoEscalar.Text = lote.Estado == "Completado"
-                    ? "Lote completado. Active Reemplazar contenido para corregir " + lote.Diseno + "."
-                    : "Seleccione en CorelDRAW el grupo completo de " + lote.Diseno + ".";
+                    ? "Lote completado. Active Reemplazar contenido para corregir " + lote.DisenoConCorte + "."
+                    : "Seleccione en CorelDRAW el grupo completo de " + lote.DisenoConCorte + ".";
                 btnAplicarEscalar.Enabled = lote.Estado != "Con error";
                 return;
                 }
@@ -395,8 +408,8 @@ namespace TithorAutomation
                 }
 
             lblEstadoEscalar.Text = tarea.Estado == "Completado"
-                ? "Tarea completada. Active Reemplazar contenido para corregir: " + tarea.Diseno + " - " + tarea.Pieza + "."
-                : "Seleccione en CorelDRAW: " + tarea.Diseno + " - " + tarea.Pieza + ".";
+                ? "Tarea completada. Active Reemplazar contenido para corregir: " + tarea.DisenoConCorte + " - " + tarea.Pieza + "."
+                : "Seleccione en CorelDRAW: " + tarea.DisenoConCorte + " - " + tarea.Pieza + ".";
             btnAplicarEscalar.Enabled = tarea.Estado != "Con error";
             }
 
@@ -468,7 +481,7 @@ namespace TithorAutomation
 
                 VGCore.ShapeRange seleccion = documento.SelectionRange;
                 if (seleccion.Count != 1 || seleccion[1].Type != VGCore.cdrShapeType.cdrGroupShape)
-                    throw new InvalidOperationException("Seleccione un único grupo que contenga todas las referencias de " + lote.Diseno + ".");
+                    throw new InvalidOperationException("Seleccione un único grupo que contenga todas las referencias de " + lote.DisenoConCorte + ".");
 
                 List<TareaEscalar> tareasAplicar = lote.Tareas
                     .Where(x => chkReemplazarContenidoEscalar.Checked || x.Estado != "Completado")
@@ -521,7 +534,7 @@ namespace TithorAutomation
                             ? tarea.Destinos
                             : tarea.Destinos.Where(x => !x.TieneContenido).ToList();
 
-                        lblEstadoEscalar.Text = "Aplicando lote " + lote.Diseno + ": " + tarea.Pieza + "...";
+                        lblEstadoEscalar.Text = "Aplicando lote " + lote.DisenoConCorte + ": " + tarea.Pieza + "...";
                         lblEstadoEscalar.Refresh();
 
                         destinosProcesados += escalador.Aplicar(
@@ -532,7 +545,7 @@ namespace TithorAutomation
                             delegate (int actual, int cantidad)
                                 {
                                 MostrarProgresoOperacion(prgEscalar, destinosProcesados + actual, totalLote);
-                                lblEstadoEscalar.Text = "Aplicando " + lote.Diseno + " - " + tarea.Pieza + ": " + actual + " de " + cantidad + "...";
+                                lblEstadoEscalar.Text = "Aplicando " + lote.DisenoConCorte + " - " + tarea.Pieza + ": " + actual + " de " + cantidad + "...";
                                 lblEstadoEscalar.Refresh();
                                 },
                             ObtenerCorel());
@@ -548,12 +561,12 @@ namespace TithorAutomation
                 List<PiezaEscalable> resultado = escalador.AnalizarPedido(documento, planProduccionActual);
                 MostrarAnalisisEscalar(resultado);
                 MostrarProgresoOperacion(prgEscalar, 1, 1);
-                lblEstadoEscalar.Text = "Lote " + lote.Diseno + " completado. Se procesaron " + destinosProcesados + " destinos.";
+                lblEstadoEscalar.Text = "Lote " + lote.DisenoConCorte + " completado. Se procesaron " + destinosProcesados + " destinos.";
 
                 Activate();
                 BringToFront();
                 MessageBox.Show(this,
-                    "Terminó de aplicar el diseño por lote.\n\nDiseño: " + lote.Diseno +
+                    "Terminó de aplicar el diseño por lote.\n\nDiseño: " + lote.DisenoConCorte +
                     "\nPartes procesadas: " + tareasProcesadas +
                     "\nDestinos procesados: " + destinosProcesados +
                     "\n\nLos campos Nombre y Numero se reemplazaron con los datos del Excel.",
@@ -610,7 +623,7 @@ namespace TithorAutomation
                      (seleccion[1].PowerClip != null && seleccion[1].PowerClip.Shapes.Count > 0));
 
                 if (!seleccionValida)
-                    throw new InvalidOperationException("Seleccione un único grupo o PowerClip plantilla para " + tarea.Diseno + " - " + tarea.Pieza + ".");
+                    throw new InvalidOperationException("Seleccione un único grupo o PowerClip plantilla para " + tarea.DisenoConCorte + " - " + tarea.Pieza + ".");
 
                 List<PiezaEscalable> destinos = chkReemplazarContenidoEscalar.Checked
                     ? tarea.Destinos
@@ -624,7 +637,7 @@ namespace TithorAutomation
                 UseWaitCursor = true;
                 Cursor = Cursors.WaitCursor;
                 MostrarProgresoOperacion(prgEscalar, 0, destinos.Count);
-                lblEstadoEscalar.Text = "Aplicando " + tarea.Diseno + " - " + tarea.Pieza + "...";
+                lblEstadoEscalar.Text = "Aplicando " + tarea.DisenoConCorte + " - " + tarea.Pieza + "...";
 
                 bool temporizadorActivo = tmrConexionCorel.Enabled;
                 tmrConexionCorel.Stop();
@@ -642,7 +655,7 @@ namespace TithorAutomation
                             {
                             MostrarProgresoOperacion(prgEscalar, actual, cantidad);
                             lblEstadoEscalar.Text =
-                                "Aplicando " + tarea.Diseno + " - " + tarea.Pieza +
+                                "Aplicando " + tarea.DisenoConCorte + " - " + tarea.Pieza +
                                 ": " + actual + " de " + cantidad + "...";
                             lblEstadoEscalar.Refresh();
                             },
@@ -661,7 +674,7 @@ namespace TithorAutomation
                 TareaEscalar siguiente = tareasEscalar.FirstOrDefault(x => x.Estado == "Pendiente" || x.Estado == "Parcial");
                 lblEstadoEscalar.Text = siguiente == null
                     ? "Escalado completado. Se aplicaron " + total + " destinos en el último paso. Puede elegir una tarea para corregirla."
-                    : "Listo. Ahora seleccione: " + siguiente.Diseno + " - " + siguiente.Pieza + ".";
+                    : "Listo. Ahora seleccione: " + siguiente.DisenoConCorte + " - " + siguiente.Pieza + ".";
 
                 Activate();
                 BringToFront();
@@ -669,7 +682,7 @@ namespace TithorAutomation
                 MessageBox.Show(
                     this,
                     "Terminó de aplicar el diseño.\n\n" +
-                    "Diseño: " + tarea.Diseno + "\n" +
+                    "Diseño: " + tarea.DisenoConCorte + "\n" +
                     "Pieza: " + tarea.Pieza + "\n" +
                     "Destinos procesados: " + total + "\n\n" +
                     "Los objetos de texto llamados Nombre y Numero se reemplazaron con los datos correspondientes del Excel.",

@@ -17,6 +17,7 @@ namespace TithorAutomation.Servicios
         public string Clave { get; set; }
         public bool TieneContenido { get; set; }
         public string Diseno { get; set; }
+        public string Corte { get; set; }
         public string NombreGrupo { get; set; }
         public int FilaExcel { get; set; }
         public string NombreVariable { get; set; }
@@ -233,11 +234,35 @@ namespace TithorAutomation.Servicios
             return piezas;
         }
 
+        public static string ObtenerCorteEscalar(MoldeProduccion solicitud)
+        {
+            bool esShort = string.Equals(solicitud.Pieza, "Short", StringComparison.OrdinalIgnoreCase);
+            string valor = esShort ? solicitud.ObtenerCampo("tipo_short") : solicitud.ObtenerCampo("corte");
+            if (string.IsNullOrWhiteSpace(valor)) valor = solicitud.ObtenerCampo("corte");
+            string corte = AnalizadorMasterCorel.NormalizarCodigo(valor ?? string.Empty);
+            switch (corte)
+            {
+                case "varon":
+                case "hombre":
+                case "masculino": return "Varón";
+                case "dama":
+                case "mujer":
+                case "femenino": return "Mujer";
+                case "falda":
+                case "short_falda":
+                case "falda_short": return "Falda short";
+                case "basket": return "Basket";
+                case "": return "General";
+                default: return corte.Replace('_', ' ');
+            }
+        }
+
         private PiezaEscalable CrearPiezaPedido(Shape grupo, MoldeProduccion solicitud, string nombrePieza)
         {
             PiezaEscalable entrada = new PiezaEscalable
             {
                 Diseno = solicitud.Diseno ?? string.Empty,
+                Corte = ObtenerCorteEscalar(solicitud),
                 NombreGrupo = solicitud.NombreDestino ?? string.Empty,
                 FilaExcel = solicitud.FilaExcel,
                 Talla = (solicitud.Talla ?? string.Empty).ToUpperInvariant(),

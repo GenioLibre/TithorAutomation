@@ -1,5 +1,6 @@
 using System;
 using TithorAutomation.Servicios;
+using TithorAutomation.Modelos;
 
 // Pruebas sin iniciar CorelDRAW ni acceder a documentos o SQLite.
 internal static class EscaladorPowerClipTests
@@ -64,9 +65,36 @@ internal static class EscaladorPowerClipTests
         Rechazar(10, double.PositiveInfinity, 10);
         Rechazar(10, 10, double.PositiveInfinity);
         Rechazar(double.MaxValue, 1, 10);
+        CortesEscalar();
         PedidoTests.Ejecutar();
         Console.WriteLine("PASS: " + comprobaciones + " comprobaciones de nombres, tallas y proporciones.");
         return 0;
+    }
+
+    private static void CortesEscalar()
+    {
+        var solicitud = new MoldeProduccion { Pieza = "Camiseta" };
+        foreach (string alias in new[] { "dama", "MUJER", "femenino" })
+        {
+            solicitud.Campos["corte"] = alias;
+            Exigir(EscaladorPowerClip.ObtenerCorteEscalar(solicitud) == "Mujer", "No unifica el corte de mujer");
+        }
+        foreach (string alias in new[] { "varón", "hombre", "masculino" })
+        {
+            solicitud.Campos["corte"] = alias;
+            Exigir(EscaladorPowerClip.ObtenerCorteEscalar(solicitud) == "Varón", "No unifica el corte de varón");
+        }
+        solicitud.Campos["tipo_short"] = "basket";
+        Exigir(EscaladorPowerClip.ObtenerCorteEscalar(solicitud) == "Varón", "La camiseta tomó el corte del short");
+        solicitud.Pieza = "Short";
+        Exigir(EscaladorPowerClip.ObtenerCorteEscalar(solicitud) == "Basket", "El short no usa su propio corte");
+        solicitud.Campos["tipo_short"] = "falda_short";
+        Exigir(EscaladorPowerClip.ObtenerCorteEscalar(solicitud) == "Falda short", "No reconoce falda short");
+        solicitud.Campos["tipo_short"] = "";
+        Exigir(EscaladorPowerClip.ObtenerCorteEscalar(solicitud) == "Varón", "Se perdió el corte de pedidos antiguos");
+        solicitud.Campos["tipo_short"] = "ciclismo";
+        Exigir(EscaladorPowerClip.ObtenerCorteEscalar(solicitud) == "ciclismo", "Se perdió un tipo adicional");
+        Exigir(EscaladorPowerClip.ObtenerCorteEscalar(new MoldeProduccion()) == "General", "Productos sin corte separados incorrectamente");
     }
 
     private static void Cobertura(double w, double h, double dw, double dh, double ew, double eh)
