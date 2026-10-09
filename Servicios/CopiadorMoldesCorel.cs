@@ -291,7 +291,15 @@ namespace TithorAutomation.Servicios
 
                 etapa = "Indexando capas y grupos importados";
                 Dictionary<string, VGCore.Shape> indiceMoldes = CrearIndiceMoldesPorCapa(paginaTemporal);
-                ValidarSeleccionesSolicitadas(plan, indiceMoldes);
+                try
+                    {
+                    ValidarSeleccionesSolicitadas(plan, indiceMoldes);
+                    }
+                catch (InvalidOperationException ex)
+                    {
+                    string diagnostico = GuardarDiagnosticoImportacion(documentoDestino, paginaTemporal, rutaMaster, indiceMoldes);
+                    throw new InvalidOperationException(ex.Message + "\n\n" + diagnostico, ex);
+                    }
 
                 paginaDestino.Activate();
                 capaDestino.Activate();
@@ -453,6 +461,64 @@ namespace TithorAutomation.Servicios
             return indice;
             }
 
+        private string GuardarDiagnosticoImportacion(VGCore.Document documento, VGCore.Page paginaTemporal, string rutaMaster, Dictionary<string, VGCore.Shape> indiceMoldes)
+            {
+            try
+                {
+                System.Text.StringBuilder informe = new System.Text.StringBuilder();
+                informe.AppendLine("Diagnóstico de importación de moldes");
+                informe.AppendLine("Fecha: " + DateTime.Now.ToString("O"));
+                informe.AppendLine("Master: " + rutaMaster);
+                informe.AppendLine("Capas en la página temporal: " + paginaTemporal.Layers.Count);
+                informe.AppendLine("Capas en la página activa: " + documento.ActivePage.Layers.Count);
+                informe.AppendLine("Grupos indexados: " + indiceMoldes.Count);
+
+                foreach (string clave in indiceMoldes.Keys)
+                    informe.AppendLine("Índice: " + clave);
+
+                int restantes = 3000;
+                for (int p = 1; p <= documento.Pages.Count; p++)
+                    {
+                    VGCore.Page pagina = documento.Pages[p];
+                    informe.AppendLine("Página " + p + ": " + pagina.Layers.Count + " capas");
+                    for (int l = 1; l <= pagina.Layers.Count; l++)
+                        {
+                        VGCore.Layer capa = pagina.Layers[l];
+                        informe.AppendLine("  Capa [" + capa.Name + "]: " + capa.Shapes.Count + " objetos");
+                        AgregarObjetosDiagnostico(capa.Shapes, informe, 0, ref restantes);
+                        }
+                    }
+
+                string carpeta = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TithorAutomation", "Diagnosticos");
+                Directory.CreateDirectory(carpeta);
+                string ruta = Path.Combine(carpeta, "ImportacionMoldes_" + DateTime.Now.ToString("yyyyMMdd_HHmmss_fff") + ".txt");
+                File.WriteAllText(ruta, informe.ToString(), System.Text.Encoding.UTF8);
+                return "Envíe este archivo de diagnóstico:\n" + ruta;
+                }
+            catch (Exception ex)
+                {
+                return "No se pudo generar el diagnóstico: " + ex.Message;
+                }
+            }
+
+        private void AgregarObjetosDiagnostico(VGCore.Shapes objetos, System.Text.StringBuilder informe, int nivel, ref int restantes)
+            {
+            for (int i = 1; i <= objetos.Count; i++)
+                {
+                if (restantes <= 0)
+                    {
+                    informe.AppendLine("    [Límite de objetos del diagnóstico alcanzado]");
+                    return;
+                    }
+
+                restantes--;
+                VGCore.Shape objeto = objetos[i];
+                informe.AppendLine(new string(' ', 4 + nivel * 2) + "[" + ObtenerNombreSeguro(objeto) + "] Tipo: " + objeto.Type);
+                if (objeto.Type == VGCore.cdrShapeType.cdrGroupShape && nivel < 3)
+                    AgregarObjetosDiagnostico(objeto.Shapes, informe, nivel + 1, ref restantes);
+                }
+            }
+
         private void ValidarSeleccionesSolicitadas(PlanProduccion plan, Dictionary<string, VGCore.Shape> indiceMoldes)
             {
             List<string> faltantes = new List<string>();
@@ -473,7 +539,7 @@ namespace TithorAutomation.Servicios
             if (faltantes.Count > 0)
                 {
                 throw new InvalidOperationException(
-                    "Los siguientes grupos no existen dentro del Master:\n• " +
+                    "No se encontraron los siguientes grupos en la importación del Master:\n• " +
                     string.Join("\n• ", faltantes)
                 );
                 }
