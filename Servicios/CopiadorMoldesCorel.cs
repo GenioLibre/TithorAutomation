@@ -279,7 +279,10 @@ namespace TithorAutomation.Servicios
                 huboCambios = true;
 
                 etapa = "Importando el Master al documento abierto";
-                VGCore.Layer capaImportacion = paginaTemporal.Layers[1];
+                // La primera capa puede ser Guías; importar siempre en una capa normal propia.
+                VGCore.Layer capaImportacion = paginaTemporal.CreateLayer("TITHOR_IMPORT_" + Guid.NewGuid().ToString("N"));
+                capaImportacion.Editable = true;
+                capaImportacion.Visible = true;
                 capaImportacion.Activate();
 
                 VGCore.StructImportOptions opciones = new VGCore.StructImportOptions();
