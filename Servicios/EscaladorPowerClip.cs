@@ -468,6 +468,8 @@ namespace TithorAutomation.Servicios
 
             double anchoDiseno = diseno.SizeWidth;
             double altoDiseno = diseno.SizeHeight;
+            double centroDisenoX = diseno.CenterX;
+            double baseDisenoY = diseno.CenterY - altoDiseno / 2.0;
             bool disenoEsPowerClip = diseno.PowerClip != null;
 
             bool abierto = false;
@@ -504,7 +506,7 @@ namespace TithorAutomation.Servicios
                         double anchoContenedor = contenedor.SizeWidth;
                         double altoContenedor = contenedor.SizeHeight;
                         double centroX = contenedor.CenterX;
-                        double centroY = contenedor.CenterY;
+                        double baseContenedorY = contenedor.CenterY - altoContenedor / 2.0;
                         double anchoFinal;
                         double altoFinal;
 
@@ -512,6 +514,16 @@ namespace TithorAutomation.Servicios
 
                         Shape copia = CrearCopiaDiseno(diseno, () => huboCambios = true);
                         ReemplazarVariables(copia, destino);
+
+                        // Conservar el desplazamiento del contenido respecto al marco de la plantilla.
+                        double factorEscala = anchoFinal / anchoDiseno;
+                        double centroFinalX = centroX;
+                        double centroFinalY = baseContenedorY + altoFinal / 2.0;
+                        if (disenoEsPowerClip)
+                            {
+                            centroFinalX += (copia.CenterX - centroDisenoX) * factorEscala;
+                            centroFinalY = baseContenedorY + (copia.CenterY - baseDisenoY) * factorEscala;
+                            }
 
                         if (reemplazar && contenedor.PowerClip != null)
                             {
@@ -528,7 +540,6 @@ namespace TithorAutomation.Servicios
 
                         if (disenoEsPowerClip)
                             {
-                            double factorEscala = anchoFinal / anchoDiseno;
                             copia.SetSize(copia.SizeWidth * factorEscala, copia.SizeHeight * factorEscala);
                             }
                         else
@@ -536,8 +547,8 @@ namespace TithorAutomation.Servicios
                             copia.SetSize(anchoFinal, altoFinal);
                             }
 
-                        copia.CenterX = centroX;
-                        copia.CenterY = centroY;
+                        copia.CenterX = centroFinalX;
+                        copia.CenterY = centroFinalY;
                         copia.Name = "TITHOR_DISENO_" + destino.Pieza.Replace(' ', '_');
                         copia.OrderToBack();
                         int procesados = indiceDestino + 1;
