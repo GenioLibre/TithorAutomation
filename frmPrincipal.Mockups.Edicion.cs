@@ -98,24 +98,98 @@ namespace TithorAutomation
             CargarMockupSeleccionado();
         }
 
+        private string RutaVistaOriginalMockup(Mockup mockup)
+        {
+            string carpeta = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "TithorAutomation", "Mockups", "VistasPrevias", archivoMockupMasterActual.Id.ToString());
+            return Path.Combine(carpeta, EditorMockupCorel.Normalizar(mockup.Codigo) + ".jpg");
+        }
+
+        private void GuardarJpegVistaMockup(string origen, string destino)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(destino));
+            string temporal = destino + "." + Guid.NewGuid().ToString("N") + ".jpg";
+            try
+            {
+                File.Copy(origen, temporal);
+                if (File.Exists(destino)) File.Replace(temporal, destino, null);
+                else File.Move(temporal, destino);
+            }
+            finally { if (File.Exists(temporal)) File.Delete(temporal); }
+        }
+
+        private void GenerarVistasOriginalesMockups()
+        {
+            bool timerActivo = tmrConexionCorel.Enabled;
+            VGCore.Document anterior = null;
+            tmrConexionCorel.Stop();
+            UseWaitCursor = true;
+            btnSincronizarMockups.Enabled = false;
+            try
+            {
+                if (vistaPreviaActiva) throw new InvalidOperationException("Restaure primero el resaltado de Pantonear.");
+                var app = ObtenerCorel();
+                if (app.Documents.Count > 0) anterior = app.ActiveDocument;
+                using (var editor = new EditorMockupCorel())
+                {
+                    for (int i = 0; i < mockupsAnalizados.Count; i++)
+                    {
+                        Mockup mockup = mockupsAnalizados[i];
+                        lblEstadoMockups.Text = "Guardando vista previa " + (i + 1) + " de " + mockupsAnalizados.Count + ": " + mockup.Producto;
+                        lblEstadoMockups.Refresh();
+                        editor.Cargar(app, archivoMockupMasterActual.RutaArchivo, mockup);
+                        GuardarJpegVistaMockup(editor.CrearVistaPrevia(), RutaVistaOriginalMockup(mockup));
+                    }
+                }
+            }
+            finally
+            {
+                try { if (anterior != null) anterior.Activate(); } catch { }
+                UseWaitCursor = false;
+                btnSincronizarMockups.Enabled = true;
+                if (timerActivo) tmrConexionCorel.Start();
+            }
+        }
+
         private void CargarMockupSeleccionado()
         {
+            var elegido = cboMockup.SelectedItem as Mockup;
+            Image vieja = picVistaMockup.Image;
+            picVistaMockup.Image = null;
+            if (vieja != null) vieja.Dispose();
+            bool vistaGuardada = false;
+            string rutaVista = null;
+            if (elegido != null && archivoMockupMasterActual != null)
+            {
+                rutaVista = RutaVistaOriginalMockup(elegido);
+                if (File.Exists(rutaVista))
+                {
+                    try
+                    {
+                        MostrarJpegMockup(rutaVista);
+                        picVistaMockup.Refresh();
+                        vistaGuardada = true;
+                    }
+                    catch { /* Una vista dañada se vuelve a generar desde la copia del master. */ }
+                }
+            }
+            mockupListo = false;
             EjecutarOperacionMockup(() =>
             {
-                mockupListo = false;
                 cboCampoMockup.DataSource = null;
                 dgvPiezasMockup.Rows.Clear();
-                Image vieja = picVistaMockup.Image;
-                picVistaMockup.Image = null;
-                if (vieja != null) vieja.Dispose();
-                var elegido = cboMockup.SelectedItem as Mockup;
                 if (elegido == null || archivoMockupMasterActual == null) throw new InvalidOperationException("Sincronice y seleccione un mockup.");
-                lblEstadoEditorMockup.Text = "Cargando vista previa...";
+                lblEstadoEditorMockup.Text = "Preparando mockup...";
                 lblEstadoEditorMockup.Refresh();
                 editorMockup.Cargar(ObtenerCorel(), archivoMockupMasterActual.RutaArchivo, elegido);
                 cboCampoMockup.DataSource = editorMockup.Campos;
                 MostrarPiezasMockup();
-                ActualizarVistaMockup();
+                if (!vistaGuardada)
+                {
+                    string nueva = editorMockup.CrearVistaPrevia();
+                    GuardarJpegVistaMockup(nueva, rutaVista);
+                    MostrarJpegMockup(rutaVista);
+                }
                 mockupCargado = elegido;
                 mockupListo = true;
                 lblEstadoEditorMockup.Text = "Seleccione la referencia en CorelDRAW y pulse Aplicar diseño. No se cambia el tamaño.";
@@ -131,7 +205,11 @@ namespace TithorAutomation
 
         private void ActualizarVistaMockup()
         {
-            string ruta = editorMockup.CrearVistaPrevia();
+            MostrarJpegMockup(editorMockup.CrearVistaPrevia());
+        }
+
+        private void MostrarJpegMockup(string ruta)
+        {
             using (Image imagen = Image.FromFile(ruta))
             {
                 Image vieja = picVistaMockup.Image;

@@ -207,6 +207,7 @@ namespace TithorAutomation
                 if (conError != null)
                     throw new InvalidOperationException(conError.NombreGrupo + ": " + conError.Observacion);
 
+                GenerarVistasOriginalesMockups();
                 mockupRepositorio.Sincronizar(archivoMockupMasterActual, mockupsAnalizados);
 
                 foreach (Mockup mockup in mockupsAnalizados)
@@ -214,7 +215,7 @@ namespace TithorAutomation
 
                 MostrarMockups(mockupsAnalizados);
                 btnSincronizarMockups.Enabled = false;
-                lblEstadoMockups.Text = "Master sincronizado correctamente. " + mockupsAnalizados.Count + " mockups registrados.";
+                lblEstadoMockups.Text = "Master sincronizado correctamente. " + mockupsAnalizados.Count + " mockups y sus vistas JPEG guardados.";
                 }
             catch (Exception ex)
                 {
