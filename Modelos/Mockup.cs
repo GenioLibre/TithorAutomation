@@ -12,6 +12,8 @@ namespace TithorAutomation.Modelos
         public string Estado { get; set; }
         public DateTime FechaAnalisis { get; set; }
         public string Observacion { get; set; }
+        public string Piezas { get; set; }
+        public override string ToString() { return Producto; }
 
         public bool EsValido
             {
@@ -37,3 +39,4 @@ namespace TithorAutomation.Modelos
         public int CantidadMockups { get; set; }
         }
     }
+

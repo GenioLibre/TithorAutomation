@@ -133,6 +133,9 @@
       <DependentUpon>frmPrincipal.cs</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmPrincipal.Mockups.Edicion.cs">
+      <DependentUpon>frmPrincipal.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmPrincipal.Mockups.cs">
       <DependentUpon>frmPrincipal.cs</DependentUpon>
       <SubType>Form</SubType>
@@ -169,6 +172,7 @@
     <Compile Include="Servicios\AcomodadorCorel.cs" />
     <Compile Include="Servicios\AnalizadorMasterCorel.cs" />
     <Compile Include="Servicios\AnalizadorMockupCorel.cs" />
+    <Compile Include="Servicios\EditorMockupCorel.cs" />
     <Compile Include="Servicios\EscaladorPowerClip.cs" />
     <Compile Include="frmPrincipal.Escalar.cs">
       <DependentUpon>frmPrincipal.cs</DependentUpon>

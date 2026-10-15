@@ -50,6 +50,7 @@ namespace TithorAutomation
             btnMockup.Click -= btnMockup_Click;
             btnMockup.Click += btnMockup_Click;
 
+            ConfigurarEditorMockups();
             CargarConfiguracionMockups();
             }
 
@@ -174,7 +175,7 @@ namespace TithorAutomation
 
             foreach (Mockup mockup in mockups)
                 {
-                int indice = dgvCatalogoMockups.Rows.Add(mockup.Estado, mockup.Codigo, mockup.Producto, mockup.NombreGrupo);
+                int indice = dgvCatalogoMockups.Rows.Add(mockup.Estado, mockup.Codigo, mockup.Producto, mockup.NombreGrupo, mockup.Piezas);
                 DataGridViewRow fila = dgvCatalogoMockups.Rows[indice];
                 fila.Tag = mockup;
 
@@ -237,6 +238,12 @@ namespace TithorAutomation
                 }
 
             MostrarPanel(panelMockups);
+            if (!mockupListo)
+                {
+                CargarListaMockups();
+                if (cboMockup.SelectedItem != null) CargarMockupSeleccionado();
+                }
             }
         }
     }
+

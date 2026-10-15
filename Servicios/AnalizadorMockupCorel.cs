@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using TithorAutomation.Modelos;
 
 namespace TithorAutomation.Servicios
@@ -55,7 +56,7 @@ namespace TithorAutomation.Servicios
 
                 if (EsNombreMockup(nombreCapa))
                     {
-                    AgregarMockup(resultado, nombreCapa, capa.Shapes.Count, "Capa");
+                    AgregarMockup(resultado, nombreCapa, capa.Shapes, "Capa");
                     continue;
                     }
 
@@ -64,13 +65,13 @@ namespace TithorAutomation.Servicios
                     VGCore.Shape objeto = capa.Shapes[indice];
                     string nombre = ObtenerNombreSeguro(objeto);
 
-                    if (EsNombreMockup(nombre))
-                        AgregarMockup(resultado, nombre, CantidadElementos(objeto), "Grupo");
+                    if (EsNombreMockup(nombre) && objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
+                        AgregarMockup(resultado, nombre, objeto.Shapes, "Grupo");
                     }
                 }
             }
 
-        private void AgregarMockup(List<Mockup> resultado, string nombre, int cantidadElementos, string origen)
+        private void AgregarMockup(List<Mockup> resultado, string nombre, VGCore.Shapes objetos, string origen)
             {
             string codigo = AnalizadorMasterCorel.NormalizarCodigo(nombre);
             string producto = ObtenerProducto(nombre);
@@ -85,7 +86,7 @@ namespace TithorAutomation.Servicios
                 Observacion = origen + " válido."
                 };
 
-            if (cantidadElementos <= 0)
+            if (objetos.Count <= 0)
                 {
                 mockup.Estado = "Inválido";
                 mockup.Observacion = "La " + origen.ToLowerInvariant() + " no contiene elementos.";
@@ -96,6 +97,20 @@ namespace TithorAutomation.Servicios
                 mockup.Observacion = "Use el formato Mockup_NombreDelProducto.";
                 }
 
+            if (mockup.EsValido)
+                {
+                try
+                    {
+                    var campos = EditorMockupCorel.DetectarCampos(objetos);
+                    mockup.Piezas = string.Join(", ", campos.Select(x => x.Nombre));
+                    mockup.Observacion = "Piezas: " + mockup.Piezas;
+                    }
+                catch (Exception ex)
+                    {
+                    mockup.Estado = "Inválido";
+                    mockup.Observacion = ex.Message;
+                    }
+                }
             resultado.Add(mockup);
             }
 
@@ -183,3 +198,4 @@ namespace TithorAutomation.Servicios
             }
         }
     }
+

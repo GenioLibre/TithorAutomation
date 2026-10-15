@@ -194,6 +194,24 @@ namespace TithorAutomation
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.pnlMockups = new System.Windows.Forms.Panel();
+            this.cboMockup = new System.Windows.Forms.ComboBox();
+            this.btnRecargarMockup = new System.Windows.Forms.Button();
+            this.picVistaMockup = new System.Windows.Forms.PictureBox();
+            this.dgvPiezasMockup = new System.Windows.Forms.DataGridView();
+            this.chkLoteMockup = new System.Windows.Forms.CheckBox();
+            this.cboCampoMockup = new System.Windows.Forms.ComboBox();
+            this.btnAplicarMockup = new System.Windows.Forms.Button();
+            this.btnGuardarMockup = new System.Windows.Forms.Button();
+            this.lblEstadoEditorMockup = new System.Windows.Forms.Label();
+            this.lblElegirMockup = new System.Windows.Forms.Label();
+            this.lblCampoMockup = new System.Windows.Forms.Label();
+            this.colPiezasCatalogoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colEstadoEditorMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colPiezaEditorMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colReferenciaEditorMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colRotacionEditorMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDestinosEditorMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+
             this.panel17 = new System.Windows.Forms.Panel();
             this.lblDescripcionModuloMockups = new System.Windows.Forms.Label();
             this.lblTituloModuloMockups = new System.Windows.Forms.Label();
@@ -332,6 +350,8 @@ namespace TithorAutomation
             this.groupBox1.SuspendLayout();
             this.panel12.SuspendLayout();
             this.pnlMockups.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picVistaMockup)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPiezasMockup)).BeginInit();
             this.panel17.SuspendLayout();
             this.pnlProduccion.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvPedidoProduccion)).BeginInit();
@@ -1618,7 +1638,8 @@ namespace TithorAutomation
             this.colEstadoMockup,
             this.colCodigoMockup,
             this.colProductoMockup,
-            this.colNombreGrupoMockup});
+            this.colNombreGrupoMockup,
+            this.colPiezasCatalogoMockup});
             this.dgvCatalogoMockups.Cursor = System.Windows.Forms.Cursors.Default;
             dataGridViewCellStyle18.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle18.BackColor = System.Drawing.Color.White;
@@ -2147,11 +2168,141 @@ namespace TithorAutomation
             // 
             this.pnlMockups.BackColor = System.Drawing.Color.White;
             this.pnlMockups.Controls.Add(this.panel17);
+            this.pnlMockups.Controls.Add(this.cboMockup);
+            this.pnlMockups.Controls.Add(this.btnRecargarMockup);
+            this.pnlMockups.Controls.Add(this.picVistaMockup);
+            this.pnlMockups.Controls.Add(this.dgvPiezasMockup);
+            this.pnlMockups.Controls.Add(this.chkLoteMockup);
+            this.pnlMockups.Controls.Add(this.cboCampoMockup);
+            this.pnlMockups.Controls.Add(this.btnAplicarMockup);
+            this.pnlMockups.Controls.Add(this.btnGuardarMockup);
+            this.pnlMockups.Controls.Add(this.lblEstadoEditorMockup);
+            this.pnlMockups.Controls.Add(this.lblElegirMockup);
+            this.pnlMockups.Controls.Add(this.lblCampoMockup);
+
             this.pnlMockups.Location = new System.Drawing.Point(0, 0);
             this.pnlMockups.Name = "pnlMockups";
             this.pnlMockups.Size = new System.Drawing.Size(896, 611);
             this.pnlMockups.TabIndex = 36;
             // 
+            // lblElegirMockup
+            this.lblElegirMockup.Name = "lblElegirMockup";
+            this.lblElegirMockup.Location = new System.Drawing.Point(16, 86);
+            this.lblElegirMockup.Size = new System.Drawing.Size(68, 22);
+            this.lblElegirMockup.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left;
+            this.lblElegirMockup.Text = "Mockup:";
+            // cboMockup
+            this.cboMockup.Name = "cboMockup";
+            this.cboMockup.Location = new System.Drawing.Point(88, 82);
+            this.cboMockup.Size = new System.Drawing.Size(622, 28);
+            this.cboMockup.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.cboMockup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // btnRecargarMockup
+            this.btnRecargarMockup.Name = "btnRecargarMockup";
+            this.btnRecargarMockup.Location = new System.Drawing.Point(724, 78);
+            this.btnRecargarMockup.Size = new System.Drawing.Size(156, 34);
+            this.btnRecargarMockup.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
+            this.btnRecargarMockup.Text = "Cargar original";
+            // picVistaMockup
+            this.picVistaMockup.Name = "picVistaMockup";
+            this.picVistaMockup.Location = new System.Drawing.Point(16, 122);
+            this.picVistaMockup.Size = new System.Drawing.Size(864, 246);
+            this.picVistaMockup.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.picVistaMockup.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picVistaMockup.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picVistaMockup.BackColor = System.Drawing.Color.FromArgb(248, 249, 252);
+            // dgvPiezasMockup
+            this.dgvPiezasMockup.Name = "dgvPiezasMockup";
+            this.dgvPiezasMockup.Location = new System.Drawing.Point(16, 380);
+            this.dgvPiezasMockup.Size = new System.Drawing.Size(864, 134);
+            this.dgvPiezasMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.dgvPiezasMockup.AllowUserToAddRows = false;
+            this.dgvPiezasMockup.AllowUserToDeleteRows = false;
+            this.dgvPiezasMockup.ReadOnly = true;
+            this.dgvPiezasMockup.RowHeadersVisible = false;
+            this.dgvPiezasMockup.MultiSelect = false;
+            this.dgvPiezasMockup.EnableHeadersVisualStyles = false;
+            this.dgvPiezasMockup.BackgroundColor = System.Drawing.Color.White;
+            this.dgvPiezasMockup.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvPiezasMockup.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvPiezasMockup.ColumnHeadersHeight = 34;
+            this.dgvPiezasMockup.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvPiezasMockup.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { this.colEstadoEditorMockup, this.colPiezaEditorMockup, this.colReferenciaEditorMockup, this.colRotacionEditorMockup, this.colDestinosEditorMockup });
+            this.colEstadoEditorMockup.Name = "colEstadoEditorMockup";
+            this.colEstadoEditorMockup.HeaderText = "Estado";
+            this.colEstadoEditorMockup.ReadOnly = true;
+            this.colEstadoEditorMockup.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.colPiezaEditorMockup.Name = "colPiezaEditorMockup";
+            this.colPiezaEditorMockup.HeaderText = "Pieza";
+            this.colPiezaEditorMockup.ReadOnly = true;
+            this.colPiezaEditorMockup.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.colReferenciaEditorMockup.Name = "colReferenciaEditorMockup";
+            this.colReferenciaEditorMockup.HeaderText = "Referencia";
+            this.colReferenciaEditorMockup.ReadOnly = true;
+            this.colReferenciaEditorMockup.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.colRotacionEditorMockup.Name = "colRotacionEditorMockup";
+            this.colRotacionEditorMockup.HeaderText = "Rotación";
+            this.colRotacionEditorMockup.ReadOnly = true;
+            this.colRotacionEditorMockup.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.colDestinosEditorMockup.Name = "colDestinosEditorMockup";
+            this.colDestinosEditorMockup.HeaderText = "Destinos";
+            this.colDestinosEditorMockup.ReadOnly = true;
+            this.colDestinosEditorMockup.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.colPiezasCatalogoMockup.Name = "colPiezasCatalogoMockup";
+            this.colPiezasCatalogoMockup.HeaderText = "Piezas";
+            this.colPiezasCatalogoMockup.ReadOnly = true;
+            this.colPiezasCatalogoMockup.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // chkLoteMockup
+            this.chkLoteMockup.Name = "chkLoteMockup";
+            this.chkLoteMockup.Location = new System.Drawing.Point(16, 524);
+            this.chkLoteMockup.Size = new System.Drawing.Size(230, 24);
+            this.chkLoteMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.chkLoteMockup.Text = "Reemplazo por lote";
+            // lblCampoMockup
+            this.lblCampoMockup.Name = "lblCampoMockup";
+            this.lblCampoMockup.Location = new System.Drawing.Point(16, 558);
+            this.lblCampoMockup.Size = new System.Drawing.Size(50, 22);
+            this.lblCampoMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
+            this.lblCampoMockup.Text = "Pieza:";
+            // cboCampoMockup
+            this.cboCampoMockup.Name = "cboCampoMockup";
+            this.cboCampoMockup.Location = new System.Drawing.Point(72, 554);
+            this.cboCampoMockup.Size = new System.Drawing.Size(426, 28);
+            this.cboCampoMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.cboCampoMockup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            // btnAplicarMockup
+            this.btnAplicarMockup.Name = "btnAplicarMockup";
+            this.btnAplicarMockup.Location = new System.Drawing.Point(514, 542);
+            this.btnAplicarMockup.Size = new System.Drawing.Size(174, 40);
+            this.btnAplicarMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            this.btnAplicarMockup.Text = "Aplicar diseño";
+            // btnGuardarMockup
+            this.btnGuardarMockup.Name = "btnGuardarMockup";
+            this.btnGuardarMockup.Location = new System.Drawing.Point(704, 542);
+            this.btnGuardarMockup.Size = new System.Drawing.Size(176, 40);
+            this.btnGuardarMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            this.btnGuardarMockup.Text = "Guardar como JPEG";
+            this.btnRecargarMockup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRecargarMockup.BackColor = System.Drawing.Color.FromArgb(44, 48, 82);
+            this.btnRecargarMockup.ForeColor = System.Drawing.Color.White;
+            this.btnRecargarMockup.UseVisualStyleBackColor = false;
+            this.btnAplicarMockup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAplicarMockup.BackColor = System.Drawing.Color.FromArgb(44, 48, 82);
+            this.btnAplicarMockup.ForeColor = System.Drawing.Color.White;
+            this.btnAplicarMockup.UseVisualStyleBackColor = false;
+            this.btnGuardarMockup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnGuardarMockup.BackColor = System.Drawing.Color.FromArgb(250, 216, 68);
+            this.btnGuardarMockup.ForeColor = System.Drawing.Color.Black;
+            this.btnGuardarMockup.UseVisualStyleBackColor = false;
+            this.btnAplicarMockup.Enabled = false;
+            this.btnGuardarMockup.Enabled = false;
+            // lblEstadoEditorMockup
+            this.lblEstadoEditorMockup.Name = "lblEstadoEditorMockup";
+            this.lblEstadoEditorMockup.Location = new System.Drawing.Point(16, 588);
+            this.lblEstadoEditorMockup.Size = new System.Drawing.Size(864, 20);
+            this.lblEstadoEditorMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+            this.lblEstadoEditorMockup.Text = "Seleccione un mockup sincronizado.";
+            this.lblEstadoEditorMockup.AutoEllipsis = true;
             // panel17
             // 
             this.panel17.BackColor = System.Drawing.Color.White;
@@ -3359,6 +3510,8 @@ namespace TithorAutomation
             this.groupBox1.PerformLayout();
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picVistaMockup)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvPiezasMockup)).EndInit();
             this.pnlMockups.ResumeLayout(false);
             this.panel17.ResumeLayout(false);
             this.panel17.PerformLayout();
@@ -3460,6 +3613,24 @@ namespace TithorAutomation
         private System.Windows.Forms.Panel pnlConfiguracion;
         private System.Windows.Forms.Panel pnlContenido;
         private System.Windows.Forms.Panel pnlMockups;
+        private System.Windows.Forms.ComboBox cboMockup;
+        private System.Windows.Forms.Button btnRecargarMockup;
+        private System.Windows.Forms.PictureBox picVistaMockup;
+        private System.Windows.Forms.DataGridView dgvPiezasMockup;
+        private System.Windows.Forms.CheckBox chkLoteMockup;
+        private System.Windows.Forms.ComboBox cboCampoMockup;
+        private System.Windows.Forms.Button btnAplicarMockup;
+        private System.Windows.Forms.Button btnGuardarMockup;
+        private System.Windows.Forms.Label lblEstadoEditorMockup;
+        private System.Windows.Forms.Label lblElegirMockup;
+        private System.Windows.Forms.Label lblCampoMockup;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPiezasCatalogoMockup;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colEstadoEditorMockup;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colPiezaEditorMockup;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colReferenciaEditorMockup;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colRotacionEditorMockup;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDestinosEditorMockup;
+
         private System.Windows.Forms.Label lblTituloModuloMockups;
         private System.Windows.Forms.Label lblDescripcionModuloMockups;
         private System.Windows.Forms.ComboBox cboProductoConfiguracion;
@@ -3648,3 +3819,4 @@ namespace TithorAutomation
         private System.Windows.Forms.Panel panel17;
         }
 }
+

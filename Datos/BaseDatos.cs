@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data.SQLite;
 using System.IO;
 
@@ -62,8 +62,20 @@ namespace TithorAutomation.Datos
                 conexion.Open();
 
                 CrearTablas(conexion);
+                AsegurarPiezasMockups(conexion);
                 InsertarProductosIniciales(conexion);
             }
+        }
+
+        private static void AsegurarPiezasMockups(SQLiteConnection conexion)
+        {
+            bool existe = false;
+            using (var comando = new SQLiteCommand("PRAGMA table_info(Mockups);", conexion))
+            using (var lector = comando.ExecuteReader())
+                while (lector.Read())
+                    if (string.Equals(Convert.ToString(lector["name"]), "Piezas", StringComparison.OrdinalIgnoreCase)) existe = true;
+            if (!existe)
+                using (var comando = new SQLiteCommand("ALTER TABLE Mockups ADD COLUMN Piezas TEXT NOT NULL DEFAULT '';", conexion)) comando.ExecuteNonQuery();
         }
 
         private static void CrearTablas(
