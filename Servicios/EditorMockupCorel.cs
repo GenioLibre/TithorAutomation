@@ -100,7 +100,7 @@ namespace TithorAutomation.Servicios
                             coincidencias++;
                             pagina.Activate();
                             Campos = DetectarCampos(capa.Shapes);
-                            composicion = capa.Shapes.All;
+                            composicion = capa.Shapes.All();
                             capaTrabajo = capa;
                             paginaTrabajo = pagina;
                         }
