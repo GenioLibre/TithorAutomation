@@ -79,7 +79,7 @@ namespace TithorAutomation
             lblEstadoProceso.Text = "Listo para analizar";
 
             pnlContenido.Visible = true;
-            MostrarPanel(pnlPantonear);
+            btnMockup_Click(this, EventArgs.Empty);
             pnlEstadoCorelGlobal.BringToFront();
             CargarProductosProduccion();
             LimpiarPedidoProduccion(true);
