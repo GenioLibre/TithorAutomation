@@ -2202,7 +2202,7 @@ namespace TithorAutomation
             this.btnRecargarMockup.Location = new System.Drawing.Point(724, 78);
             this.btnRecargarMockup.Size = new System.Drawing.Size(156, 34);
             this.btnRecargarMockup.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right;
-            this.btnRecargarMockup.Text = "Cargar original";
+            this.btnRecargarMockup.Text = "Cargar mockup";
             // picVistaMockup
             this.picVistaMockup.Name = "picVistaMockup";
             this.picVistaMockup.Location = new System.Drawing.Point(16, 122);

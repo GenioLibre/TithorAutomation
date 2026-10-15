@@ -242,7 +242,7 @@ namespace TithorAutomation
             if (!mockupListo)
                 {
                 CargarListaMockups();
-                if (cboMockup.SelectedItem != null) CargarMockupSeleccionado();
+                MostrarSeleccionMockup();
                 }
             }
         }

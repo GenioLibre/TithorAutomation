@@ -242,6 +242,27 @@ namespace TithorAutomation.Servicios
             return ruta;
         }
 
+        public bool EstaAbierto(VGCore.Application app)
+        {
+            if (documento == null || app == null) return false;
+            for (int i = 1; i <= app.Documents.Count; i++)
+                if (EscaladorPowerClip.MismoDocumento(app.Documents[i], documento)) return true;
+            return false;
+        }
+
+        public void OlvidarDocumentoCerrado()
+        {
+            // No llamar a Close ni acceder al documento que el usuario ya cerró.
+            documento = null;
+            composicion = null;
+            capaTrabajo = null;
+            paginaTrabajo = null;
+            Campos.Clear();
+            RequiereRecargar = true;
+            if (carpetaTemporal != null) { try { Directory.Delete(carpetaTemporal, true); } catch { } }
+            carpetaTemporal = null;
+        }
+
         public void Dispose()
         {
             if (documento != null)

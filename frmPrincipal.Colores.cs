@@ -1421,13 +1421,13 @@ namespace TithorAutomation
 
         private void CorelAntesDeGuardarResaltado(VGCore.Document documento, bool guardarComo, string ruta)
             {
-            if (vistaPreviaActiva)
+            if (vistaPreviaActiva && EscaladorPowerClip.MismoDocumento(documento, documentoVistaPrevia))
                 RestaurarVistaPrevia();
             }
 
         private void CorelConsultarGuardarResaltado(VGCore.Document documento, ref bool cancelar)
             {
-            if (!vistaPreviaActiva)
+            if (!vistaPreviaActiva || !EscaladorPowerClip.MismoDocumento(documento, documentoVistaPrevia))
                 return;
             RestaurarVistaPrevia();
             // No anular una cancelación solicitada por otro controlador.

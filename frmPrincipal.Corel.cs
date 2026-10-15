@@ -18,6 +18,7 @@ namespace TithorAutomation
         private void TemporizadorCorel_Tick(object sender, EventArgs e)
             {
             if (IsDisposed || Disposing) return;
+            RevisarDocumentoMockup();
             ActualizarEstadoCorel();
             }
         private void ActualizarEstadoCorel()

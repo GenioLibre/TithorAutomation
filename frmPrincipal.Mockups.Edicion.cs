@@ -15,6 +15,7 @@ namespace TithorAutomation
         private bool operandoMockup;
         private bool mockupListo;
         private Mockup mockupCargado;
+        private string vistaMockupCargado;
 
         private void ConfigurarEditorMockups()
         {
@@ -49,6 +50,7 @@ namespace TithorAutomation
         private void EjecutarOperacionMockup(Action accion)
         {
             if (operandoMockup) return;
+            RevisarDocumentoMockup();
             operandoMockup = true;
             bool timerActivo = tmrConexionCorel.Enabled;
             tmrConexionCorel.Stop();
@@ -81,21 +83,63 @@ namespace TithorAutomation
         private void cboMockup_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cargandoListaMockups || operandoMockup) return;
-            if (mockupListo && editorMockup.Campos.Any(x => x.Aplicado) && MessageBox.Show(this, "¿Descartar los reemplazos actuales y cambiar de mockup?", "Mockups", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-            {
-                cargandoListaMockups = true;
-                cboMockup.SelectedItem = mockupCargado;
-                cargandoListaMockups = false;
-                return;
-            }
-            CargarMockupSeleccionado();
+            MostrarSeleccionMockup();
         }
 
         private void btnRecargarMockup_Click(object sender, EventArgs e)
         {
-            if (mockupListo && MessageBox.Show(this, "¿Descartar los reemplazos y volver a cargar el mockup original?", "Mockups", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
-            CargarListaMockups();
+            RevisarDocumentoMockup();
+            if (editorMockup.Documento != null && MessageBox.Show(this, "¿Cerrar la copia de trabajo actual y cargar el original? Se descartarán sus cambios.", "Mockups", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             CargarMockupSeleccionado();
+        }
+
+        private void MostrarSeleccionMockup()
+        {
+            RevisarDocumentoMockup();
+            var elegido = cboMockup.SelectedItem as Mockup;
+            mockupListo = editorMockup.Documento != null && mockupCargado != null && elegido != null
+                && elegido.Id == mockupCargado.Id && !editorMockup.RequiereRecargar;
+            btnAplicarMockup.Enabled = btnGuardarMockup.Enabled = mockupListo;
+            if (mockupListo)
+            {
+                cboCampoMockup.DataSource = editorMockup.Campos;
+                MostrarPiezasMockup();
+                if (File.Exists(vistaMockupCargado)) MostrarJpegMockup(vistaMockupCargado);
+                lblEstadoEditorMockup.Text = "Mockup cargado. Puede editarlo o cerrarlo desde CorelDRAW.";
+                return;
+            }
+            cboCampoMockup.DataSource = null;
+            dgvPiezasMockup.Rows.Clear();
+            Image vieja = picVistaMockup.Image;
+            picVistaMockup.Image = null;
+            if (vieja != null) vieja.Dispose();
+            if (elegido != null && archivoMockupMasterActual != null)
+            {
+                string ruta = RutaVistaOriginalMockup(elegido);
+                if (File.Exists(ruta))
+                {
+                    try { MostrarJpegMockup(ruta); } catch { }
+                }
+            }
+            lblEstadoEditorMockup.Text = elegido == null ? "Seleccione un mockup sincronizado." : "Vista previa guardada. Pulse Cargar mockup para abrir una copia en CorelDRAW.";
+        }
+
+        private void RevisarDocumentoMockup()
+        {
+            if (operandoMockup || editorMockup.Documento == null) return;
+            // Solo consulta: nunca abre, activa ni impide cerrar un documento.
+            bool abierto;
+            try { abierto = editorMockup.EstaAbierto(corelApp); }
+            catch { return; } // Corel puede estar ocupado o mostrando un diálogo.
+            if (abierto) return;
+            editorMockup.OlvidarDocumentoCerrado();
+            mockupListo = false;
+            mockupCargado = null;
+            vistaMockupCargado = null;
+            cboCampoMockup.DataSource = null;
+            dgvPiezasMockup.Rows.Clear();
+            btnAplicarMockup.Enabled = btnGuardarMockup.Enabled = false;
+            lblEstadoEditorMockup.Text = "Mockup cerrado. Pulse Cargar mockup cuando quiera volver a abrirlo.";
         }
 
         private string RutaVistaOriginalMockup(Mockup mockup)
@@ -190,6 +234,7 @@ namespace TithorAutomation
                     GuardarJpegVistaMockup(nueva, rutaVista);
                     MostrarJpegMockup(rutaVista);
                 }
+                vistaMockupCargado = rutaVista;
                 mockupCargado = elegido;
                 mockupListo = true;
                 lblEstadoEditorMockup.Text = "Seleccione la referencia en CorelDRAW y pulse Aplicar diseño. No se cambia el tamaño.";
@@ -205,7 +250,8 @@ namespace TithorAutomation
 
         private void ActualizarVistaMockup()
         {
-            MostrarJpegMockup(editorMockup.CrearVistaPrevia());
+            vistaMockupCargado = editorMockup.CrearVistaPrevia();
+            MostrarJpegMockup(vistaMockupCargado);
         }
 
         private void MostrarJpegMockup(string ruta)
@@ -237,7 +283,7 @@ namespace TithorAutomation
                     if (editorMockup.RequiereRecargar)
                     {
                         mockupListo = false;
-                        throw new InvalidOperationException(ex.Message + "\nPulse Cargar original antes de volver a aplicar.", ex);
+                        throw new InvalidOperationException(ex.Message + "\nPulse Cargar mockup antes de volver a aplicar.", ex);
                     }
                     throw;
                 }
