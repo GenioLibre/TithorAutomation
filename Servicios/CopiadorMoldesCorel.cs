@@ -296,6 +296,7 @@ namespace TithorAutomation.Servicios
                 Dictionary<string, VGCore.Shape> indiceMoldes = CrearIndiceMoldesPorCapa(paginaTemporal);
                 try
                     {
+                    CompletarIndiceImportacionAgrupada(corelApp, documentoDestino, paginaTemporal, rutaMaster, plan, indiceMoldes);
                     ValidarSeleccionesSolicitadas(plan, indiceMoldes);
                     }
                 catch (InvalidOperationException ex)
@@ -462,6 +463,111 @@ namespace TithorAutomation.Servicios
                 }
 
             return indice;
+            }
+
+
+        private void CompletarIndiceImportacionAgrupada(VGCore.Application corelApp, VGCore.Document documentoDestino, VGCore.Page paginaTemporal, string rutaMaster, PlanProduccion plan, Dictionary<string, VGCore.Shape> indice)
+            {
+            bool faltanGrupos = false;
+            foreach (MoldeProduccion solicitud in plan.Moldes)
+                {
+                if (!indice.ContainsKey(CrearClaveMolde(solicitud.CapaMaster, solicitud.CodigoMolde)))
+                    faltanGrupos = true;
+                }
+            if (!faltanGrupos)
+                return;
+
+            // Algunos CDR llegan como un grupo contenedor y pierden sus capas al importar.
+            // Solo buscar en la página temporal: nunca usar moldes o diseños ya existentes.
+            var importados = new Dictionary<string, List<VGCore.Shape>>(StringComparer.OrdinalIgnoreCase);
+            for (int i = 1; i <= paginaTemporal.Layers.Count; i++)
+                RecogerGruposImportados(paginaTemporal.Layers[i].Shapes, importados);
+            if (importados.Count == 0)
+                return;
+
+            // Verificar la procedencia en una copia temporal del master, sin modificar el original.
+            string carpeta = Path.Combine(Path.GetTempPath(), "TithorIndice_" + Guid.NewGuid().ToString("N"));
+            VGCore.Document referencia = null;
+            try
+                {
+                Directory.CreateDirectory(carpeta);
+                string rutaCopia = Path.Combine(carpeta, Path.GetFileName(rutaMaster));
+                File.Copy(rutaMaster, rutaCopia);
+                referencia = corelApp.OpenDocument(rutaCopia);
+                var originales = new Dictionary<string, VGCore.Shape>(StringComparer.OrdinalIgnoreCase);
+                var originalesPorNombre = new Dictionary<string, List<VGCore.Shape>>(StringComparer.OrdinalIgnoreCase);
+
+                for (int p = 1; p <= referencia.Pages.Count; p++)
+                    {
+                    VGCore.Page pagina = referencia.Pages[p];
+                    foreach (var entrada in CrearIndiceMoldesPorCapa(pagina))
+                        {
+                        if (originales.ContainsKey(entrada.Key))
+                            throw new InvalidOperationException("El Master contiene un grupo repetido entre páginas: " + entrada.Key);
+                        originales.Add(entrada.Key, entrada.Value);
+                        }
+                    for (int l = 1; l <= pagina.Layers.Count; l++)
+                        RecogerGruposImportados(pagina.Layers[l].Shapes, originalesPorNombre);
+                    }
+
+                foreach (MoldeProduccion solicitud in plan.Moldes)
+                    {
+                    string clave = CrearClaveMolde(solicitud.CapaMaster, solicitud.CodigoMolde);
+                    if (indice.ContainsKey(clave) || !originales.ContainsKey(clave))
+                        continue;
+
+                    string nombre = AnalizadorMasterCorel.NormalizarCodigo(solicitud.CodigoMolde);
+                    if (!importados.TryGetValue(nombre, out List<VGCore.Shape> candidatos))
+                        continue;
+
+                    // Si dos capas tienen molde_m, el nombre por sí solo no identifica su origen.
+                    if (!originalesPorNombre.TryGetValue(nombre, out List<VGCore.Shape> fuentes) ||
+                        fuentes.Count != 1 || candidatos.Count != 1)
+                        throw new InvalidOperationException("CorelDRAW agrupó la importación y no conservó la capa de '" +
+                            solicitud.CapaMaster + " / " + solicitud.CodigoMolde +
+                            "'. Hay grupos con el mismo nombre y no es seguro elegir uno automáticamente.");
+
+                    indice.Add(clave, candidatos[0]);
+                    }
+                }
+            finally
+                {
+                if (referencia != null)
+                    {
+                    try
+                        {
+                        // Es exclusivamente la copia temporal; nunca guardar el master.
+                        referencia.Dirty = false;
+                        referencia.Close();
+                        }
+                    catch { }
+                    }
+                try { documentoDestino.Activate(); } catch { }
+                try { Directory.Delete(carpeta, true); } catch { }
+                }
+            }
+
+        private void RecogerGruposImportados(VGCore.Shapes objetos, Dictionary<string, List<VGCore.Shape>> grupos)
+            {
+            for (int i = 1; i <= objetos.Count; i++)
+                {
+                VGCore.Shape objeto = objetos[i];
+                if (objeto.Type != VGCore.cdrShapeType.cdrGroupShape)
+                    continue;
+
+                string nombre = AnalizadorMasterCorel.NormalizarCodigo(ObtenerNombreSeguro(objeto));
+                if (nombre.StartsWith("molde_", StringComparison.OrdinalIgnoreCase))
+                    {
+                    if (!grupos.TryGetValue(nombre, out List<VGCore.Shape> coincidencias))
+                        {
+                        coincidencias = new List<VGCore.Shape>();
+                        grupos.Add(nombre, coincidencias);
+                        }
+                    coincidencias.Add(objeto);
+                    }
+                else
+                    RecogerGruposImportados(objeto.Shapes, grupos);
+                }
             }
 
         private string GuardarDiagnosticoImportacion(VGCore.Document documento, VGCore.Page paginaTemporal, string rutaMaster, Dictionary<string, VGCore.Shape> indiceMoldes)
