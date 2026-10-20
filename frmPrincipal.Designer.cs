@@ -607,8 +607,6 @@ namespace TithorAutomation
             // 
             this.dgvColores.AllowUserToAddRows = false;
             this.dgvColores.AllowUserToDeleteRows = false;
-            this.dgvColores.AllowUserToResizeColumns = false;
-            this.dgvColores.AllowUserToResizeRows = false;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
             this.dgvColores.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvColores.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -652,6 +650,8 @@ namespace TithorAutomation
             this.dgvColores.Location = new System.Drawing.Point(8, 8);
             this.dgvColores.MultiSelect = false;
             this.dgvColores.Name = "dgvColores";
+            this.dgvColores.AllowUserToResizeRows = false;
+            this.dgvColores.AllowUserToResizeColumns = true;
             this.dgvColores.RowHeadersVisible = false;
             this.dgvColores.RowTemplate.Height = 34;
             this.dgvColores.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -1107,8 +1107,6 @@ namespace TithorAutomation
             // 
             this.dgvCatalogoMoldes.AllowUserToAddRows = false;
             this.dgvCatalogoMoldes.AllowUserToDeleteRows = false;
-            this.dgvCatalogoMoldes.AllowUserToResizeColumns = false;
-            this.dgvCatalogoMoldes.AllowUserToResizeRows = false;
             dataGridViewCellStyle13.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
             this.dgvCatalogoMoldes.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle13;
             this.dgvCatalogoMoldes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -1154,6 +1152,8 @@ namespace TithorAutomation
             this.dgvCatalogoMoldes.Location = new System.Drawing.Point(0, 0);
             this.dgvCatalogoMoldes.MultiSelect = false;
             this.dgvCatalogoMoldes.Name = "dgvCatalogoMoldes";
+            this.dgvCatalogoMoldes.AllowUserToResizeRows = false;
+            this.dgvCatalogoMoldes.AllowUserToResizeColumns = true;
             this.dgvCatalogoMoldes.RowHeadersVisible = false;
             this.dgvCatalogoMoldes.RowTemplate.Height = 34;
             this.dgvCatalogoMoldes.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -1616,8 +1616,6 @@ namespace TithorAutomation
             // 
             this.dgvCatalogoMockups.AllowUserToAddRows = false;
             this.dgvCatalogoMockups.AllowUserToDeleteRows = false;
-            this.dgvCatalogoMockups.AllowUserToResizeColumns = false;
-            this.dgvCatalogoMockups.AllowUserToResizeRows = false;
             dataGridViewCellStyle16.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
             this.dgvCatalogoMockups.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle16;
             this.dgvCatalogoMockups.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -1659,6 +1657,8 @@ namespace TithorAutomation
             this.dgvCatalogoMockups.Location = new System.Drawing.Point(3, 21);
             this.dgvCatalogoMockups.MultiSelect = false;
             this.dgvCatalogoMockups.Name = "dgvCatalogoMockups";
+            this.dgvCatalogoMockups.AllowUserToResizeRows = false;
+            this.dgvCatalogoMockups.AllowUserToResizeColumns = true;
             this.dgvCatalogoMockups.RowHeadersVisible = false;
             this.dgvCatalogoMockups.RowTemplate.Height = 34;
             this.dgvCatalogoMockups.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -1978,6 +1978,8 @@ namespace TithorAutomation
             this.dgvEscalar.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
             this.dgvEscalar.Location = new System.Drawing.Point(0, 69);
             this.dgvEscalar.Name = "dgvEscalar";
+            this.dgvEscalar.AllowUserToResizeRows = false;
+            this.dgvEscalar.AllowUserToResizeColumns = true;
             this.dgvEscalar.ReadOnly = true;
             this.dgvEscalar.RowHeadersVisible = false;
             this.dgvEscalar.RowTemplate.Height = 34;
@@ -2216,6 +2218,8 @@ namespace TithorAutomation
             this.picVistaMockup.BackColor = System.Drawing.Color.FromArgb(248, 249, 252);
             // dgvPiezasMockup
             this.dgvPiezasMockup.Name = "dgvPiezasMockup";
+            this.dgvPiezasMockup.AllowUserToResizeRows = false;
+            this.dgvPiezasMockup.AllowUserToResizeColumns = true;
             this.dgvPiezasMockup.Location = new System.Drawing.Point(16, 380);
             this.dgvPiezasMockup.Size = new System.Drawing.Size(864, 134);
             this.dgvPiezasMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
@@ -2408,6 +2412,8 @@ namespace TithorAutomation
             this.dgvPedidoProduccion.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
             this.dgvPedidoProduccion.Location = new System.Drawing.Point(0, 268);
             this.dgvPedidoProduccion.Name = "dgvPedidoProduccion";
+            this.dgvPedidoProduccion.AllowUserToResizeRows = false;
+            this.dgvPedidoProduccion.AllowUserToResizeColumns = true;
             this.dgvPedidoProduccion.ReadOnly = true;
             this.dgvPedidoProduccion.RowHeadersVisible = false;
             this.dgvPedidoProduccion.RowTemplate.Height = 34;
@@ -2797,7 +2803,6 @@ namespace TithorAutomation
             // 
             this.dgvAcomodo.AllowUserToAddRows = false;
             this.dgvAcomodo.AllowUserToDeleteRows = false;
-            this.dgvAcomodo.AllowUserToResizeRows = false;
             dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
             this.dgvAcomodo.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dgvAcomodo.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -2840,6 +2845,8 @@ namespace TithorAutomation
             this.dgvAcomodo.Location = new System.Drawing.Point(8, 0);
             this.dgvAcomodo.MultiSelect = false;
             this.dgvAcomodo.Name = "dgvAcomodo";
+            this.dgvAcomodo.AllowUserToResizeRows = false;
+            this.dgvAcomodo.AllowUserToResizeColumns = true;
             this.dgvAcomodo.ReadOnly = true;
             this.dgvAcomodo.RowHeadersVisible = false;
             this.dgvAcomodo.RowTemplate.Height = 34;
@@ -3329,8 +3336,6 @@ namespace TithorAutomation
             // 
             this.dataGridView1.AllowUserToAddRows = false;
             this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AllowUserToResizeColumns = false;
-            this.dataGridView1.AllowUserToResizeRows = false;
             dataGridViewCellStyle19.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(247)))), ((int)(((byte)(248)))), ((int)(((byte)(252)))));
             this.dataGridView1.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle19;
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
@@ -3363,6 +3368,8 @@ namespace TithorAutomation
             this.dataGridView1.GridColor = System.Drawing.Color.FromArgb(((int)(((byte)(220)))), ((int)(((byte)(222)))), ((int)(((byte)(230)))));
             this.dataGridView1.Location = new System.Drawing.Point(8, 8);
             this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.AllowUserToResizeRows = false;
+            this.dataGridView1.AllowUserToResizeColumns = true;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowTemplate.Height = 34;
             this.dataGridView1.Size = new System.Drawing.Size(240, 150);
