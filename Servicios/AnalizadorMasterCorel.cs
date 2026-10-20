@@ -62,6 +62,10 @@ namespace TithorAutomation.Servicios
             }
         private void AnalizarCapa(VGCore.Layer capa, int numeroPagina, List<Molde> moldes)
             {
+            string codigoCapa = NormalizarCodigo(capa.Name);
+            if (codigoCapa == "texto" || codigoCapa == "textos")
+                return;
+
             for (int indice = 1; indice <= capa.Shapes.Count; indice++)
                 {
                 VGCore.Shape objetoSuperior = capa.Shapes[indice];
@@ -130,8 +134,13 @@ namespace TithorAutomation.Servicios
 
             for (int indice = 1; indice <= cantidadElementos; indice++)
                 {
+                VGCore.Shape elemento = grupo.Shapes[indice];
+                // Los textos son etiquetas del master, no piezas del catálogo.
+                if (elemento.Type == VGCore.cdrShapeType.cdrTextShape)
+                    continue;
+
                 moldes.Add(CrearMoldeDesdeElemento(
-                    grupo.Shapes[indice],
+                    elemento,
                     codigoGrupo,
                     nombreGrupo,
                     talla,
