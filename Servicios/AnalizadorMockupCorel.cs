@@ -32,7 +32,7 @@ namespace TithorAutomation.Servicios
                     }
 
                 for (int pagina = 1; pagina <= documento.Pages.Count; pagina++)
-                    AnalizarPagina(documento.Pages[pagina], resultado);
+                    AnalizarPagina(documento.Pages[pagina], resultado, Path.GetFileNameWithoutExtension(rutaArchivo));
 
                 MarcarDuplicados(resultado);
                 return resultado;
@@ -47,12 +47,18 @@ namespace TithorAutomation.Servicios
                 }
             }
 
-        private void AnalizarPagina(VGCore.Page pagina, List<Mockup> resultado)
+        private void AnalizarPagina(VGCore.Page pagina, List<Mockup> resultado, string nombreArchivo)
             {
             for (int indiceCapa = 1; indiceCapa <= pagina.Layers.Count; indiceCapa++)
                 {
                 VGCore.Layer capa = pagina.Layers[indiceCapa];
                 string nombreCapa = (capa.Name ?? string.Empty).Trim();
+
+                if (AnalizadorMasterCorel.NormalizarCodigo(nombreCapa) == "diseno")
+                    {
+                    AgregarMockup(resultado, nombreCapa, capa.Shapes, "Capa", true, nombreArchivo);
+                    continue;
+                    }
 
                 if (EsNombreMockup(nombreCapa))
                     {
@@ -71,10 +77,10 @@ namespace TithorAutomation.Servicios
                 }
             }
 
-        private void AgregarMockup(List<Mockup> resultado, string nombre, VGCore.Shapes objetos, string origen)
+        private void AgregarMockup(List<Mockup> resultado, string nombre, VGCore.Shapes objetos, string origen, bool partesDirectas = false, string nombreArchivo = null)
             {
             string codigo = AnalizadorMasterCorel.NormalizarCodigo(nombre);
-            string producto = ObtenerProducto(nombre);
+            string producto = partesDirectas ? nombreArchivo : ObtenerProducto(nombre);
 
             Mockup mockup = new Mockup
                 {
@@ -101,7 +107,7 @@ namespace TithorAutomation.Servicios
                 {
                 try
                     {
-                    var campos = EditorMockupCorel.DetectarCampos(objetos);
+                    var campos = EditorMockupCorel.DetectarCampos(objetos, partesDirectas);
                     mockup.Piezas = string.Join(", ", campos.Select(x => x.Nombre));
                     mockup.Observacion = "Piezas: " + mockup.Piezas;
                     }

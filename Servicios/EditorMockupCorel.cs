@@ -36,8 +36,15 @@ namespace TithorAutomation.Servicios
             return codigo.EndsWith("_invertido", StringComparison.Ordinal) ? codigo.Substring(0, codigo.Length - 10) : codigo;
         }
 
-        public static List<CampoMockup> DetectarCampos(Shapes objetos)
+        public static List<CampoMockup> DetectarCampos(Shapes objetos, bool partesDirectas = false)
         {
+            if (partesDirectas)
+            {
+                var directos = new Dictionary<string, CampoMockup>(StringComparer.OrdinalIgnoreCase);
+                RecogerDestinos(objetos, directos);
+                if (directos.Count == 0) throw new InvalidOperationException("La capa Diseño no contiene PowerClips con nombre.");
+                return directos.Values.ToList();
+            }
             var grupos = new List<Shape>();
             BuscarDiseno(objetos, grupos);
             if (grupos.Count != 1) throw new InvalidOperationException("Debe existir un único grupo Diseño dentro del mockup.");
@@ -99,7 +106,7 @@ namespace TithorAutomation.Servicios
                         {
                             coincidencias++;
                             pagina.Activate();
-                            Campos = DetectarCampos(capa.Shapes);
+                            Campos = DetectarCampos(capa.Shapes, Normalizar(capa.Name) == "diseno");
                             composicion = capa.Shapes.All();
                             capaTrabajo = capa;
                             paginaTrabajo = pagina;
@@ -151,9 +158,22 @@ namespace TithorAutomation.Servicios
             List<CampoMockup> tareas;
             if (lote)
             {
-                if (seleccionado.Type != cdrShapeType.cdrGroupShape || Normalizar(seleccionado.Name) != "diseno" || seleccionado.PowerClip != null)
-                    throw new InvalidOperationException("Seleccione el grupo Diseño que contiene todas las piezas de referencia.");
-                RecogerReferencias(seleccionado.Shapes, referencias);
+                Layer capaDiseno = null;
+                for (int i = 1; i <= origen.ActivePage.Layers.Count; i++)
+                {
+                    Layer capa = origen.ActivePage.Layers[i];
+                    if (Normalizar(capa.Name) != "diseno") continue;
+                    if (capaDiseno != null) throw new InvalidOperationException("Hay más de una capa Diseño en la página activa.");
+                    capaDiseno = capa;
+                }
+                if (capaDiseno != null)
+                    RecogerReferencias(capaDiseno.Shapes, referencias);
+                else
+                {
+                    if (seleccionado == null || seleccionado.Type != cdrShapeType.cdrGroupShape || Normalizar(seleccionado.Name) != "diseno" || seleccionado.PowerClip != null)
+                        throw new InvalidOperationException("Use una capa Diseño con sus partes en la página activa.");
+                    RecogerReferencias(seleccionado.Shapes, referencias);
+                }
                 tareas = Campos.ToList();
                 var faltantes = tareas.Select(x => x.Referencia).Distinct().Where(x => !referencias.ContainsKey(x)).ToList();
                 if (faltantes.Count > 0) throw new InvalidOperationException("Faltan referencias: " + string.Join(", ", faltantes));

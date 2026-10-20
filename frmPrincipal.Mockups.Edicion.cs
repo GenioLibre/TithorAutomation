@@ -272,10 +272,10 @@ namespace TithorAutomation
                 if (!mockupListo || app.Documents.Count == 0) throw new InvalidOperationException("Cargue el mockup y abra su diseño en CorelDRAW.");
                 var origen = app.ActiveDocument;
                 var seleccion = origen.SelectionRange;
-                if (seleccion.Count != 1) throw new InvalidOperationException(chkLoteMockup.Checked ? "Seleccione el grupo Diseño completo en CorelDRAW." : "Seleccione una única referencia en CorelDRAW.");
+                if (!chkLoteMockup.Checked && seleccion.Count != 1) throw new InvalidOperationException("Seleccione una única referencia en CorelDRAW.");
                 try
                 {
-                    editorMockup.Aplicar(app, origen, seleccion[1], cboCampoMockup.SelectedItem as CampoMockup, chkLoteMockup.Checked);
+                    editorMockup.Aplicar(app, origen, seleccion.Count == 1 ? seleccion[1] : null, cboCampoMockup.SelectedItem as CampoMockup, chkLoteMockup.Checked);
                 }
                 catch (Exception ex)
                 {
