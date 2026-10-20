@@ -567,7 +567,7 @@ namespace TithorAutomation.Servicios
 
                 if (requeridas.Contains(nombre))
                     encontradas.Add(nombre);
-                else
+                else if (elemento.Type != VGCore.cdrShapeType.cdrTextShape)
                     elemento.Delete();
                 }
 

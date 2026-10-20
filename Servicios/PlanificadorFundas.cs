@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TithorAutomation.Modelos;
 
@@ -36,9 +37,7 @@ namespace TithorAutomation.Servicios
                 CodigoProducto = resultado.CodigoProducto
                 };
 
-            // Se indexa una vez por pedido, en lugar de recorrer el catálogo por pieza y fila.
-            HashSet<string> codigos = CrearIndiceCatalogo(catalogo);
-            Dictionary<string, List<string>> faltantesPorTalla = new Dictionary<string, List<string>>();
+            var selecciones = new Dictionary<string, List<Molde>>(StringComparer.OrdinalIgnoreCase);
 
             foreach (LineaPedido linea in resultado.Lineas)
                 {
@@ -53,24 +52,20 @@ namespace TithorAutomation.Servicios
                     continue;
                     }
 
-                List<string> moldesFaltantes;
-                if (!faltantesPorTalla.TryGetValue(talla, out moldesFaltantes))
+                string codigoGrupo = "molde_" + talla.ToLowerInvariant();
+                List<Molde> seleccion;
+                if (!selecciones.TryGetValue(talla, out seleccion))
                     {
-                    moldesFaltantes = ObtenerMoldesFaltantes(talla, codigos);
-                    faltantesPorTalla.Add(talla, moldesFaltantes);
+                    seleccion = BuscarGrupoFundas(catalogo, codigoGrupo, talla);
+                    selecciones[talla] = seleccion;
                     }
-
-                if (moldesFaltantes.Count > 0)
+                var errores = ValidarGrupoFundas(seleccion, talla);
+                if (errores.Count > 0)
                     {
-                    plan.Advertencias.Add(
-                        $"Fila {linea.NumeroFila}, talla {talla}: faltan los moldes " +
-                        string.Join(", ", moldesFaltantes) + "."
-                    );
-
+                    plan.Advertencias.Add("Fila " + linea.NumeroFila + ", Moldes Fundas / " + codigoGrupo + ": " + string.Join(", ", errores) + ".");
                     continue;
                     }
 
-                string codigoGrupo = $"molde_{talla.ToLowerInvariant()}";
                 string nombreDiseno = LimpiarNombre(linea.Diseno);
 
                 for (int numeroUnidad = 1; numeroUnidad <= linea.Cantidad; numeroUnidad++)
@@ -82,11 +77,13 @@ namespace TithorAutomation.Servicios
                         Talla = talla,
                         Pieza = "Conjunto",
                         CodigoMolde = codigoGrupo,
+                        CapaMaster = seleccion[0].Capa,
                         FilaExcel = linea.NumeroFila,
                         NumeroUnidad = numeroUnidad,
                         NombreDestino = $"prod_f{linea.NumeroFila}_u{numeroUnidad}_{nombreDiseno}_{codigoGrupo}"
                         };
 
+                    solicitud.PiezasIncluidas.AddRange(seleccion.Select(x => x.NombreObjeto));
                     CopiarCampos(linea, solicitud);
 
                     plan.Moldes.Add(solicitud);
@@ -112,36 +109,56 @@ namespace TithorAutomation.Servicios
             return string.Empty;
             }
 
-        private List<string> ObtenerMoldesFaltantes(string talla, HashSet<string> codigos)
+        private List<Molde> BuscarGrupoFundas(List<Molde> catalogo, string grupo, string talla)
             {
-            List<string> faltantes = new List<string>();
-            string tallaCodigo = talla.ToLowerInvariant();
+            var candidatos = catalogo.Where(x => x != null && PerteneceAlGrupo(x, grupo, talla)).ToList();
+            var actuales = candidatos.Where(x => AnalizadorMasterCorel.NormalizarCodigo(x.Capa) == "moldes_fundas").ToList();
+            if (actuales.Count > 0) return actuales;
 
-            foreach (string pieza in piezasRequeridas)
-                {
-                string codigoEsperado = $"funda_{tallaCodigo}_{pieza}";
-
-                if (!codigos.Contains(codigoEsperado))
-                    faltantes.Add(codigoEsperado);
-                }
-
-            return faltantes;
+            // Compatibilidad con el master anterior: solo nombres funda_<talla>_<pieza>.
+            string prefijo = "funda_" + talla.ToLowerInvariant() + "_";
+            var antiguos = candidatos.Where(x => AnalizadorMasterCorel.NormalizarCodigo(x.NombreObjeto).StartsWith(prefijo, StringComparison.Ordinal)).ToList();
+            if (antiguos.Select(x => AnalizadorMasterCorel.NormalizarCodigo(x.Capa)).Distinct().Count() == 1)
+                return antiguos;
+            return new List<Molde>();
             }
 
-        private HashSet<string> CrearIndiceCatalogo(List<Molde> catalogo)
+        private bool PerteneceAlGrupo(Molde molde, string grupo, string talla)
             {
-            HashSet<string> codigos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (Molde molde in catalogo)
+            string[] segmentos = (molde.Codigo ?? string.Empty).Split(new[] { "__" }, StringSplitOptions.None);
+            if (segmentos.Length >= 3)
+                return AnalizadorMasterCorel.NormalizarCodigo(segmentos[1]) == grupo;
+            // Catálogos antiguos sin código estructural.
+            return string.Equals(molde.Talla, talla, StringComparison.OrdinalIgnoreCase)
+                && AnalizadorMasterCorel.NormalizarCodigo(molde.NombreObjeto).StartsWith("funda_" + talla.ToLowerInvariant() + "_", StringComparison.Ordinal);
+            }
+
+        private string CodigoPiezaFunda(string nombre, string talla)
+            {
+            string codigo = AnalizadorMasterCorel.NormalizarCodigo(nombre);
+            string prefijo = "funda_" + talla.ToLowerInvariant() + "_";
+            if (codigo.StartsWith(prefijo, StringComparison.Ordinal)) codigo = codigo.Substring(prefijo.Length);
+            if (codigo == "lado_izquierdo") codigo = "lateral_izquierdo";
+            if (codigo == "lado_derecho") codigo = "lateral_derecho";
+            return codigo;
+            }
+
+        private List<string> ValidarGrupoFundas(List<Molde> seleccion, string talla)
+            {
+            var errores = new List<string>();
+            if (seleccion.Count == 0)
                 {
-                if (molde == null || !molde.EsValido) continue;
-                if (!string.IsNullOrWhiteSpace(molde.NombreObjeto))
-                    codigos.Add(molde.NombreObjeto);
-                if (string.IsNullOrWhiteSpace(molde.Codigo)) continue;
-                codigos.Add(molde.Codigo);
-                int separador = molde.Codigo.LastIndexOf("__", StringComparison.Ordinal);
-                if (separador >= 0) codigos.Add(molde.Codigo.Substring(separador + 2));
+                errores.Add("no se encontró el grupo de talla en la capa de Fundas; analice y sincronice el master");
+                return errores;
                 }
-            return codigos;
+            foreach (Molde molde in seleccion.Where(x => !x.EsValido))
+                errores.Add(molde.NombreObjeto + ": " + molde.Observacion);
+            foreach (var duplicado in seleccion.GroupBy(x => CodigoPiezaFunda(x.NombreObjeto, talla)).Where(x => x.Count() > 1))
+                errores.Add("pieza duplicada " + duplicado.Key);
+            var disponibles = new HashSet<string>(seleccion.Where(x => x.EsValido).Select(x => CodigoPiezaFunda(x.NombreObjeto, talla)));
+            foreach (string pieza in piezasRequeridas)
+                if (!disponibles.Contains(pieza)) errores.Add("falta " + pieza);
+            return errores;
             }
 
         private void CopiarCampos(LineaPedido linea, MoldeProduccion solicitud)
