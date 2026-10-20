@@ -477,34 +477,50 @@ namespace TithorAutomation
                 throw new InvalidOperationException("No se generó ningún mockup.\n\n" + string.Join("\n\n", errores));
 
             var nuevos = new List<ResultadoMockup>();
-            try
+            foreach (VGCore.Layer capa in capas)
             {
-                foreach (VGCore.Layer capa in capas)
+                lblEstadoEditorMockup.Text = "Aplicando " + (nuevos.Count + 1) + " de " + capas.Count + ": " + capa.Name;
+                lblEstadoEditorMockup.Refresh();
+                // Reutilizar el documento de este diseño o la copia inicial todavía sin asignar.
+                ResultadoMockup resultado = resultadosMockup.FirstOrDefault(x => !x.EsOriginal &&
+                    EditorMockupCorel.Normalizar(x.Diseno) == EditorMockupCorel.Normalizar(capa.Name))
+                    ?? resultadosMockup.FirstOrDefault(x => x.EsOriginal);
+                bool creado = resultado == null;
+                if (creado)
+                    resultado = new ResultadoMockup { Diseno = capa.Name, Editor = new EditorMockupCorel() };
+                bool aplicado = false;
+                try
                 {
-                    lblEstadoEditorMockup.Text = "Generando " + (nuevos.Count + 1) + " de " + capas.Count + ": " + capa.Name;
-                    lblEstadoEditorMockup.Refresh();
-                    var resultado = new ResultadoMockup { Diseno = capa.Name, Editor = new EditorMockupCorel() };
-                    nuevos.Add(resultado);
-                    resultado.Editor.Cargar(app, archivoMockupMasterActual.RutaArchivo, mockupCargado);
+                    if (creado)
+                        resultado.Editor.Cargar(app, archivoMockupMasterActual.RutaArchivo, mockupCargado);
+                    else if (resultado.Editor.RequiereRecargar || !resultado.Editor.EstaAbierto(app))
+                        throw new InvalidOperationException("El mockup de " + capa.Name + " necesita recargarse. Pulse Cargar mockup.");
+
                     resultado.Editor.Aplicar(app, origen, null, null, true, capa);
+                    aplicado = true;
+                    resultado.Diseno = capa.Name;
+                    resultado.EsOriginal = false;
+                    if (creado) resultadosMockup.Add(resultado);
+                    nuevos.Add(resultado);
+                    resultado.Vista = null;
                     resultado.Vista = resultado.Editor.CrearVistaPrevia();
                 }
-            }
-            catch
-            {
-                // Solo son copias temporales de esta ejecución; conservar los resultados anteriores.
-                foreach (ResultadoMockup resultado in nuevos) resultado.Editor.Dispose();
-                throw;
-            }
-            foreach (ResultadoMockup nuevo in nuevos)
-            {
-                foreach (ResultadoMockup anterior in resultadosMockup.Where(x => !x.EsOriginal &&
-                    EditorMockupCorel.Normalizar(x.Diseno) == EditorMockupCorel.Normalizar(nuevo.Diseno)).ToList())
+                catch (Exception ex)
                 {
-                    anterior.Editor.Dispose();
-                    resultadosMockup.Remove(anterior);
+                    // Conservar los documentos reutilizados y los diseños ya aplicados.
+                    // Cerrar solamente una copia nueva que no llegó a completarse.
+                    if (creado && !aplicado) resultado.Editor.Dispose();
+                    else
+                    {
+                        if (resultado.Editor.RequiereRecargar) resultado.Vista = null;
+                        SeleccionarResultadoMockup(resultado, null);
+                    }
+                    MostrarPiezasMockup();
+                    throw new InvalidOperationException("Proceso detenido en " + capa.Name + ". " +
+                        nuevos.Count + " diseños aplicados en este lote.\n" +
+                        (aplicado ? "El diseño se aplicó, pero falló la vista previa.\n" : "") +
+                        ex.Message, ex);
                 }
-                resultadosMockup.Add(nuevo);
             }
             SeleccionarResultadoMockup(nuevos[0], null);
             MostrarPiezasMockup();
