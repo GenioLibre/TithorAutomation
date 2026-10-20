@@ -148,6 +148,7 @@ namespace TithorAutomation
             ActualizarBotonNavegacion(btnProduccion, panelSeleccionado == pnlProduccion);
             ActualizarBotonNavegacion(btnConfiguracion, panelSeleccionado == pnlConfiguracion);
             ActualizarBotonNavegacion(btnEscalar, panelSeleccionado == pnlEscalar);
+            ActualizarBotonNavegacion(btnAcomodar, panelSeleccionado == pnlAcomodar);
             ActualizarBotonNavegacion(btnMockup, panelMockups != null && panelSeleccionado == panelMockups);
 
             pnlEstadoCorelGlobal.Visible = true;
