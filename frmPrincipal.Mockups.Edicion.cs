@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -10,7 +11,17 @@ namespace TithorAutomation
 {
     public partial class frmPrincipal
     {
-        private readonly EditorMockupCorel editorMockup = new EditorMockupCorel();
+        private EditorMockupCorel editorMockup = new EditorMockupCorel();
+        private sealed class ResultadoMockup
+        {
+            public string Diseno { get; set; }
+            public EditorMockupCorel Editor { get; set; }
+            public string Vista { get; set; }
+            public bool EsOriginal { get; set; }
+        }
+        private readonly List<ResultadoMockup> resultadosMockup = new List<ResultadoMockup>();
+        private ResultadoMockup resultadoMockupActual;
+        private bool actualizandoTablaMockup;
         private bool cargandoListaMockups;
         private bool operandoMockup;
         private bool mockupListo;
@@ -23,15 +34,17 @@ namespace TithorAutomation
             btnRecargarMockup.Click += btnRecargarMockup_Click;
             btnAplicarMockup.Click += btnAplicarMockup_Click;
             btnGuardarMockup.Click += btnGuardarMockup_Click;
+            btnCopiarMockup.Click += btnCopiarMockup_Click;
+            dgvPiezasMockup.SelectionChanged += dgvPiezasMockup_SelectionChanged;
             chkLoteMockup.CheckedChanged += (s, e) =>
             {
                 cboCampoMockup.Enabled = !chkLoteMockup.Checked;
                 if (mockupListo)
                     lblEstadoEditorMockup.Text = chkLoteMockup.Checked
-                        ? "Active la capa de su diseño en CorelDRAW y pulse Aplicar diseño. Se validarán todas las partes antes de cambiar."
+                        ? "Active el documento con sus capas de diseño. Se generará un mockup por capa."
                         : "Seleccione una referencia en CorelDRAW y la pieza que desea reemplazar.";
             };
-            FormClosed += (s, e) => { editorMockup.Dispose(); if (picVistaMockup.Image != null) picVistaMockup.Image.Dispose(); };
+            FormClosed += (s, e) => { CerrarResultadosMockup(); if (picVistaMockup.Image != null) picVistaMockup.Image.Dispose(); };
             dgvPiezasMockup.ColumnHeadersDefaultCellStyle = dgvCatalogoMockups.ColumnHeadersDefaultCellStyle.Clone();
             dgvPiezasMockup.DefaultCellStyle = dgvCatalogoMockups.DefaultCellStyle.Clone();
             dgvPiezasMockup.AlternatingRowsDefaultCellStyle = dgvCatalogoMockups.AlternatingRowsDefaultCellStyle.Clone();
@@ -62,7 +75,8 @@ namespace TithorAutomation
             bool timerActivo = tmrConexionCorel.Enabled;
             tmrConexionCorel.Stop();
             VGCore.Document anterior = null;
-            cboMockup.Enabled = btnRecargarMockup.Enabled = btnAplicarMockup.Enabled = btnGuardarMockup.Enabled = false;
+            cboMockup.Enabled = btnRecargarMockup.Enabled = btnAplicarMockup.Enabled = btnGuardarMockup.Enabled = btnCopiarMockup.Enabled = false;
+            dgvPiezasMockup.Enabled = chkLoteMockup.Enabled = cboCampoMockup.Enabled = false;
             UseWaitCursor = true;
             try
             {
@@ -82,7 +96,9 @@ namespace TithorAutomation
                 UseWaitCursor = false;
                 operandoMockup = false;
                 cboMockup.Enabled = btnRecargarMockup.Enabled = true;
-                btnAplicarMockup.Enabled = btnGuardarMockup.Enabled = mockupListo;
+                btnAplicarMockup.Enabled = btnGuardarMockup.Enabled = btnCopiarMockup.Enabled = mockupListo;
+                dgvPiezasMockup.Enabled = chkLoteMockup.Enabled = true;
+                cboCampoMockup.Enabled = !chkLoteMockup.Checked;
                 if (timerActivo) tmrConexionCorel.Start();
             }
         }
@@ -96,7 +112,7 @@ namespace TithorAutomation
         private void btnRecargarMockup_Click(object sender, EventArgs e)
         {
             RevisarDocumentoMockup();
-            if (editorMockup.Documento != null && MessageBox.Show(this, "¿Cerrar la copia de trabajo actual y cargar el original? Se descartarán sus cambios.", "Mockups", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
+            if (editorMockup.Documento != null && MessageBox.Show(this, "¿Cerrar las copias de mockups actuales y cargar el original? Se descartarán sus cambios.", "Mockups", MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes) return;
             CargarMockupSeleccionado();
         }
 
@@ -106,7 +122,7 @@ namespace TithorAutomation
             var elegido = cboMockup.SelectedItem as Mockup;
             mockupListo = editorMockup.Documento != null && mockupCargado != null && elegido != null
                 && elegido.Id == mockupCargado.Id && !editorMockup.RequiereRecargar;
-            btnAplicarMockup.Enabled = btnGuardarMockup.Enabled = mockupListo;
+            btnAplicarMockup.Enabled = btnGuardarMockup.Enabled = btnCopiarMockup.Enabled = mockupListo;
             if (mockupListo)
             {
                 cboCampoMockup.DataSource = editorMockup.Campos;
@@ -133,20 +149,41 @@ namespace TithorAutomation
 
         private void RevisarDocumentoMockup()
         {
-            if (operandoMockup || editorMockup.Documento == null) return;
-            // Solo consulta: nunca abre, activa ni impide cerrar un documento.
-            bool abierto;
-            try { abierto = editorMockup.EstaAbierto(corelApp); }
-            catch { return; } // Corel puede estar ocupado o mostrando un diálogo.
-            if (abierto) return;
-            editorMockup.OlvidarDocumentoCerrado();
-            mockupListo = false;
-            mockupCargado = null;
-            vistaMockupCargado = null;
-            cboCampoMockup.DataSource = null;
-            dgvPiezasMockup.Rows.Clear();
-            btnAplicarMockup.Enabled = btnGuardarMockup.Enabled = false;
-            lblEstadoEditorMockup.Text = "Mockup cerrado. Pulse Cargar mockup cuando quiera volver a abrirlo.";
+            if (operandoMockup) return;
+            bool cambio = false;
+            foreach (ResultadoMockup resultado in resultadosMockup.ToList())
+            {
+                bool abierto;
+                try { abierto = resultado.Editor.EstaAbierto(corelApp); }
+                catch { return; }
+                if (abierto) continue;
+                resultado.Editor.OlvidarDocumentoCerrado();
+                resultadosMockup.Remove(resultado);
+                cambio = true;
+            }
+            if (!cambio) return;
+            if (!resultadosMockup.Contains(resultadoMockupActual))
+            {
+                resultadoMockupActual = resultadosMockup.FirstOrDefault(x => !x.EsOriginal) ?? resultadosMockup.FirstOrDefault();
+                if (resultadoMockupActual != null) SeleccionarResultadoMockup(resultadoMockupActual, null);
+                else
+                {
+                    mockupListo = false;
+                    editorMockup = new EditorMockupCorel();
+                    vistaMockupCargado = null;
+                    cboCampoMockup.DataSource = null;
+                    LimpiarImagenMockup();
+                }
+            }
+            var seleccionado = cboMockup.SelectedItem as Mockup;
+            if (seleccionado == null || mockupCargado == null || seleccionado.Id != mockupCargado.Id)
+            {
+                mockupListo = false;
+                dgvPiezasMockup.Rows.Clear();
+            }
+            else MostrarPiezasMockup();
+            btnAplicarMockup.Enabled = btnGuardarMockup.Enabled = btnCopiarMockup.Enabled = mockupListo;
+            lblEstadoEditorMockup.Text = "Se retiraron los mockups cerrados. Puede seleccionar otro resultado o cargar el original.";
         }
 
         private string RutaVistaOriginalMockup(Mockup mockup)
@@ -232,9 +269,10 @@ namespace TithorAutomation
                 if (elegido == null || archivoMockupMasterActual == null) throw new InvalidOperationException("Sincronice y seleccione un mockup.");
                 lblEstadoEditorMockup.Text = "Preparando mockup...";
                 lblEstadoEditorMockup.Refresh();
+                CerrarResultadosMockup();
+                editorMockup = new EditorMockupCorel();
                 editorMockup.Cargar(ObtenerCorel(), archivoMockupMasterActual.RutaArchivo, elegido);
                 cboCampoMockup.DataSource = editorMockup.Campos;
-                MostrarPiezasMockup();
                 if (!vistaGuardada)
                 {
                     string nueva = editorMockup.CrearVistaPrevia();
@@ -244,22 +282,90 @@ namespace TithorAutomation
                 vistaMockupCargado = rutaVista;
                 mockupCargado = elegido;
                 mockupListo = true;
+                resultadoMockupActual = new ResultadoMockup { Diseno = "Original", Editor = editorMockup, Vista = rutaVista, EsOriginal = true };
+                resultadosMockup.Add(resultadoMockupActual);
+                MostrarPiezasMockup();
                 lblEstadoEditorMockup.Text = chkLoteMockup.Checked
-                    ? "Active la capa de su diseño en CorelDRAW y pulse Aplicar diseño. Se validarán todas las partes antes de cambiar."
+                    ? "Active el documento con sus capas de diseño. Se generará un mockup por capa."
                     : "Seleccione la referencia en CorelDRAW y pulse Aplicar diseño. No se cambia el tamaño.";
             });
         }
 
         private void MostrarPiezasMockup()
         {
-            dgvPiezasMockup.Rows.Clear();
-            foreach (var campo in editorMockup.Campos)
-                dgvPiezasMockup.Rows.Add(campo.Aplicado ? "Aplicado" : "Pendiente", campo.Nombre, campo.Referencia, campo.Invertido ? "180°" : "0°", campo.Destinos.Count);
+            actualizandoTablaMockup = true;
+            try
+            {
+                dgvPiezasMockup.Rows.Clear();
+                var visibles = resultadosMockup.Any(x => !x.EsOriginal)
+                    ? resultadosMockup.Where(x => !x.EsOriginal) : resultadosMockup;
+                foreach (ResultadoMockup resultado in visibles)
+                    foreach (CampoMockup campo in resultado.Editor.Campos)
+                    {
+                        int indice = dgvPiezasMockup.Rows.Add(resultado.Editor.RequiereRecargar ? "Con error" : campo.Aplicado ? "Aplicado" : "Pendiente",
+                            resultado.Diseno, campo.Nombre, campo.Referencia, campo.Invertido ? "180°" : "0°", campo.Destinos.Count);
+                        dgvPiezasMockup.Rows[indice].Tag = Tuple.Create(resultado, campo);
+                    }
+                dgvPiezasMockup.ClearSelection();
+                foreach (DataGridViewRow fila in dgvPiezasMockup.Rows)
+                {
+                    var dato = fila.Tag as Tuple<ResultadoMockup, CampoMockup>;
+                    if (dato != null && dato.Item1 == resultadoMockupActual)
+                    {
+                        dgvPiezasMockup.CurrentCell = fila.Cells[0];
+                        fila.Selected = true;
+                        break;
+                    }
+                }
+            }
+            finally { actualizandoTablaMockup = false; }
+        }
+
+        private void dgvPiezasMockup_SelectionChanged(object sender, EventArgs e)
+        {
+            if (actualizandoTablaMockup || operandoMockup || dgvPiezasMockup.CurrentRow == null) return;
+            var dato = dgvPiezasMockup.CurrentRow.Tag as Tuple<ResultadoMockup, CampoMockup>;
+            if (dato != null) SeleccionarResultadoMockup(dato.Item1, dato.Item2);
+        }
+
+        private void SeleccionarResultadoMockup(ResultadoMockup resultado, CampoMockup campo)
+        {
+            resultadoMockupActual = resultado;
+            editorMockup = resultado.Editor;
+            vistaMockupCargado = resultado.Vista;
+            cboCampoMockup.DataSource = null;
+            cboCampoMockup.DataSource = editorMockup.Campos;
+            if (campo != null) cboCampoMockup.SelectedItem = campo;
+            mockupListo = editorMockup.Documento != null && !editorMockup.RequiereRecargar;
+            LimpiarImagenMockup();
+            if (File.Exists(resultado.Vista))
+            {
+                try { MostrarJpegMockup(resultado.Vista); }
+                catch (Exception ex) { lblEstadoEditorMockup.Text = "No se pudo mostrar la vista previa: " + ex.Message; }
+            }
+            btnAplicarMockup.Enabled = btnGuardarMockup.Enabled = btnCopiarMockup.Enabled = mockupListo && !operandoMockup;
+            lblEstadoEditorMockup.Text = "Diseño seleccionado: " + resultado.Diseno;
+        }
+
+        private void LimpiarImagenMockup()
+        {
+            Image anterior = picVistaMockup.Image;
+            picVistaMockup.Image = null;
+            if (anterior != null) anterior.Dispose();
+        }
+
+        private void CerrarResultadosMockup()
+        {
+            foreach (EditorMockupCorel editor in resultadosMockup.Select(x => x.Editor).Concat(new[] { editorMockup }).Distinct())
+                editor.Dispose();
+            resultadosMockup.Clear();
+            resultadoMockupActual = null;
         }
 
         private void ActualizarVistaMockup()
         {
             vistaMockupCargado = editorMockup.CrearVistaPrevia();
+            if (resultadoMockupActual != null) resultadoMockupActual.Vista = vistaMockupCargado;
             MostrarJpegMockup(vistaMockupCargado);
         }
 
@@ -280,6 +386,13 @@ namespace TithorAutomation
                 var app = ObtenerCorel();
                 if (!mockupListo || app.Documents.Count == 0) throw new InvalidOperationException("Cargue el mockup y abra su diseño en CorelDRAW.");
                 var origen = app.ActiveDocument;
+                if (resultadosMockup.Any(x => EscaladorPowerClip.MismoDocumento(x.Editor.Documento, origen)))
+                    throw new InvalidOperationException("Active el documento de los diseños, no una copia del mockup.");
+                if (chkLoteMockup.Checked)
+                {
+                    AplicarTodosLosMockups(app, origen);
+                    return;
+                }
                 var seleccion = origen.SelectionRange;
                 if (!chkLoteMockup.Checked && seleccion.Count != 1) throw new InvalidOperationException("Seleccione una única referencia en CorelDRAW.");
                 try
@@ -296,6 +409,11 @@ namespace TithorAutomation
                     }
                     throw;
                 }
+                if (resultadoMockupActual != null && resultadoMockupActual.EsOriginal)
+                {
+                    resultadoMockupActual.Diseno = origen.ActiveLayer.Name;
+                    resultadoMockupActual.EsOriginal = false;
+                }
                 MostrarPiezasMockup();
                 try { ActualizarVistaMockup(); }
                 catch (Exception ex) { throw new InvalidOperationException("Diseño aplicado, pero no se pudo actualizar la vista previa: " + ex.Message, ex); }
@@ -303,9 +421,110 @@ namespace TithorAutomation
             });
         }
 
+
+        private void AplicarTodosLosMockups(VGCore.Application app, VGCore.Document origen)
+        {
+            var necesarias = new HashSet<string>(editorMockup.Campos.Select(x => x.Referencia), StringComparer.OrdinalIgnoreCase);
+            var esperados = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            if (planProduccionActual != null && planProduccionActual.Moldes != null)
+                foreach (var molde in planProduccionActual.Moldes)
+                    if (!string.IsNullOrWhiteSpace(molde.Diseno)) esperados.Add(EditorMockupCorel.Normalizar(molde.Diseno));
+            var capas = new List<VGCore.Layer>();
+            for (int p = 1; p <= origen.Pages.Count; p++)
+                for (int l = 1; l <= origen.Pages[p].Layers.Count; l++)
+                {
+                    VGCore.Layer capa = origen.Pages[p].Layers[l];
+                    string nombre = EditorMockupCorel.Normalizar(capa.Name);
+                    if (nombre == "guias" || nombre == "guides" || nombre == "tithor_produccion") continue;
+                    bool candidata = esperados.Contains(nombre);
+                    for (int i = 1; i <= capa.Shapes.Count && !candidata; i++)
+                    {
+                        string pieza = EditorMockupCorel.Normalizar(capa.Shapes[i].Name);
+                        if (pieza.StartsWith("diseno_", StringComparison.Ordinal)) pieza = pieza.Substring("diseno_".Length);
+                        candidata = necesarias.Contains(pieza);
+                    }
+                    if (candidata) capas.Add(capa);
+                }
+            var errores = new List<string>();
+            foreach (string esperado in esperados)
+                if (!capas.Any(x => EditorMockupCorel.Normalizar(x.Name) == esperado))
+                    errores.Add("Falta la capa del diseño del pedido: " + esperado + ".");
+            foreach (var grupo in capas.GroupBy(x => EditorMockupCorel.Normalizar(x.Name)))
+                if (grupo.Count() > 1) errores.Add("La capa " + grupo.First().Name + " está duplicada.");
+            foreach (VGCore.Layer capa in capas)
+            {
+                try { EditorMockupCorel.ValidarReferenciasCapa(capa, editorMockup.Campos); }
+                catch (Exception ex) { errores.Add(ex.Message); }
+            }
+            if (capas.Count == 0) errores.Add("No se encontraron capas de diseño con las partes del mockup.");
+            if (errores.Count > 0)
+                throw new InvalidOperationException("No se generó ningún mockup.\n\n" + string.Join("\n\n", errores));
+
+            var nuevos = new List<ResultadoMockup>();
+            try
+            {
+                foreach (VGCore.Layer capa in capas)
+                {
+                    lblEstadoEditorMockup.Text = "Generando " + (nuevos.Count + 1) + " de " + capas.Count + ": " + capa.Name;
+                    lblEstadoEditorMockup.Refresh();
+                    var resultado = new ResultadoMockup { Diseno = capa.Name, Editor = new EditorMockupCorel() };
+                    nuevos.Add(resultado);
+                    resultado.Editor.Cargar(app, archivoMockupMasterActual.RutaArchivo, mockupCargado);
+                    resultado.Editor.Aplicar(app, origen, null, null, true, capa);
+                    resultado.Vista = resultado.Editor.CrearVistaPrevia();
+                }
+            }
+            catch
+            {
+                // Solo son copias temporales de esta ejecución; conservar los resultados anteriores.
+                foreach (ResultadoMockup resultado in nuevos) resultado.Editor.Dispose();
+                throw;
+            }
+            foreach (ResultadoMockup nuevo in nuevos)
+            {
+                foreach (ResultadoMockup anterior in resultadosMockup.Where(x => !x.EsOriginal &&
+                    EditorMockupCorel.Normalizar(x.Diseno) == EditorMockupCorel.Normalizar(nuevo.Diseno)).ToList())
+                {
+                    anterior.Editor.Dispose();
+                    resultadosMockup.Remove(anterior);
+                }
+                resultadosMockup.Add(nuevo);
+            }
+            SeleccionarResultadoMockup(nuevos[0], null);
+            MostrarPiezasMockup();
+            lblEstadoEditorMockup.Text = nuevos.Count + " mockups generados. Seleccione una fila para ver, guardar o copiar su diseño.";
+            MessageBox.Show(this, lblEstadoEditorMockup.Text, "Mockups terminados", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private string NombreArchivoMockup()
+        {
+            string nombre = EditorMockupCorel.Normalizar(resultadoMockupActual == null ? mockupCargado?.Codigo : resultadoMockupActual.Diseno);
+            return string.IsNullOrWhiteSpace(nombre) ? "mockup" : nombre;
+        }
+
+        private void btnCopiarMockup_Click(object sender, EventArgs e)
+        {
+            if (!mockupListo) return;
+            EjecutarOperacionMockup(() =>
+            {
+                if (!mockupListo) throw new InvalidOperationException("Seleccione un mockup abierto.");
+                string temporal = Path.Combine(Path.GetTempPath(), "Tithor_copiar_" + Guid.NewGuid().ToString("N") + ".jpg");
+                try
+                {
+                    editorMockup.Exportar(temporal, 3000);
+                    using (Image imagen = Image.FromFile(temporal))
+                    using (var copia = new Bitmap(imagen))
+                        Clipboard.SetImage(copia);
+                    lblEstadoEditorMockup.Text = "Imagen copiada: " + resultadoMockupActual.Diseno + ". Puede pegarla con Ctrl+V.";
+                }
+                finally { if (File.Exists(temporal)) File.Delete(temporal); }
+            });
+        }
+
         private void btnGuardarMockup_Click(object sender, EventArgs e)
         {
             if (!mockupListo) return;
+            ResultadoMockup elegido = resultadoMockupActual;
             using (var dialogo = new SaveFileDialog())
             {
                 dialogo.Title = "Guardar mockup como JPEG";
@@ -313,10 +532,12 @@ namespace TithorAutomation
                 dialogo.DefaultExt = "jpg";
                 dialogo.AddExtension = true;
                 dialogo.OverwritePrompt = true;
-                dialogo.FileName = (cboMockup.SelectedItem as Mockup)?.Codigo + ".jpg";
+                dialogo.FileName = NombreArchivoMockup() + ".jpg";
                 if (dialogo.ShowDialog(this) != DialogResult.OK) return;
                 EjecutarOperacionMockup(() =>
                 {
+                    if (elegido == null || !resultadosMockup.Contains(elegido) || !elegido.Editor.EstaAbierto(ObtenerCorel()))
+                        throw new InvalidOperationException("El mockup seleccionado se cerró. No se guardó ninguna imagen.");
                     string extension = Path.GetExtension(dialogo.FileName);
                     if (!string.Equals(extension, ".jpg", StringComparison.OrdinalIgnoreCase) && !string.Equals(extension, ".jpeg", StringComparison.OrdinalIgnoreCase))
                         throw new InvalidOperationException("Use una extensión .jpg o .jpeg para guardar el mockup.");
@@ -324,7 +545,7 @@ namespace TithorAutomation
                     string temporal = Path.Combine(Path.GetDirectoryName(dialogo.FileName), Guid.NewGuid().ToString("N") + ".jpg");
                     try
                     {
-                        editorMockup.Exportar(temporal, 3000);
+                        elegido.Editor.Exportar(temporal, 3000);
                         if (File.Exists(dialogo.FileName)) File.Replace(temporal, dialogo.FileName, null);
                         else File.Move(temporal, dialogo.FileName);
                     }

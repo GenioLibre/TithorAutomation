@@ -137,18 +137,10 @@ namespace TithorAutomation.Servicios
             catch { Dispose(); throw; }
         }
 
-        public void Aplicar(VGCore.Application app, Document origen, Shape seleccionado, CampoMockup individual, bool lote)
+        public static Dictionary<string, Shape> ValidarReferenciasCapa(Layer capaDiseno, IEnumerable<CampoMockup> campos)
         {
-            if (documento == null) throw new InvalidOperationException("Seleccione primero un mockup.");
-            if (EscaladorPowerClip.MismoDocumento(origen, documento)) throw new InvalidOperationException("Seleccione el diseño en su documento original, no en la copia del mockup.");
             var referencias = new Dictionary<string, Shape>(StringComparer.OrdinalIgnoreCase);
-            List<CampoMockup> tareas;
-            if (lote)
-            {
-                Layer capaDiseno = origen.ActiveLayer;
-                if (capaDiseno == null) throw new InvalidOperationException("Active la capa que contiene las partes del diseño en CorelDRAW.");
-                tareas = Campos.ToList();
-                var necesarias = new HashSet<string>(tareas.Select(x => x.Referencia), StringComparer.OrdinalIgnoreCase);
+                var necesarias = new HashSet<string>(campos.Select(x => x.Referencia), StringComparer.OrdinalIgnoreCase);
                 var encontradas = new Dictionary<string, List<Shape>>(StringComparer.OrdinalIgnoreCase);
                 for (int i = 1; i <= capaDiseno.Shapes.Count; i++)
                 {
@@ -173,6 +165,22 @@ namespace TithorAutomation.Servicios
                 }
                 if (errores.Count > 0)
                     throw new InvalidOperationException("No se modificó el mockup. Revise la capa " + capaDiseno.Name + ":\n\n• " + string.Join("\n• ", errores));
+
+                return referencias;
+        }
+
+        public void Aplicar(VGCore.Application app, Document origen, Shape seleccionado, CampoMockup individual, bool lote, Layer capaOrigen = null)
+        {
+            if (documento == null) throw new InvalidOperationException("Seleccione primero un mockup.");
+            if (EscaladorPowerClip.MismoDocumento(origen, documento)) throw new InvalidOperationException("Seleccione el diseño en su documento original, no en la copia del mockup.");
+            var referencias = new Dictionary<string, Shape>(StringComparer.OrdinalIgnoreCase);
+            List<CampoMockup> tareas;
+            if (lote)
+            {
+                Layer capaDiseno = capaOrigen ?? origen.ActiveLayer;
+                if (capaDiseno == null) throw new InvalidOperationException("Active la capa que contiene las partes del diseño en CorelDRAW.");
+                tareas = Campos.ToList();
+                referencias = ValidarReferenciasCapa(capaDiseno, tareas);
 
             }
             else

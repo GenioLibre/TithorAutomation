@@ -202,11 +202,13 @@ namespace TithorAutomation
             this.cboCampoMockup = new System.Windows.Forms.ComboBox();
             this.btnAplicarMockup = new System.Windows.Forms.Button();
             this.btnGuardarMockup = new System.Windows.Forms.Button();
+            this.btnCopiarMockup = new System.Windows.Forms.Button();
             this.lblEstadoEditorMockup = new System.Windows.Forms.Label();
             this.lblElegirMockup = new System.Windows.Forms.Label();
             this.lblCampoMockup = new System.Windows.Forms.Label();
             this.colPiezasCatalogoMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colEstadoEditorMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.colDisenoEditorMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colPiezaEditorMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colReferenciaEditorMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colRotacionEditorMockup = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -2176,6 +2178,7 @@ namespace TithorAutomation
             this.pnlMockups.Controls.Add(this.cboCampoMockup);
             this.pnlMockups.Controls.Add(this.btnAplicarMockup);
             this.pnlMockups.Controls.Add(this.btnGuardarMockup);
+            this.pnlMockups.Controls.Add(this.btnCopiarMockup);
             this.pnlMockups.Controls.Add(this.lblEstadoEditorMockup);
             this.pnlMockups.Controls.Add(this.lblElegirMockup);
             this.pnlMockups.Controls.Add(this.lblCampoMockup);
@@ -2227,11 +2230,16 @@ namespace TithorAutomation
             this.dgvPiezasMockup.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvPiezasMockup.ColumnHeadersHeight = 34;
             this.dgvPiezasMockup.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvPiezasMockup.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { this.colEstadoEditorMockup, this.colPiezaEditorMockup, this.colReferenciaEditorMockup, this.colRotacionEditorMockup, this.colDestinosEditorMockup });
+            this.dgvPiezasMockup.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] { this.colEstadoEditorMockup, this.colDisenoEditorMockup, this.colPiezaEditorMockup, this.colReferenciaEditorMockup, this.colRotacionEditorMockup, this.colDestinosEditorMockup });
             this.colEstadoEditorMockup.Name = "colEstadoEditorMockup";
             this.colEstadoEditorMockup.HeaderText = "Estado";
             this.colEstadoEditorMockup.ReadOnly = true;
             this.colEstadoEditorMockup.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.colDisenoEditorMockup.Name = "colDisenoEditorMockup";
+            this.colDisenoEditorMockup.HeaderText = "Diseño";
+            this.colDisenoEditorMockup.ReadOnly = true;
+            this.colDisenoEditorMockup.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.colDisenoEditorMockup.FillWeight = 140F;
             this.colPiezaEditorMockup.Name = "colPiezaEditorMockup";
             this.colPiezaEditorMockup.HeaderText = "Pieza";
             this.colPiezaEditorMockup.ReadOnly = true;
@@ -2267,21 +2275,36 @@ namespace TithorAutomation
             // cboCampoMockup
             this.cboCampoMockup.Name = "cboCampoMockup";
             this.cboCampoMockup.Location = new System.Drawing.Point(72, 554);
-            this.cboCampoMockup.Size = new System.Drawing.Size(426, 28);
+            this.cboCampoMockup.Size = new System.Drawing.Size(340, 28);
             this.cboCampoMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.cboCampoMockup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             // btnAplicarMockup
             this.btnAplicarMockup.Name = "btnAplicarMockup";
-            this.btnAplicarMockup.Location = new System.Drawing.Point(514, 542);
-            this.btnAplicarMockup.Size = new System.Drawing.Size(174, 40);
+            this.btnAplicarMockup.Location = new System.Drawing.Point(428, 542);
+            this.btnAplicarMockup.Size = new System.Drawing.Size(164, 40);
             this.btnAplicarMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
             this.btnAplicarMockup.Text = "Aplicar diseño";
             // btnGuardarMockup
             this.btnGuardarMockup.Name = "btnGuardarMockup";
-            this.btnGuardarMockup.Location = new System.Drawing.Point(704, 542);
-            this.btnGuardarMockup.Size = new System.Drawing.Size(176, 40);
+            this.btnGuardarMockup.Location = new System.Drawing.Point(608, 542);
+            this.btnGuardarMockup.Size = new System.Drawing.Size(128, 40);
             this.btnGuardarMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            this.btnGuardarMockup.Text = "Guardar como JPEG";
+            this.btnGuardarMockup.Text = "Guardar";
+            //
+            // btnCopiarMockup
+            //
+            this.btnCopiarMockup.Name = "btnCopiarMockup";
+            this.btnCopiarMockup.Location = new System.Drawing.Point(752, 542);
+            this.btnCopiarMockup.Size = new System.Drawing.Size(128, 40);
+            this.btnCopiarMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            this.btnCopiarMockup.Text = "Copiar";
+            this.btnCopiarMockup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnCopiarMockup.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(44, 48, 82);
+            this.btnCopiarMockup.FlatAppearance.BorderSize = 1;
+            this.btnCopiarMockup.BackColor = System.Drawing.Color.White;
+            this.btnCopiarMockup.ForeColor = System.Drawing.Color.FromArgb(44, 48, 82);
+            this.btnCopiarMockup.UseVisualStyleBackColor = false;
+            this.btnCopiarMockup.Enabled = false;
             this.btnRecargarMockup.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnRecargarMockup.BackColor = System.Drawing.Color.FromArgb(44, 48, 82);
             this.btnRecargarMockup.ForeColor = System.Drawing.Color.White;
@@ -3621,11 +3644,13 @@ namespace TithorAutomation
         private System.Windows.Forms.ComboBox cboCampoMockup;
         private System.Windows.Forms.Button btnAplicarMockup;
         private System.Windows.Forms.Button btnGuardarMockup;
+        private System.Windows.Forms.Button btnCopiarMockup;
         private System.Windows.Forms.Label lblEstadoEditorMockup;
         private System.Windows.Forms.Label lblElegirMockup;
         private System.Windows.Forms.Label lblCampoMockup;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPiezasCatalogoMockup;
         private System.Windows.Forms.DataGridViewTextBoxColumn colEstadoEditorMockup;
+        private System.Windows.Forms.DataGridViewTextBoxColumn colDisenoEditorMockup;
         private System.Windows.Forms.DataGridViewTextBoxColumn colPiezaEditorMockup;
         private System.Windows.Forms.DataGridViewTextBoxColumn colReferenciaEditorMockup;
         private System.Windows.Forms.DataGridViewTextBoxColumn colRotacionEditorMockup;
