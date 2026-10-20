@@ -23,7 +23,14 @@ namespace TithorAutomation
             btnRecargarMockup.Click += btnRecargarMockup_Click;
             btnAplicarMockup.Click += btnAplicarMockup_Click;
             btnGuardarMockup.Click += btnGuardarMockup_Click;
-            chkLoteMockup.CheckedChanged += (s, e) => { cboCampoMockup.Enabled = !chkLoteMockup.Checked; };
+            chkLoteMockup.CheckedChanged += (s, e) =>
+            {
+                cboCampoMockup.Enabled = !chkLoteMockup.Checked;
+                if (mockupListo)
+                    lblEstadoEditorMockup.Text = chkLoteMockup.Checked
+                        ? "Active la capa de su diseño en CorelDRAW y pulse Aplicar diseño. Se validarán todas las partes antes de cambiar."
+                        : "Seleccione una referencia en CorelDRAW y la pieza que desea reemplazar.";
+            };
             FormClosed += (s, e) => { editorMockup.Dispose(); if (picVistaMockup.Image != null) picVistaMockup.Image.Dispose(); };
             dgvPiezasMockup.ColumnHeadersDefaultCellStyle = dgvCatalogoMockups.ColumnHeadersDefaultCellStyle.Clone();
             dgvPiezasMockup.DefaultCellStyle = dgvCatalogoMockups.DefaultCellStyle.Clone();
@@ -237,7 +244,9 @@ namespace TithorAutomation
                 vistaMockupCargado = rutaVista;
                 mockupCargado = elegido;
                 mockupListo = true;
-                lblEstadoEditorMockup.Text = "Seleccione la referencia en CorelDRAW y pulse Aplicar diseño. No se cambia el tamaño.";
+                lblEstadoEditorMockup.Text = chkLoteMockup.Checked
+                    ? "Active la capa de su diseño en CorelDRAW y pulse Aplicar diseño. Se validarán todas las partes antes de cambiar."
+                    : "Seleccione la referencia en CorelDRAW y pulse Aplicar diseño. No se cambia el tamaño.";
             });
         }
 

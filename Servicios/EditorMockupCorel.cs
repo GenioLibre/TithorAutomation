@@ -137,19 +137,6 @@ namespace TithorAutomation.Servicios
             catch { Dispose(); throw; }
         }
 
-        private static void RecogerReferencias(Shapes objetos, Dictionary<string, Shape> referencias)
-        {
-            // Cada pieza es una unidad: no entrar en sus gráficos ni en sus PowerClips.
-            for (int i = 1; i <= objetos.Count; i++)
-            {
-                Shape objeto = objetos[i];
-                string nombre = Normalizar(objeto.Name);
-                if (string.IsNullOrWhiteSpace(nombre)) continue;
-                if (referencias.ContainsKey(nombre)) throw new InvalidOperationException("La referencia '" + nombre + "' está duplicada en Diseño.");
-                referencias.Add(nombre, objeto);
-            }
-        }
-
         public void Aplicar(VGCore.Application app, Document origen, Shape seleccionado, CampoMockup individual, bool lote)
         {
             if (documento == null) throw new InvalidOperationException("Seleccione primero un mockup.");
@@ -158,25 +145,35 @@ namespace TithorAutomation.Servicios
             List<CampoMockup> tareas;
             if (lote)
             {
-                Layer capaDiseno = null;
-                for (int i = 1; i <= origen.ActivePage.Layers.Count; i++)
-                {
-                    Layer capa = origen.ActivePage.Layers[i];
-                    if (Normalizar(capa.Name) != "diseno") continue;
-                    if (capaDiseno != null) throw new InvalidOperationException("Hay más de una capa Diseño en la página activa.");
-                    capaDiseno = capa;
-                }
-                if (capaDiseno != null)
-                    RecogerReferencias(capaDiseno.Shapes, referencias);
-                else
-                {
-                    if (seleccionado == null || seleccionado.Type != cdrShapeType.cdrGroupShape || Normalizar(seleccionado.Name) != "diseno" || seleccionado.PowerClip != null)
-                        throw new InvalidOperationException("Use una capa Diseño con sus partes en la página activa.");
-                    RecogerReferencias(seleccionado.Shapes, referencias);
-                }
+                Layer capaDiseno = origen.ActiveLayer;
+                if (capaDiseno == null) throw new InvalidOperationException("Active la capa que contiene las partes del diseño en CorelDRAW.");
                 tareas = Campos.ToList();
-                var faltantes = tareas.Select(x => x.Referencia).Distinct().Where(x => !referencias.ContainsKey(x)).ToList();
-                if (faltantes.Count > 0) throw new InvalidOperationException("Faltan referencias: " + string.Join(", ", faltantes));
+                var necesarias = new HashSet<string>(tareas.Select(x => x.Referencia), StringComparer.OrdinalIgnoreCase);
+                var encontradas = new Dictionary<string, List<Shape>>(StringComparer.OrdinalIgnoreCase);
+                for (int i = 1; i <= capaDiseno.Shapes.Count; i++)
+                {
+                    Shape objeto = capaDiseno.Shapes[i];
+                    string nombre = Normalizar(objeto.Name);
+                    if (nombre.StartsWith("diseno_", StringComparison.Ordinal)) nombre = nombre.Substring("diseno_".Length);
+                    if (!necesarias.Contains(nombre)) continue;
+                    if (!encontradas.ContainsKey(nombre)) encontradas[nombre] = new List<Shape>();
+                    encontradas[nombre].Add(objeto);
+                }
+                var errores = new List<string>();
+                foreach (string nombre in necesarias)
+                {
+                    if (!encontradas.ContainsKey(nombre))
+                        { errores.Add("Falta la pieza " + nombre + "."); continue; }
+                    if (encontradas[nombre].Count != 1)
+                        { errores.Add("La pieza " + nombre + " está duplicada."); continue; }
+                    Shape referencia = encontradas[nombre][0];
+                    if (referencia.SizeWidth <= 0 || referencia.SizeHeight <= 0)
+                        { errores.Add("La pieza " + nombre + " no tiene dimensiones válidas."); continue; }
+                    referencias.Add(nombre, referencia);
+                }
+                if (errores.Count > 0)
+                    throw new InvalidOperationException("No se modificó el mockup. Revise la capa " + capaDiseno.Name + ":\n\n• " + string.Join("\n• ", errores));
+
             }
             else
             {
