@@ -2266,6 +2266,8 @@ namespace TithorAutomation
             this.chkLoteMockup.Size = new System.Drawing.Size(230, 24);
             this.chkLoteMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
             this.chkLoteMockup.Text = "Reemplazo por lote";
+            this.chkLoteMockup.Checked = true;
+            this.chkLoteMockup.CheckState = System.Windows.Forms.CheckState.Checked;
             // lblCampoMockup
             this.lblCampoMockup.Name = "lblCampoMockup";
             this.lblCampoMockup.Location = new System.Drawing.Point(16, 558);
@@ -2278,6 +2280,7 @@ namespace TithorAutomation
             this.cboCampoMockup.Size = new System.Drawing.Size(340, 28);
             this.cboCampoMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
             this.cboCampoMockup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCampoMockup.Enabled = false;
             // btnAplicarMockup
             this.btnAplicarMockup.Name = "btnAplicarMockup";
             this.btnAplicarMockup.Location = new System.Drawing.Point(428, 542);

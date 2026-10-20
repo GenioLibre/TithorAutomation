@@ -39,6 +39,7 @@ namespace TithorAutomation
             chkLoteMockup.CheckedChanged += (s, e) =>
             {
                 cboCampoMockup.Enabled = !chkLoteMockup.Checked;
+                MostrarPiezasMockup();
                 if (mockupListo)
                     lblEstadoEditorMockup.Text = chkLoteMockup.Checked
                         ? "Active el documento con sus capas de diseño. Se generará un mockup por capa."
@@ -48,6 +49,8 @@ namespace TithorAutomation
             dgvPiezasMockup.ColumnHeadersDefaultCellStyle = dgvCatalogoMockups.ColumnHeadersDefaultCellStyle.Clone();
             dgvPiezasMockup.DefaultCellStyle = dgvCatalogoMockups.DefaultCellStyle.Clone();
             dgvPiezasMockup.AlternatingRowsDefaultCellStyle = dgvCatalogoMockups.AlternatingRowsDefaultCellStyle.Clone();
+            cboCampoMockup.Enabled = !chkLoteMockup.Checked;
+            MostrarPiezasMockup();
         }
 
         private void CargarListaMockups()
@@ -299,13 +302,32 @@ namespace TithorAutomation
                 dgvPiezasMockup.Rows.Clear();
                 var visibles = resultadosMockup.Any(x => !x.EsOriginal)
                     ? resultadosMockup.Where(x => !x.EsOriginal) : resultadosMockup;
+                bool lote = chkLoteMockup.Checked;
+                colPiezaEditorMockup.Visible = !lote;
+                colReferenciaEditorMockup.Visible = !lote;
+                colRotacionEditorMockup.Visible = !lote;
                 foreach (ResultadoMockup resultado in visibles)
-                    foreach (CampoMockup campo in resultado.Editor.Campos)
+                {
+                    if (lote)
                     {
-                        int indice = dgvPiezasMockup.Rows.Add(resultado.Editor.RequiereRecargar ? "Con error" : campo.Aplicado ? "Aplicado" : "Pendiente",
-                            resultado.Diseno, campo.Nombre, campo.Referencia, campo.Invertido ? "180°" : "0°", campo.Destinos.Count);
-                        dgvPiezasMockup.Rows[indice].Tag = Tuple.Create(resultado, campo);
+                        var campos = resultado.Editor.Campos;
+                        string estado = resultado.Editor.RequiereRecargar ? "Con error"
+                            : campos.Count > 0 && campos.All(x => x.Aplicado) ? "Aplicado"
+                            : campos.Any(x => x.Aplicado) ? "Parcial" : "Pendiente";
+                        int indice = dgvPiezasMockup.Rows.Add(estado, resultado.Diseno, null, null, null,
+                            campos.Sum(x => x.Destinos.Count));
+                        dgvPiezasMockup.Rows[indice].Tag = Tuple.Create(resultado, (CampoMockup)null);
                     }
+                    else
+                    {
+                        foreach (CampoMockup campo in resultado.Editor.Campos)
+                        {
+                            int indice = dgvPiezasMockup.Rows.Add(resultado.Editor.RequiereRecargar ? "Con error" : campo.Aplicado ? "Aplicado" : "Pendiente",
+                                resultado.Diseno, campo.Nombre, campo.Referencia, campo.Invertido ? "180°" : "0°", campo.Destinos.Count);
+                            dgvPiezasMockup.Rows[indice].Tag = Tuple.Create(resultado, campo);
+                        }
+                    }
+                }
                 dgvPiezasMockup.ClearSelection();
                 foreach (DataGridViewRow fila in dgvPiezasMockup.Rows)
                 {
