@@ -289,6 +289,7 @@ namespace TithorAutomation
         private void ConfigurarComboTareasEscalar()
             {
             cboTareaEscalar.DataSource = null;
+            cboTareaEscalar.Enabled = !chkReemplazoPorLote.Checked;
 
             if (chkReemplazoPorLote.Checked)
                 {
@@ -296,7 +297,7 @@ namespace TithorAutomation
                 TareaLoteEscalar pendiente = tareasLoteEscalar.FirstOrDefault(x => x.Estado == "Pendiente" || x.Estado == "Parcial");
                 if (pendiente != null) cboTareaEscalar.SelectedItem = pendiente;
                 else if (tareasLoteEscalar.Count > 0) cboTareaEscalar.SelectedIndex = 0;
-                btnAplicarEscalar.Text = "Aplicar lote";
+                btnAplicarEscalar.Text = "Aplicar todos";
                 }
             else
                 {
@@ -319,15 +320,8 @@ namespace TithorAutomation
 
             if (chkReemplazoPorLote.Checked)
                 {
-                TareaLoteEscalar lote = ObtenerTareaLoteEscalarActual();
-                bool hayPendientes = tareasLoteEscalar.Any(x => x.Estado == "Pendiente" || x.Estado == "Parcial");
-                if (!hayPendientes && tareasLoteEscalar.Any(x => x.Estado == "Con error"))
-                    lblEstadoEscalar.Text = "Hay diseños con error. Revise los nombres de las piezas.";
-                else if (!hayPendientes)
-                    lblEstadoEscalar.Text = "Escalado por lote completado. Puede elegir un diseño para corregirlo.";
-                else if (lote != null)
-                    lblEstadoEscalar.Text = "Seleccione en CorelDRAW el grupo completo de " + lote.DisenoConCorte + ".";
-                btnAplicarEscalar.Enabled = lote != null && lote.Estado != "Con error";
+                lblEstadoEscalar.Text = "Se validarán y aplicarán todos los diseños del pedido usando sus capas en CorelDRAW.";
+                btnAplicarEscalar.Enabled = tareasEscalar.Count > 0;
                 return;
                 }
 
@@ -385,17 +379,8 @@ namespace TithorAutomation
 
             if (chkReemplazoPorLote.Checked)
                 {
-                TareaLoteEscalar lote = ObtenerTareaLoteEscalarActual();
-                if (lote == null)
-                    {
-                    btnAplicarEscalar.Enabled = false;
-                    return;
-                    }
-
-                lblEstadoEscalar.Text = lote.Estado == "Completado"
-                    ? "Lote completado. Active Reemplazar contenido para corregir " + lote.DisenoConCorte + "."
-                    : "Seleccione en CorelDRAW el grupo completo de " + lote.DisenoConCorte + ".";
-                btnAplicarEscalar.Enabled = lote.Estado != "Con error";
+                lblEstadoEscalar.Text = "Se validarán y aplicarán todos los diseños del pedido usando sus capas en CorelDRAW.";
+                btnAplicarEscalar.Enabled = tareasEscalar.Count > 0;
                 return;
                 }
 
@@ -476,47 +461,76 @@ namespace TithorAutomation
                     throw new InvalidOperationException("Los moldes cambiaron. Se actualizó la cola; revise y vuelva a aplicar.");
                     }
 
-                TareaLoteEscalar lote = ObtenerTareaLoteEscalarActual();
-                if (lote == null) throw new InvalidOperationException("No quedan diseños pendientes.");
-
-                VGCore.ShapeRange seleccion = documento.SelectionRange;
-                if (seleccion.Count != 1 || seleccion[1].Type != VGCore.cdrShapeType.cdrGroupShape)
-                    throw new InvalidOperationException("Seleccione un único grupo que contenga todas las referencias de " + lote.DisenoConCorte + ".");
-
-                List<TareaEscalar> tareasAplicar = lote.Tareas
-                    .Where(x => chkReemplazarContenidoEscalar.Checked || x.Estado != "Completado")
-                    .ToList();
-
+                bool reemplazar = chkReemplazarContenidoEscalar.Checked;
+                List<TareaEscalar> tareasAplicar = tareasEscalar
+                    .Where(x => reemplazar || x.Estado != "Completado").ToList();
                 if (tareasAplicar.Count == 0)
-                    throw new InvalidOperationException("Este diseño ya está completado. Active Reemplazar contenido para corregirlo.");
+                    throw new InvalidOperationException("El pedido ya está completado. Active Reemplazar contenido para volver a aplicar todos los diseños.");
 
-                int totalLote = tareasAplicar.Sum(x => x.Destinos.Count(y => chkReemplazarContenidoEscalar.Checked || !y.TieneContenido));
-                Dictionary<string, List<VGCore.Shape>> referencias = new Dictionary<string, List<VGCore.Shape>>(StringComparer.OrdinalIgnoreCase);
-                BuscarReferenciasLote(seleccion[1], referencias);
-                List<string> errores = new List<string>();
+                // Validar el pedido completo antes de duplicar o reemplazar un solo objeto.
+                var capas = new Dictionary<string, List<VGCore.Layer>>(StringComparer.OrdinalIgnoreCase);
+                for (int p = 1; p <= documento.Pages.Count; p++)
+                    for (int l = 1; l <= documento.Pages[p].Layers.Count; l++)
+                        {
+                        VGCore.Layer capa = documento.Pages[p].Layers[l];
+                        string clave = AnalizadorMasterCorel.NormalizarCodigo(capa.Name);
+                        if (clave == "tithor_produccion") continue;
+                        if (!capas.ContainsKey(clave)) capas[clave] = new List<VGCore.Layer>();
+                        capas[clave].Add(capa);
+                        }
 
-                foreach (TareaEscalar tarea in tareasAplicar)
+                var referenciasPorTarea = new Dictionary<TareaEscalar, VGCore.Shape>();
+                var errores = new List<string>();
+                foreach (var diseno in tareasEscalar.GroupBy(x => AnalizadorMasterCorel.NormalizarCodigo(x.Diseno)))
                     {
-                    string codigo = CodigoReferenciaLote(tarea.Pieza);
-                    if (!referencias.ContainsKey(codigo))
-                        errores.Add("Falta diseño_" + codigo + ".");
-                    else if (referencias[codigo].Count > 1)
-                        errores.Add("La referencia diseño_" + codigo + " está duplicada.");
-                    else if (referencias[codigo][0].PowerClip == null || referencias[codigo][0].PowerClip.Shapes.Count == 0)
-                        errores.Add("La referencia diseño_" + codigo + " no es un PowerClip con contenido.");
+                    string nombre = diseno.First().Diseno;
+                    if (string.IsNullOrWhiteSpace(diseno.Key))
+                        { errores.Add("Hay filas del pedido sin Diseño."); continue; }
+                    if (!capas.ContainsKey(diseno.Key))
+                        { errores.Add("Falta la capa del diseño: " + nombre + "."); continue; }
+                    if (capas[diseno.Key].Count != 1)
+                        { errores.Add("La capa del diseño " + nombre + " está duplicada en el documento."); continue; }
+
+                    VGCore.Layer capa = capas[diseno.Key][0];
+                    var referencias = new Dictionary<string, List<VGCore.Shape>>(StringComparer.OrdinalIgnoreCase);
+                    // Cada hijo directo es una pieza; no buscar dentro de su contenido.
+                    for (int i = 1; i <= capa.Shapes.Count; i++)
+                        {
+                        VGCore.Shape referencia = capa.Shapes[i];
+                        if (referencia.Type == VGCore.cdrShapeType.cdrTextShape) continue;
+                        string codigo = AnalizadorMasterCorel.NormalizarCodigo(referencia.Name);
+                        if (codigo.StartsWith("diseno_")) codigo = codigo.Substring("diseno_".Length);
+                        codigo = NormalizarReferenciaLote(codigo);
+                        if (string.IsNullOrWhiteSpace(codigo)) continue;
+                        if (!referencias.ContainsKey(codigo)) referencias[codigo] = new List<VGCore.Shape>();
+                        referencias[codigo].Add(referencia);
+                        }
+
+                    foreach (TareaEscalar tarea in diseno)
+                        {
+                        string codigo = CodigoReferenciaLote(tarea.Pieza);
+                        string contexto = nombre + " / " + tarea.Corte + " / " + tarea.Pieza;
+                        if (!referencias.ContainsKey(codigo))
+                            { errores.Add(contexto + ": falta la pieza."); continue; }
+                        if (referencias[codigo].Count != 1)
+                            { errores.Add(contexto + ": la pieza está duplicada."); continue; }
+                        VGCore.Shape referencia = referencias[codigo][0];
+                        if (referencia.PowerClip == null || referencia.PowerClip.Shapes.Count == 0)
+                            { errores.Add(contexto + ": la referencia debe ser un PowerClip con contenido."); continue; }
+                        referenciasPorTarea[tarea] = referencia;
+                        if (tarea.Estado == "Con error")
+                            errores.Add(contexto + ": " + string.Join(", ", tarea.Destinos.Where(x => x.Estado != "Listo").Select(x => x.Estado).Distinct()));
+                        if (!tareasAplicar.Contains(tarea)) continue;
+                        var destinos = tarea.Destinos.Where(x => reemplazar || !x.TieneContenido).ToList();
+                        try { escalador.Validar(referencia, destinos, reemplazar); }
+                        catch (Exception ex) { errores.Add(contexto + ": " + ex.Message); }
+                        }
                     }
 
                 if (errores.Count > 0)
-                    throw new InvalidOperationException("No se puede iniciar el reemplazo por lote:\n\n• " + string.Join("\n• ", errores));
+                    throw new InvalidOperationException("No se modificó ningún molde. Revise el pedido:\n\n• " + string.Join("\n• ", errores.Distinct()));
 
-                foreach (TareaEscalar tarea in tareasAplicar)
-                    {
-                    List<PiezaEscalable> destinos = chkReemplazarContenidoEscalar.Checked
-                        ? tarea.Destinos
-                        : tarea.Destinos.Where(x => !x.TieneContenido).ToList();
-                    escalador.Validar(referencias[CodigoReferenciaLote(tarea.Pieza)][0], destinos, chkReemplazarContenidoEscalar.Checked);
-                    }
-
+                int totalLote = tareasAplicar.Sum(x => x.Destinos.Count(y => reemplazar || !y.TieneContenido));
                 MostrarProgresoOperacion(prgEscalar, 0, totalLote);
                 btnAnalizarEscalar.Enabled = false;
                 btnAplicarEscalar.Enabled = false;
@@ -534,18 +548,18 @@ namespace TithorAutomation
                             ? tarea.Destinos
                             : tarea.Destinos.Where(x => !x.TieneContenido).ToList();
 
-                        lblEstadoEscalar.Text = "Aplicando lote " + lote.DisenoConCorte + ": " + tarea.Pieza + "...";
+                        lblEstadoEscalar.Text = "Aplicando lote " + tarea.DisenoConCorte + ": " + tarea.Pieza + "...";
                         lblEstadoEscalar.Refresh();
 
                         destinosProcesados += escalador.Aplicar(
                             documento,
-                            referencias[CodigoReferenciaLote(tarea.Pieza)][0],
+                            referenciasPorTarea[tarea],
                             destinos,
                             chkReemplazarContenidoEscalar.Checked,
                             delegate (int actual, int cantidad)
                                 {
                                 MostrarProgresoOperacion(prgEscalar, destinosProcesados + actual, totalLote);
-                                lblEstadoEscalar.Text = "Aplicando " + lote.DisenoConCorte + " - " + tarea.Pieza + ": " + actual + " de " + cantidad + "...";
+                                lblEstadoEscalar.Text = "Aplicando " + tarea.DisenoConCorte + " - " + tarea.Pieza + ": " + actual + " de " + cantidad + "...";
                                 lblEstadoEscalar.Refresh();
                                 },
                             ObtenerCorel());
@@ -561,12 +575,12 @@ namespace TithorAutomation
                 List<PiezaEscalable> resultado = escalador.AnalizarPedido(documento, planProduccionActual);
                 MostrarAnalisisEscalar(resultado);
                 MostrarProgresoOperacion(prgEscalar, 1, 1);
-                lblEstadoEscalar.Text = "Lote " + lote.DisenoConCorte + " completado. Se procesaron " + destinosProcesados + " destinos.";
+                lblEstadoEscalar.Text = "Pedido completado. Se procesaron " + destinosProcesados + " destinos.";
 
                 Activate();
                 BringToFront();
                 MessageBox.Show(this,
-                    "Terminó de aplicar el diseño por lote.\n\nDiseño: " + lote.DisenoConCorte +
+                    "Terminó de aplicar todos los diseños por capas.\n\nDiseños: " + tareasAplicar.Select(x => AnalizadorMasterCorel.NormalizarCodigo(x.Diseno)).Distinct().Count() +
                     "\nPartes procesadas: " + tareasProcesadas +
                     "\nDestinos procesados: " + destinosProcesados +
                     "\n\nLos campos Nombre y Numero se reemplazaron con los datos del Excel.",
@@ -586,8 +600,7 @@ namespace TithorAutomation
                 Cursor = Cursors.Default;
                 btnAnalizarEscalar.Enabled = true;
                 chkReemplazoPorLote.Enabled = true;
-                TareaLoteEscalar actual = ObtenerTareaLoteEscalarActual();
-                btnAplicarEscalar.Enabled = actual != null && actual.Estado != "Con error";
+                btnAplicarEscalar.Enabled = tareasEscalar.Count > 0;
                 }
             }
 
