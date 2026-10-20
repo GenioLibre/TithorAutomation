@@ -425,10 +425,7 @@ namespace TithorAutomation
         private void AplicarTodosLosMockups(VGCore.Application app, VGCore.Document origen)
         {
             var necesarias = new HashSet<string>(editorMockup.Campos.Select(x => x.Referencia), StringComparer.OrdinalIgnoreCase);
-            var esperados = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            if (planProduccionActual != null && planProduccionActual.Moldes != null)
-                foreach (var molde in planProduccionActual.Moldes)
-                    if (!string.IsNullOrWhiteSpace(molde.Diseno)) esperados.Add(EditorMockupCorel.Normalizar(molde.Diseno));
+            // Los diseños de Mockups se detectan únicamente en el documento de CorelDRAW.
             var capas = new List<VGCore.Layer>();
             for (int p = 1; p <= origen.Pages.Count; p++)
                 for (int l = 1; l <= origen.Pages[p].Layers.Count; l++)
@@ -436,7 +433,7 @@ namespace TithorAutomation
                     VGCore.Layer capa = origen.Pages[p].Layers[l];
                     string nombre = EditorMockupCorel.Normalizar(capa.Name);
                     if (nombre == "guias" || nombre == "guides" || nombre == "tithor_produccion") continue;
-                    bool candidata = esperados.Contains(nombre);
+                    bool candidata = false;
                     for (int i = 1; i <= capa.Shapes.Count && !candidata; i++)
                     {
                         string pieza = EditorMockupCorel.Normalizar(capa.Shapes[i].Name);
@@ -446,9 +443,6 @@ namespace TithorAutomation
                     if (candidata) capas.Add(capa);
                 }
             var errores = new List<string>();
-            foreach (string esperado in esperados)
-                if (!capas.Any(x => EditorMockupCorel.Normalizar(x.Name) == esperado))
-                    errores.Add("Falta la capa del diseño del pedido: " + esperado + ".");
             foreach (var grupo in capas.GroupBy(x => EditorMockupCorel.Normalizar(x.Name)))
                 if (grupo.Count() > 1) errores.Add("La capa " + grupo.First().Name + " está duplicada.");
             foreach (VGCore.Layer capa in capas)
