@@ -2296,7 +2296,7 @@ namespace TithorAutomation
             this.btnGuardarMockup.Location = new System.Drawing.Point(608, 542);
             this.btnGuardarMockup.Size = new System.Drawing.Size(128, 40);
             this.btnGuardarMockup.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-            this.btnGuardarMockup.Text = "Guardar";
+            this.btnGuardarMockup.Text = "Guardar todo";
             //
             // btnCopiarMockup
             //
