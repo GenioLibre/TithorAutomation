@@ -189,8 +189,15 @@ namespace TithorAutomation.Servicios
                 tareas = new List<CampoMockup> { individual };
                 referencias.Add(individual.Referencia, seleccionado);
             }
+            foreach (Shape referencia in referencias.Values)
+                if (referencia == null || !DimensionValida(referencia.SizeWidth) || !DimensionValida(referencia.SizeHeight))
+                    throw new InvalidOperationException("El diseño no tiene dimensiones válidas para escalar.");
             foreach (Shape destino in tareas.SelectMany(x => x.Destinos))
+            {
                 if (destino.Locked || destino.PowerClip == null) throw new InvalidOperationException("Hay destinos bloqueados o sin PowerClip. Vuelva a cargar el mockup.");
+                if (!DimensionValida(destino.SizeWidth) || !DimensionValida(destino.SizeHeight))
+                    throw new InvalidOperationException("El PowerClip " + destino.Name + " no tiene dimensiones válidas.");
+            }
 
             bool eventos = app.EventsEnabled;
             bool optimizacion = app.Optimization;
@@ -216,13 +223,24 @@ namespace TithorAutomation.Servicios
                         Shape copia = capaTrabajo.Paste();
                         if (copia == null) throw new InvalidOperationException("No se pudo pegar la referencia " + tarea.Referencia + ".");
                         if (tarea.Invertido) copia.Rotate(180);
+                        // Medir el marco de la copia ya pegada, en las unidades del destino.
+                        // Si es PowerClip, se usa su tamaño exterior, no el de su contenido.
+                        double anchoCopia = copia.SizeWidth;
+                        double altoCopia = copia.SizeHeight;
+                        double anchoFinal = destino.SizeWidth;
+                        if (!DimensionValida(anchoCopia) || !DimensionValida(altoCopia))
+                            throw new InvalidOperationException("La referencia " + tarea.Referencia + " no tiene dimensiones válidas.");
+                        double altoFinal = altoCopia * (anchoFinal / anchoCopia);
+                        if (!DimensionValida(altoFinal))
+                            throw new InvalidOperationException("No se pudo calcular el tamaño de " + tarea.Referencia + ".");
                         double x = destino.CenterX;
-                        double y = destino.CenterY;
+                        double bordeSuperior = destino.CenterY + destino.SizeHeight / 2.0;
                         Shapes anteriores = destino.PowerClip.Shapes;
                         for (int i = anteriores.Count; i >= 1; i--) anteriores[i].Delete();
                         copia.AddToPowerClip(destino, cdrTriState.cdrFalse);
+                        copia.SetSize(anchoFinal, altoFinal);
                         copia.CenterX = x;
-                        copia.CenterY = y;
+                        copia.CenterY = bordeSuperior - altoFinal / 2.0;
                     }
                 }
                 documento.EndCommandGroup();
@@ -241,6 +259,11 @@ namespace TithorAutomation.Servicios
                 try { app.EventsEnabled = eventos; } catch { }
                 try { origen.Activate(); } catch { }
             }
+        }
+
+        private static bool DimensionValida(double valor)
+        {
+            return valor > 0 && !double.IsNaN(valor) && !double.IsInfinity(valor);
         }
 
         public void Exportar(string ruta, int ladoMayor)
