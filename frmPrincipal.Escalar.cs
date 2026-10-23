@@ -813,6 +813,10 @@ namespace TithorAutomation
                     lblEstadoEscalar.Text = "Los elementos ya están separados y no quedan textos editables.";
                     return;
                     }
+                if (MessageBox.Show(this,
+                    "Se convertirán los textos a curvas y se desagruparán los moldes de TITHOR_PRODUCCION en la página activa.\n\nLos textos dejarán de ser editables y se limpiarán las tareas de escalado.\n¿Desea finalizar?",
+                    "Confirmar finalización", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+                    return;
                 btnFinalizarEscalar.Enabled = false;
                 btnAnalizarEscalar.Enabled = false;
                 btnAplicarEscalar.Enabled = false;

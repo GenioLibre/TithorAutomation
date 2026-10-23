@@ -12,6 +12,7 @@ namespace TithorAutomation.Servicios
         {
             "frente",
             "espalda",
+            "superior",
             "lateral_izquierdo",
             "lateral_derecho"
         };

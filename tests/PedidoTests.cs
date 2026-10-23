@@ -102,7 +102,7 @@ internal static class PedidoTests
     {
         var catalogo = new List<Molde>();
         foreach (string talla in new[] { "s", "m", "l" })
-            foreach (string pieza in new[] { "frente", "espalda", "lateral_izquierdo", "lateral_derecho" })
+            foreach (string pieza in new[] { "frente", "espalda", "superior", "lateral_izquierdo", "lateral_derecho" })
                 catalogo.Add(new Molde { Codigo = "capa__molde_" + talla + "__funda_" + talla + "_" + pieza,
                     NombreObjeto = "funda_" + talla + "_" + pieza, Estado = "Correcto" });
         return catalogo;
@@ -163,6 +163,14 @@ internal static class PedidoTests
             Exigir(plan.EsValido && plan.TotalMoldes == 4, "No planificó las tallas del catálogo");
             Exigir(plan.Moldes[0].CodigoMolde == "molde_xl" && plan.Moldes[2].CodigoMolde == "molde_especial", "Grupo de talla incorrecto");
             Exigir(plan.Moldes.All(x => x.PiezasIncluidas.Count == 5), "Omitió piezas del grupo");
+
+            var sinSuperior = catalogo.Where(x => !(x.Talla == "XL" && x.NombreObjeto == "superior")).ToList();
+            var pedidoIncompleto = lector.Analizar(1, "FUNDAS", archivo);
+            Exigir(!planificador.CrearPlan(pedidoIncompleto, sinSuperior).EsValido, "Permitió copiar fundas sin superior");
+            planificador.ValidarCatalogo(pedidoIncompleto, sinSuperior);
+            Exigir(!pedidoIncompleto.Lineas[0].Procesable && pedidoIncompleto.Lineas[0].Estado == "Con error", "No marcó el error de superior ausente");
+            Exigir(pedidoIncompleto.Lineas[0].MensajeCompleto.Contains("falta superior"), "No identificó la pieza superior en observaciones");
+            Exigir(pedidoIncompleto.Lineas[1].Procesable, "Invalidó otra talla completa");
 
             // Una talla de otro tipo de molde no habilita esa talla para Fundas.
             foreach (Molde molde in catalogo) molde.Capa = "Moldes Clasico Varon";
