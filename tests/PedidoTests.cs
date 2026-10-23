@@ -28,6 +28,7 @@ internal static class PedidoTests
         CantidadesExcel();
         Identificadores();
         PlanesFundas();
+        TallasFundasDesdeCatalogo();
         PlanesCamisetas();
         Console.WriteLine("PASS: " + comprobaciones + " comprobaciones de pedidos, cantidades y nombres.");
     }
@@ -123,6 +124,53 @@ internal static class PedidoTests
         Exigir(!planificador.CrearPlan(pedido, catalogo).EsValido, "Aceptó molde inválido o reutilizó caché obsoleta");
         catalogo.RemoveAt(0);
         Exigir(!planificador.CrearPlan(pedido, catalogo).EsValido, "Aceptó catálogo incompleto");
+    }
+
+    private static void TallasFundasDesdeCatalogo()
+    {
+        string archivo = Path.Combine(Path.GetTempPath(), "tithor-tallas-" + Guid.NewGuid().ToString("N") + ".xlsx");
+        try
+        {
+            using (var libro = new XLWorkbook())
+            {
+                var hoja = libro.AddWorksheet("Detalle de Fundas");
+                hoja.Cell(1, 1).Value = "Diseño";
+                hoja.Cell(1, 2).Value = "Talla";
+                hoja.Cell(1, 3).Value = "Cantidad";
+                string[] tallas = { " xl ", "ESPECIAL", "6XL", "" };
+                for (int i = 0; i < tallas.Length; i++)
+                {
+                    hoja.Cell(i + 2, 1).Value = "Prueba";
+                    hoja.Cell(i + 2, 2).Value = tallas[i];
+                    hoja.Cell(i + 2, 3).Value = 2;
+                }
+                libro.SaveAs(archivo);
+            }
+            var lector = new LectorPedidoFundas();
+            var pedido = lector.Analizar(1, "FUNDAS", archivo);
+            Exigir(pedido.Lineas.Take(3).All(x => x.Procesable), "El lector conserva una lista fija de tallas");
+            Exigir(!pedido.Lineas[3].Procesable, "Aceptó talla vacía");
+            var catalogo = new List<Molde>();
+            foreach (string talla in new[] { "xl", "especial" })
+                foreach (string pieza in new[] { "frente", "espalda", "lateral_izquierdo", "lateral_derecho", "superior" })
+                    catalogo.Add(new Molde { Codigo = "moldes_fundas__molde_" + talla + "__" + pieza,
+                        NombreObjeto = pieza, Talla = talla.ToUpperInvariant(), Capa = "Moldes Fundas", Estado = "Correcto" });
+            var planificador = new PlanificadorFundas();
+            planificador.ValidarCatalogo(pedido, catalogo);
+            Exigir(pedido.Lineas[0].Procesable && pedido.Lineas[1].Procesable, "No reconoce tallas nuevas sincronizadas");
+            Exigir(!pedido.Lineas[2].Procesable, "Aceptó talla ausente del catálogo");
+            var plan = planificador.CrearPlan(pedido, catalogo);
+            Exigir(plan.EsValido && plan.TotalMoldes == 4, "No planificó las tallas del catálogo");
+            Exigir(plan.Moldes[0].CodigoMolde == "molde_xl" && plan.Moldes[2].CodigoMolde == "molde_especial", "Grupo de talla incorrecto");
+            Exigir(plan.Moldes.All(x => x.PiezasIncluidas.Count == 5), "Omitió piezas del grupo");
+
+            // Una talla de otro tipo de molde no habilita esa talla para Fundas.
+            foreach (Molde molde in catalogo) molde.Capa = "Moldes Clasico Varon";
+            var otroPedido = lector.Analizar(1, "FUNDAS", archivo);
+            planificador.ValidarCatalogo(otroPedido, catalogo);
+            Exigir(!otroPedido.Lineas[0].Procesable, "Aceptó una talla de otra capa");
+        }
+        finally { if (File.Exists(archivo)) File.Delete(archivo); }
     }
 
     private static void PlanesCamisetas()

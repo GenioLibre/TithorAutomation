@@ -269,6 +269,16 @@ namespace TithorAutomation
                 );
 
 
+                // El catálogo del producto determina las tallas disponibles, sin listas fijas.
+                PlanificadorFundas planificadorFundas = ObtenerPlanificadorProducto(producto.Codigo) as PlanificadorFundas;
+                if (planificadorFundas != null)
+                    {
+                    ArchivoMaster master = archivoMasterRepositorio.ObtenerPrincipalPorProducto(producto.Id);
+                    List<Molde> catalogo = master == null
+                        ? new List<Molde>() : moldeRepositorio.ListarPorMaster(master.Id);
+                    planificadorFundas.ValidarCatalogo(resultadoPedidoActual, catalogo ?? new List<Molde>());
+                    }
+
                 MostrarResultadoPedido(resultadoPedidoActual);
 
                 btnCopiarMoldesPedido.Enabled = resultadoPedidoActual.PuedeAprobar;

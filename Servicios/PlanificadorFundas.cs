@@ -96,17 +96,33 @@ namespace TithorAutomation.Servicios
             return plan;
             }
 
+        public void ValidarCatalogo(ResultadoAnalisisPedido resultado, List<Molde> catalogo)
+            {
+            if (resultado == null) throw new ArgumentNullException(nameof(resultado));
+            if (catalogo == null) throw new ArgumentNullException(nameof(catalogo));
+
+            foreach (LineaPedido linea in resultado.Lineas)
+                {
+                if (!linea.Procesable) continue;
+                string talla = NormalizarTalla(linea.Talla);
+                string grupo = "molde_" + talla.ToLowerInvariant();
+                List<Molde> seleccion = BuscarGrupoFundas(catalogo, grupo, talla);
+                if (seleccion.Count == 0)
+                    {
+                    linea.MarcarNoProcesable("La talla '" + linea.Talla + "' no existe en el catálogo sincronizado del Master de este producto. Analice y sincronice el Master.");
+                    continue;
+                    }
+                foreach (string error in ValidarGrupoFundas(seleccion, talla))
+                    linea.MarcarNoProcesable("Talla " + linea.Talla + ": " + error + ".");
+                }
+            }
+
         private string NormalizarTalla(string talla)
             {
             if (string.IsNullOrWhiteSpace(talla))
                 return string.Empty;
 
-            string valor = talla.Trim().ToUpperInvariant();
-
-            if (valor == "S" || valor == "M" || valor == "L")
-                return valor;
-
-            return string.Empty;
+            return AnalizadorMasterCorel.NormalizarCodigo(talla).ToUpperInvariant();
             }
 
         private List<Molde> BuscarGrupoFundas(List<Molde> catalogo, string grupo, string talla)

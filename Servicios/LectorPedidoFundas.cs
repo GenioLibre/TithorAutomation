@@ -10,13 +10,6 @@ namespace TithorAutomation.Servicios
     {
     public class LectorPedidoFundas : ILectorPedidoProducto
         {
-        private readonly HashSet<string> tallasPermitidas = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "S",
-            "M",
-            "L"
-        };
-
         public bool PuedeLeer(string codigoProducto)
             {
             string codigo = (codigoProducto ?? string.Empty).Trim().ToUpperInvariant();
@@ -180,12 +173,6 @@ namespace TithorAutomation.Servicios
             if (string.IsNullOrWhiteSpace(linea.Talla))
                 {
                 linea.MarcarNoProcesable("La talla está vacía.");
-                }
-            else if (!tallasPermitidas.Contains(linea.Talla))
-                {
-                linea.MarcarNoProcesable(
-                    "La talla \"" + linea.Talla + "\" no existe en el Master actual."
-                );
                 }
 
             IXLCell celdaCantidad = hoja.Cell(numeroFila, columnas["cantidad"]);
