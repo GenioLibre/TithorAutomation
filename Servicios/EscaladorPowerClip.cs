@@ -429,6 +429,26 @@ namespace TithorAutomation.Servicios
                 throw new InvalidOperationException("Se detectaron contenedores duplicados. Revise los grupos del documento.");
         }
 
+        private static void ReemplazarTextoConEspaciado(TextRange story, string nuevoTexto)
+        {
+            if (story == null) return;
+
+            cdrLineSpacingType tipoEspaciadoLinea = story.LineSpacingType;
+            float espaciadoLinea = story.LineSpacing;
+            float espaciadoAntesParrafo = story.ParaSpacingBefore;
+            float espaciadoDespuesParrafo = story.ParaSpacingAfter;
+            float espaciadoCaracteres = story.CharSpacing;
+            float espaciadoPalabras = story.WordSpacing;
+
+            story.Text = nuevoTexto ?? string.Empty;
+
+            // Corel puede restablecer estos valores al sustituir el contenido del Story.
+            // Restaurarlos mantiene, por ejemplo, un espaciado de caracteres o líneas de 120%.
+            story.CharSpacing = espaciadoCaracteres;
+            story.WordSpacing = espaciadoPalabras;
+            story.SetLineSpacing(tipoEspaciadoLinea, espaciadoLinea, espaciadoAntesParrafo, espaciadoDespuesParrafo);
+        }
+
         private void ReemplazarVariables(Shape objeto, PiezaEscalable destino)
         {
             ReemplazarVariables(objeto, destino, new HashSet<string>(StringComparer.Ordinal));
@@ -465,9 +485,9 @@ namespace TithorAutomation.Servicios
                 }
 
                 if (nombreObjeto == "nombre")
-                    objeto.Text.Story.Text = destino.NombreVariable ?? string.Empty;
+                    ReemplazarTextoConEspaciado(objeto.Text.Story, destino.NombreVariable);
                 else if (nombreObjeto == "numero")
-                    objeto.Text.Story.Text = destino.NumeroVariable ?? string.Empty;
+                    ReemplazarTextoConEspaciado(objeto.Text.Story, destino.NumeroVariable);
             }
 
             // Los textos asociados a una línea no son hijos de un grupo normal.
