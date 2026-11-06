@@ -431,38 +431,72 @@ namespace TithorAutomation.Servicios
 
         private void ReemplazarVariables(Shape objeto, PiezaEscalable destino)
         {
-            if (objeto == null) return;
+            ReemplazarVariables(objeto, destino, new HashSet<string>(StringComparer.Ordinal));
+        }
+
+        private void ReemplazarVariables(Shape objeto, PiezaEscalable destino, HashSet<string> visitados)
+        {
+            if (objeto == null || !visitados.Add(objeto.StaticID.ToString())) return;
 
             string nombreObjeto = AnalizadorMasterCorel.NormalizarCodigo(ObtenerNombreSeguro(objeto));
 
             if (objeto.Type == cdrShapeType.cdrTextShape)
+            {
+                bool enTrayecto = false;
+                // La variable puede estar en la línea de control, no en el texto.
+                for (int i = 1; i <= objeto.Effects.Count; i++)
                 {
-                // Centrar antes de personalizar, conservando la ubicación de la plantilla.
-                double centroTextoX = objeto.CenterX;
-                double centroTextoY = objeto.CenterY;
-                objeto.Text.Story.Alignment = cdrAlignment.cdrCenterAlignment;
-                objeto.CenterX = centroTextoX;
-                objeto.CenterY = centroTextoY;
+                    Effect efecto = objeto.Effects[i];
+                    if (efecto.Type != cdrEffectType.cdrTextOnPath) continue;
+                    enTrayecto = true;
+                    string nombreTrayecto = AnalizadorMasterCorel.NormalizarCodigo(ObtenerNombreSeguro(efecto.TextOnPath.Path));
+                    if (nombreTrayecto == "nombre" || nombreTrayecto == "numero")
+                        nombreObjeto = nombreTrayecto;
+                }
+
+                // El texto en trayecto conserva su alineación, offset y vínculo con la curva.
+                if (!enTrayecto)
+                {
+                    double centroTextoX = objeto.CenterX;
+                    double centroTextoY = objeto.CenterY;
+                    objeto.Text.Story.Alignment = cdrAlignment.cdrCenterAlignment;
+                    objeto.CenterX = centroTextoX;
+                    objeto.CenterY = centroTextoY;
+                }
 
                 if (nombreObjeto == "nombre")
                     objeto.Text.Story.Text = destino.NombreVariable ?? string.Empty;
                 else if (nombreObjeto == "numero")
                     objeto.Text.Story.Text = destino.NumeroVariable ?? string.Empty;
+            }
+
+            // Los textos asociados a una línea no son hijos de un grupo normal.
+            // Recorrer sus efectos permite encontrarlos incluso si Shapes no los enumera.
+            for (int i = 1; i <= objeto.Effects.Count; i++)
+            {
+                Effect efecto = objeto.Effects[i];
+                if (efecto.Type != cdrEffectType.cdrControlPath) continue;
+                Effects asociados = efecto.ControlPath.Effects;
+                for (int j = 1; j <= asociados.Count; j++)
+                {
+                    Effect asociado = asociados[j];
+                    if (asociado.Type == cdrEffectType.cdrTextOnPath)
+                        ReemplazarVariables(asociado.TextOnPath.Text, destino, visitados);
                 }
+            }
 
             if (objeto.Type == cdrShapeType.cdrGroupShape && objeto.PowerClip == null)
-                {
+            {
                 for (int i = 1; i <= objeto.Shapes.Count; i++)
-                    ReemplazarVariables(objeto.Shapes[i], destino);
-                }
+                    ReemplazarVariables(objeto.Shapes[i], destino, visitados);
+            }
 
             if (objeto.PowerClip != null)
-                {
+            {
                 Shapes contenido = objeto.PowerClip.Shapes;
-
                 for (int i = 1; i <= contenido.Count; i++)
-                    ReemplazarVariables(contenido[i], destino);
-                }
+                    ReemplazarVariables(contenido[i], destino, visitados);
+            }
         }
 
         private Shape CrearCopiaDiseno(Shape diseno, Action registrarCambio)
