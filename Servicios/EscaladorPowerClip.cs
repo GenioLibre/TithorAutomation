@@ -429,24 +429,32 @@ namespace TithorAutomation.Servicios
                 throw new InvalidOperationException("Se detectaron contenedores duplicados. Revise los grupos del documento.");
         }
 
-        private static void ReemplazarTextoConEspaciado(TextRange story, string nuevoTexto)
+        private static void ReemplazarTextoConEspaciado(VGCore.Text texto, string nuevoTexto)
         {
-            if (story == null) return;
+            if (texto == null) return;
 
+            TextRange story = texto.Story;
+            bool esArtistico = texto.IsArtisticText;
             cdrLineSpacingType tipoEspaciadoLinea = story.LineSpacingType;
             float espaciadoLinea = story.LineSpacing;
-            float espaciadoAntesParrafo = story.ParaSpacingBefore;
-            float espaciadoDespuesParrafo = story.ParaSpacingAfter;
+            float espaciadoAntesParrafo = esArtistico ? -1 : story.ParaSpacingBefore;
+            float espaciadoDespuesParrafo = esArtistico ? -1 : story.ParaSpacingAfter;
             float espaciadoCaracteres = story.CharSpacing;
             float espaciadoPalabras = story.WordSpacing;
 
             story.Text = nuevoTexto ?? string.Empty;
+            story = texto.Story;
 
             // Corel puede restablecer estos valores al sustituir el contenido del Story.
             // Restaurarlos mantiene, por ejemplo, un espaciado de caracteres o líneas de 120%.
             story.CharSpacing = espaciadoCaracteres;
             story.WordSpacing = espaciadoPalabras;
-            story.SetLineSpacing(tipoEspaciadoLinea, espaciadoLinea, espaciadoAntesParrafo, espaciadoDespuesParrafo);
+            // El texto artístico (incluido el ajustado a trayecto) admite interlineado,
+            // pero no separación antes/después del párrafo. Omitir esos argumentos.
+            if (esArtistico)
+                story.SetLineSpacing(tipoEspaciadoLinea, espaciadoLinea);
+            else
+                story.SetLineSpacing(tipoEspaciadoLinea, espaciadoLinea, espaciadoAntesParrafo, espaciadoDespuesParrafo);
         }
 
         private void ReemplazarVariables(Shape objeto, PiezaEscalable destino)
@@ -485,9 +493,9 @@ namespace TithorAutomation.Servicios
                 }
 
                 if (nombreObjeto == "nombre")
-                    ReemplazarTextoConEspaciado(objeto.Text.Story, destino.NombreVariable);
+                    ReemplazarTextoConEspaciado(objeto.Text, destino.NombreVariable);
                 else if (nombreObjeto == "numero")
-                    ReemplazarTextoConEspaciado(objeto.Text.Story, destino.NumeroVariable);
+                    ReemplazarTextoConEspaciado(objeto.Text, destino.NumeroVariable);
             }
 
             // Los textos asociados a una línea no son hijos de un grupo normal.
