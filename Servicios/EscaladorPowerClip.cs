@@ -441,6 +441,7 @@ namespace TithorAutomation.Servicios
             float espaciadoDespuesParrafo = esArtistico ? -1 : story.ParaSpacingAfter;
             float espaciadoCaracteres = story.CharSpacing;
             float espaciadoPalabras = story.WordSpacing;
+            int espaciadoManual = story.RangeKerning;
 
             story.Text = nuevoTexto ?? string.Empty;
             story = texto.Story;
@@ -455,6 +456,10 @@ namespace TithorAutomation.Servicios
                 story.SetLineSpacing(tipoEspaciadoLinea, espaciadoLinea);
             else
                 story.SetLineSpacing(tipoEspaciadoLinea, espaciadoLinea, espaciadoAntesParrafo, espaciadoDespuesParrafo);
+
+            // El rango de espaciado manual es independiente de CharSpacing.
+            // Reaplicarlo al rango nuevo después del resto del formato.
+            story.RangeKerning = espaciadoManual;
         }
 
         private void ReemplazarVariables(Shape objeto, PiezaEscalable destino)
