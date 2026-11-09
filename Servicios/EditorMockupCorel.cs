@@ -24,7 +24,7 @@ namespace TithorAutomation.Servicios
         private Layer capaTrabajo;
         private Page paginaTrabajo;
         private string codigoCamiseta;
-        private readonly HashSet<string> mangasDerechasFrente = new HashSet<string>();
+        private readonly HashSet<string> mangasFrente = new HashSet<string>();
         public bool RequiereRecargar { get; private set; }
         private string carpetaTemporal;
         public List<CampoMockup> Campos { get; private set; } = new List<CampoMockup>();
@@ -131,14 +131,14 @@ namespace TithorAutomation.Servicios
             }
         }
 
-        private bool EsMangaDerechaFrente(CampoMockup campo, Shape destino)
+        private bool EsMangaFrente(CampoMockup campo, Shape destino)
         {
             return (codigoCamiseta == "clasico_varon_v" || codigoCamiseta == "clasico_varon_redondo")
-                && campo.Referencia == "manga_corta_derecha"
-                && (mangasDerechasFrente.Count == 0 || mangasDerechasFrente.Contains(Convert.ToString(destino.StaticID)));
+                && (campo.Referencia == "manga_corta_derecha" || campo.Referencia == "manga_corta_izquierda")
+                && (mangasFrente.Count == 0 || mangasFrente.Contains(Convert.ToString(destino.StaticID)));
         }
 
-        private void ColocarMangaDerechaFrente(VGCore.Application app, Shape copia, Shape destino, Action<string> informar)
+        private void ColocarMangaFrente(VGCore.Application app, Shape copia, Shape destino, double anguloFinal, Action<string> informar)
         {
             informar("Preparando el marco de la manga");
             copia.RotateEx(-copia.RotationAngle, copia.CenterX, copia.CenterY);
@@ -156,8 +156,8 @@ namespace TithorAutomation.Servicios
             // Conservar la alineación superior previa; bajar solo el pivote 10 mm
             // dentro del rectángulo antes de girar.
             double pivoteY = y - desplazamiento;
-            informar("Rotando la manga a 294.088 grados");
-            copia.RotateEx(294.088 - copia.RotationAngle, x, pivoteY);
+            informar("Rotando la manga a " + anguloFinal.ToString(System.Globalization.CultureInfo.InvariantCulture) + " grados");
+            copia.RotateEx(anguloFinal - copia.RotationAngle, x, pivoteY);
             copia.RotationCenterX = x;
             copia.RotationCenterY = pivoteY;
             ReemplazarContenidoMockup(copia, destino, informar);
@@ -387,8 +387,8 @@ namespace TithorAutomation.Servicios
                     grupo.CenterY = paginaTrabajo.CenterY;
                     foreach (CampoMockup campo in DetectarCamposCamiseta(grupo.Shapes))
                     {
-                        if (!variante.EsEspalda && campo.Referencia == "manga_corta_derecha")
-                            foreach (Shape destino in campo.Destinos) mangasDerechasFrente.Add(Convert.ToString(destino.StaticID));
+                        if (!variante.EsEspalda && (campo.Referencia == "manga_corta_derecha" || campo.Referencia == "manga_corta_izquierda"))
+                            foreach (Shape destino in campo.Destinos) mangasFrente.Add(Convert.ToString(destino.StaticID));
                         if (!campos.ContainsKey(campo.Nombre)) campos.Add(campo.Nombre, campo);
                         else campos[campo.Nombre].Destinos.AddRange(campo.Destinos);
                     }
@@ -523,9 +523,10 @@ namespace TithorAutomation.Servicios
                         etapa = "Pegando la referencia en el mockup";
                         Shape copia = capaTrabajo.Paste();
                         if (copia == null) throw new InvalidOperationException("No se pudo pegar la referencia " + tarea.Referencia + ".");
-                        if (EsMangaDerechaFrente(tarea, destino))
+                        if (EsMangaFrente(tarea, destino))
                         {
-                            ColocarMangaDerechaFrente(app, copia, destino, valor => etapa = valor);
+                            double angulo = tarea.Referencia == "manga_corta_izquierda" ? -294.088 : 294.088;
+                            ColocarMangaFrente(app, copia, destino, angulo, valor => etapa = valor);
                             continue;
                         }
                         etapa = "Midiendo el marco del diseño y el PowerClip de destino";
@@ -621,7 +622,7 @@ namespace TithorAutomation.Servicios
             capaTrabajo = null;
             paginaTrabajo = null;
             codigoCamiseta = null;
-            mangasDerechasFrente.Clear();
+            mangasFrente.Clear();
             Campos.Clear();
             RequiereRecargar = true;
             if (carpetaTemporal != null) { try { Directory.Delete(carpetaTemporal, true); } catch { } }
@@ -640,7 +641,7 @@ namespace TithorAutomation.Servicios
             capaTrabajo = null;
             paginaTrabajo = null;
             codigoCamiseta = null;
-            mangasDerechasFrente.Clear();
+            mangasFrente.Clear();
             Campos.Clear();
             if (carpetaTemporal != null) { try { Directory.Delete(carpetaTemporal, true); } catch { } }
             carpetaTemporal = null;
