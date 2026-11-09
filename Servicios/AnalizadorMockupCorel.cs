@@ -1,218 +1,93 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using TithorAutomation.Modelos;
 
 namespace TithorAutomation.Servicios
-    {
+{
     public sealed class AnalizadorMockupCorel
-        {
+    {
         public List<Mockup> Analizar(VGCore.Application corelApp, string rutaArchivo)
-            {
-            if (corelApp == null)
-                throw new InvalidOperationException("No existe conexión con CorelDRAW.");
-
+        {
+            if (corelApp == null) throw new InvalidOperationException("No existe conexión con CorelDRAW.");
             if (string.IsNullOrWhiteSpace(rutaArchivo) || !File.Exists(rutaArchivo))
-                throw new FileNotFoundException("No se encontró el archivo Master de mockups.", rutaArchivo);
-
-            List<Mockup> resultado = new List<Mockup>();
+                throw new FileNotFoundException("No se encontró el Master de mockups.", rutaArchivo);
             VGCore.Document documento = null;
-            bool cerrarAlFinal = false;
-
+            bool cerrar = false;
             try
+            {
+                for (int i = 1; i <= corelApp.Documents.Count; i++)
                 {
-                documento = BuscarDocumentoAbierto(corelApp, rutaArchivo);
-
-                if (documento == null)
+                    var abierto = corelApp.Documents[i];
+                    if (string.Equals(abierto.FullFileName, Path.GetFullPath(rutaArchivo), StringComparison.OrdinalIgnoreCase))
+                    { documento = abierto; break; }
+                }
+                if (documento == null) { documento = corelApp.OpenDocument(rutaArchivo); cerrar = true; }
+                if (documento.Dirty)
+                    throw new InvalidOperationException("Guarde los cambios del master en CorelDRAW y vuelva a analizar. La sincronización utiliza el archivo guardado.");
+                var resultado = new List<Mockup>();
+                for (int i = 1; i <= documento.Pages.Count; i++)
+                {
+                    VGCore.Page pagina = documento.Pages[i];
+                    string codigo = CodigoPagina(pagina.Name);
+                    if (codigo == null) continue;
+                    var mockup = new Mockup { Codigo = codigo, NombrePagina = pagina.Name, NombreGrupo = pagina.Name,
+                        Producto = codigo == "fundas" ? "Fundas" : "Camisetas deportivas", Estado = "Nuevo", FechaAnalisis = DateTime.Now };
+                    try
                     {
-                    documento = corelApp.OpenDocument(rutaArchivo);
-                    cerrarAlFinal = true;
+                        if (mockup.EsCamiseta)
+                        {
+                            var grupos = EditorMockupCorel.BuscarVariantesPagina(pagina);
+                            if (grupos.Count == 0) throw new InvalidOperationException("La página no contiene grupos como clasico_varon_redondo o clasico_varon_espalda.");
+                            var variantes = grupos.Select(x => VarianteMockupCamiseta.DesdeCodigo(EditorMockupCorel.Normalizar(x.Item2.Name))).ToList();
+                            if (variantes.GroupBy(x => new { x.Tipo, x.Corte, x.Cuello }).Any(x => x.Count() > 1))
+                                throw new InvalidOperationException("Hay variantes duplicadas para el mismo tipo, corte y cuello.");
+                            foreach (var variante in variantes.Where(x => !x.EsEspalda))
+                                if (!variantes.Any(x => x.EsEspalda && x.Tipo == variante.Tipo && x.Corte == variante.Corte))
+                                    throw new InvalidOperationException("Falta la espalda de " + variante.Tipo + " " + variante.Corte + ".");
+                            if (!variantes.Any(x => x.Tipo == "clasico" && x.Corte == "varon" && x.Cuello == "redondo") ||
+                                !variantes.Any(x => x.Tipo == "clasico" && x.Corte == "varon" && x.EsEspalda))
+                                throw new InvalidOperationException("La vista genérica requiere clasico_varon_redondo y clasico_varon_espalda.");
+                            var piezas = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                            foreach (var grupo in grupos)
+                            {
+                                try { foreach (var campo in EditorMockupCorel.DetectarCamposCamiseta(grupo.Item2.Shapes)) piezas.Add(campo.Nombre); }
+                                catch (Exception ex) { throw new InvalidOperationException(grupo.Item2.Name + ": " + ex.Message, ex); }
+                            }
+                            mockup.Variantes = string.Join("\n", variantes.Select(x => x.Codigo));
+                            mockup.Piezas = string.Join(", ", piezas.OrderBy(x => x));
+                            mockup.Observacion = variantes.Count + " variantes registradas en la página.";
+                        }
+                        else
+                        {
+                            var contenedores = EditorMockupCorel.BuscarContenedoresFundas(pagina);
+                            if (contenedores.Count != 1) throw new InvalidOperationException("La página Fundas debe contener una sola capa o grupo Diseño / Mockup Fundas.");
+                            var contenedor = contenedores[0];
+                            var objetos = contenedor.Item2 == null ? contenedor.Item1.Shapes : contenedor.Item2.Shapes;
+                            string nombre = contenedor.Item2 == null ? contenedor.Item1.Name : contenedor.Item2.Name;
+                            var campos = EditorMockupCorel.DetectarCamposFundas(objetos, nombre);
+                            mockup.Piezas = string.Join(", ", campos.Select(x => x.Nombre));
+                            mockup.Observacion = "Página Fundas válida.";
+                        }
                     }
-
-                for (int pagina = 1; pagina <= documento.Pages.Count; pagina++)
-                    AnalizarPagina(documento.Pages[pagina], resultado, Path.GetFileNameWithoutExtension(rutaArchivo));
-
-                MarcarDuplicados(resultado);
+                    catch (Exception ex) { mockup.Estado = "Inválido"; mockup.Observacion = ex.Message; }
+                    resultado.Add(mockup);
+                }
+                foreach (var repetidos in resultado.GroupBy(x => x.Codigo).Where(x => x.Count() > 1))
+                    foreach (var mockup in repetidos) { mockup.Estado = "Duplicado"; mockup.Observacion = "Existe más de una página para " + mockup.Producto + "."; }
+                if (resultado.Count == 0) throw new InvalidOperationException("Nombre las páginas Fundas y Camisetas deportivas (también se acepta Camisetas).");
                 return resultado;
-                }
-            finally
-                {
-                if (cerrarAlFinal && documento != null)
-                    {
-                    try { documento.Close(); }
-                    catch { }
-                    }
-                }
             }
+            finally { if (cerrar && documento != null) { try { documento.Close(); } catch { } } }
+        }
 
-        private void AnalizarPagina(VGCore.Page pagina, List<Mockup> resultado, string nombreArchivo)
-            {
-            for (int indiceCapa = 1; indiceCapa <= pagina.Layers.Count; indiceCapa++)
-                {
-                VGCore.Layer capa = pagina.Layers[indiceCapa];
-                string nombreCapa = (capa.Name ?? string.Empty).Trim();
-
-                // Las variantes pueden estar directamente en la capa o dentro de
-                // un grupo contenedor Mockup Camisetas, sin depender del nombre de página.
-                var variantes = EditorMockupCorel.BuscarGruposCamiseta(capa.Shapes);
-                if (variantes.Count > 0)
-                    {
-                    foreach (VGCore.Shape variante in variantes)
-                        AgregarMockup(resultado, variante.Name, variante.Shapes, "Grupo", false, null, true);
-                    continue;
-                    }
-
-
-                if (AnalizadorMasterCorel.NormalizarCodigo(nombreCapa) == "diseno" && EditorMockupCorel.Normalizar(pagina.Name) != "camisetas")
-                    {
-                    AgregarMockup(resultado, nombreCapa, capa.Shapes, "Capa", true, nombreArchivo);
-                    continue;
-                    }
-
-                if (EsNombreMockup(nombreCapa))
-                    {
-                    AgregarMockup(resultado, nombreCapa, capa.Shapes, "Capa");
-                    continue;
-                    }
-
-                for (int indice = 1; indice <= capa.Shapes.Count; indice++)
-                    {
-                    VGCore.Shape objeto = capa.Shapes[indice];
-                    string nombre = ObtenerNombreSeguro(objeto);
-
-                    if (EsNombreMockup(nombre) && objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
-                        AgregarMockup(resultado, nombre, objeto.Shapes, "Grupo");
-                    }
-                }
-            }
-
-        private void AgregarMockup(List<Mockup> resultado, string nombre, VGCore.Shapes objetos, string origen, bool partesDirectas = false, string nombreArchivo = null, bool camiseta = false)
-            {
-            string codigo = AnalizadorMasterCorel.NormalizarCodigo(nombre);
-            string producto = camiseta ? nombre.Replace('_', ' ') : partesDirectas ? nombreArchivo : ObtenerProducto(nombre);
-
-            Mockup mockup = new Mockup
-                {
-                Codigo = codigo,
-                NombreGrupo = nombre,
-                Producto = producto,
-                Estado = "Nuevo",
-                FechaAnalisis = DateTime.Now,
-                Observacion = origen + " válido."
-                };
-
-            if (objetos.Count <= 0)
-                {
-                mockup.Estado = "Inválido";
-                mockup.Observacion = "La " + origen.ToLowerInvariant() + " no contiene elementos.";
-                }
-            else if (string.IsNullOrWhiteSpace(producto))
-                {
-                mockup.Estado = "Inválido";
-                mockup.Observacion = "Use el formato Mockup_NombreDelProducto.";
-                }
-
-            if (mockup.EsValido)
-                {
-                try
-                    {
-                    var campos = camiseta ? EditorMockupCorel.DetectarCamposCamiseta(objetos) : EditorMockupCorel.DetectarCampos(objetos, partesDirectas);
-                    mockup.Piezas = string.Join(", ", campos.Select(x => x.Nombre));
-                    mockup.Observacion = "Piezas: " + mockup.Piezas;
-                    }
-                catch (Exception ex)
-                    {
-                    mockup.Estado = "Inválido";
-                    mockup.Observacion = ex.Message;
-                    }
-                }
-            resultado.Add(mockup);
-            }
-
-        private bool EsNombreMockup(string nombre)
-            {
-            return AnalizadorMasterCorel.NormalizarCodigo(nombre)
-                .StartsWith("mockup_", StringComparison.OrdinalIgnoreCase);
-            }
-
-        private string ObtenerProducto(string nombre)
-            {
-            string codigo = AnalizadorMasterCorel.NormalizarCodigo(nombre);
-
-            if (!codigo.StartsWith("mockup_", StringComparison.OrdinalIgnoreCase))
-                return string.Empty;
-
-            string producto = codigo.Substring("mockup_".Length).Replace('_', ' ').Trim();
-
-            return string.IsNullOrWhiteSpace(producto)
-                ? string.Empty
-                : CultureInfo.CurrentCulture.TextInfo.ToTitleCase(producto);
-            }
-
-        private int CantidadElementos(VGCore.Shape objeto)
-            {
-            try
-                {
-                if (objeto.Shapes != null)
-                    return objeto.Shapes.Count;
-                }
-            catch { }
-
-            return 1;
-            }
-
-        private string ObtenerNombreSeguro(VGCore.Shape objeto)
-            {
-            try { return (objeto.Name ?? string.Empty).Trim(); }
-            catch { return string.Empty; }
-            }
-
-        private void MarcarDuplicados(List<Mockup> mockups)
-            {
-            Dictionary<string, List<Mockup>> grupos = new Dictionary<string, List<Mockup>>(StringComparer.OrdinalIgnoreCase);
-
-            foreach (Mockup mockup in mockups)
-                {
-                if (!grupos.ContainsKey(mockup.Codigo))
-                    grupos.Add(mockup.Codigo, new List<Mockup>());
-
-                grupos[mockup.Codigo].Add(mockup);
-                }
-
-            foreach (KeyValuePair<string, List<Mockup>> grupo in grupos)
-                {
-                if (grupo.Value.Count <= 1)
-                    continue;
-
-                foreach (Mockup mockup in grupo.Value)
-                    {
-                    mockup.Estado = "Duplicado";
-                    mockup.Observacion = "Existe más de una capa o grupo con el nombre " + mockup.NombreGrupo + ".";
-                    }
-                }
-            }
-
-        private VGCore.Document BuscarDocumentoAbierto(VGCore.Application corelApp, string rutaArchivo)
-            {
-            string ruta = Path.GetFullPath(rutaArchivo);
-
-            for (int i = 1; i <= corelApp.Documents.Count; i++)
-                {
-                try
-                    {
-                    string abierta = corelApp.Documents[i].FullFileName;
-
-                    if (!string.IsNullOrWhiteSpace(abierta) &&
-                        string.Equals(Path.GetFullPath(abierta), ruta, StringComparison.OrdinalIgnoreCase))
-                        return corelApp.Documents[i];
-                    }
-                catch { }
-                }
-
+        public static string CodigoPagina(string nombre)
+        {
+            string codigo = EditorMockupCorel.Normalizar(nombre);
+            if (codigo == "fundas") return "fundas";
+            if (codigo == "camisetas" || codigo == "camisetas_deportivas") return "camisetas_deportivas";
             return null;
-            }
         }
     }
-
+}

@@ -152,6 +152,12 @@
     <Compile Include="frmPrincipal.Designer.cs">
       <DependentUpon>frmPrincipal.cs</DependentUpon>
     </Compile>
+    <Compile Include="frmOpcionesMockupCamiseta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmOpcionesMockupCamiseta.Designer.cs">
+      <DependentUpon>frmOpcionesMockupCamiseta.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmProducto.cs">
       <SubType>Form</SubType>
     </Compile>

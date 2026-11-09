@@ -24,6 +24,7 @@ namespace TithorAutomation.Servicios
         private Layer capaTrabajo;
         private Page paginaTrabajo;
         private string codigoCamiseta;
+        private readonly HashSet<string> mangasDerechasFrente = new HashSet<string>();
         public bool RequiereRecargar { get; private set; }
         private string carpetaTemporal;
         public List<CampoMockup> Campos { get; private set; } = new List<CampoMockup>();
@@ -86,9 +87,7 @@ namespace TithorAutomation.Servicios
 
         public static bool EsGrupoCamiseta(string nombre)
         {
-            string[] partes = Normalizar(nombre).Split('_');
-            return partes.Length >= 3 && (partes[0] == "clasico" || partes[0] == "ranglan")
-                && (partes[1] == "varon" || partes[1] == "mujer");
+            return VarianteMockupCamiseta.DesdeCodigo(Normalizar(nombre)) != null;
         }
 
         public static List<Shape> BuscarGruposCamiseta(Shapes objetos)
@@ -132,10 +131,11 @@ namespace TithorAutomation.Servicios
             }
         }
 
-        private bool EsMangaDerechaFrente(CampoMockup campo)
+        private bool EsMangaDerechaFrente(CampoMockup campo, Shape destino)
         {
             return (codigoCamiseta == "clasico_varon_v" || codigoCamiseta == "clasico_varon_redondo")
-                && campo.Referencia == "manga_corta_derecha";
+                && campo.Referencia == "manga_corta_derecha"
+                && (mangasDerechasFrente.Count == 0 || mangasDerechasFrente.Contains(Convert.ToString(destino.StaticID)));
         }
 
         private void ColocarMangaDerechaFrente(VGCore.Application app, Shape copia, Shape destino)
@@ -205,7 +205,7 @@ namespace TithorAutomation.Servicios
             if (double.IsNaN(y) || double.IsInfinity(y)) throw new InvalidOperationException("No se encontró el punto superior de la manga.");
         }
 
-        public void Cargar(VGCore.Application app, string rutaMaster, Mockup mockup)
+        public void Cargar(VGCore.Application app, string rutaMaster, Mockup mockup, OpcionesMockupCamiseta opciones = null)
         {
             if (!File.Exists(rutaMaster)) throw new FileNotFoundException("No se encuentra el master de mockups.", rutaMaster);
             Dispose();
@@ -218,6 +218,11 @@ namespace TithorAutomation.Servicios
             try
             {
                 documento = app.OpenDocument(copia);
+                if (!string.IsNullOrWhiteSpace(mockup.NombrePagina))
+                {
+                    CargarPagina(app, mockup, opciones ?? new OpcionesMockupCamiseta());
+                    return;
+                }
                 int coincidencias = 0;
                 for (int p = 1; p <= documento.Pages.Count; p++)
                 {
@@ -276,6 +281,123 @@ namespace TithorAutomation.Servicios
                 capaTrabajo.Activate();
             }
             catch { Dispose(); throw; }
+        }
+
+        public static List<Tuple<Layer, Shape>> BuscarVariantesPagina(Page pagina)
+        {
+            var resultado = new List<Tuple<Layer, Shape>>();
+            for (int l = 1; l <= pagina.Layers.Count; l++)
+            {
+                Layer capa = pagina.Layers[l];
+                if (Normalizar(capa.Name) == "guias" || Normalizar(capa.Name) == "guides") continue;
+                resultado.AddRange(BuscarGruposCamiseta(capa.Shapes).Select(x => Tuple.Create(capa, x)));
+            }
+            return resultado;
+        }
+
+        public static List<Tuple<Layer, Shape>> BuscarContenedoresFundas(Page pagina)
+        {
+            var resultado = new List<Tuple<Layer, Shape>>();
+            for (int l = 1; l <= pagina.Layers.Count; l++)
+            {
+                Layer capa = pagina.Layers[l];
+                string nombre = Normalizar(capa.Name);
+                if (nombre == "diseno" || nombre.StartsWith("mockup_", StringComparison.Ordinal))
+                    resultado.Add(Tuple.Create(capa, (Shape)null));
+                else
+                    for (int i = 1; i <= capa.Shapes.Count; i++)
+                    {
+                        Shape grupo = capa.Shapes[i];
+                        nombre = Normalizar(grupo.Name);
+                        if (grupo.Type == cdrShapeType.cdrGroupShape && grupo.PowerClip == null &&
+                            (nombre == "diseno" || nombre.StartsWith("mockup_", StringComparison.Ordinal)))
+                            resultado.Add(Tuple.Create(capa, grupo));
+                    }
+            }
+            if (resultado.Count == 0)
+            {
+                // Con una única capa de contenido, su nombre no define el producto:
+                // lo define la página Fundas.
+                for (int l = 1; l <= pagina.Layers.Count; l++)
+                {
+                    Layer capa = pagina.Layers[l];
+                    string nombre = Normalizar(capa.Name);
+                    if (nombre != "guias" && nombre != "guides" && capa.Shapes.Count > 0)
+                        resultado.Add(Tuple.Create(capa, (Shape)null));
+                }
+            }
+            return resultado;
+        }
+
+        public static List<CampoMockup> DetectarCamposFundas(Shapes objetos, string nombre)
+        {
+            bool directos = Normalizar(nombre) == "diseno" || (objetos.Count > 0 &&
+                Enumerable.Range(1, objetos.Count).All(i => objetos[i].PowerClip != null));
+            return DetectarCampos(objetos, directos);
+        }
+
+        private void CargarPagina(VGCore.Application app, Mockup mockup, OpcionesMockupCamiseta opciones)
+        {
+            var paginas = new List<Page>();
+            for (int p = 1; p <= documento.Pages.Count; p++)
+                if (AnalizadorMockupCorel.CodigoPagina(documento.Pages[p].Name) == mockup.Codigo) paginas.Add(documento.Pages[p]);
+            if (paginas.Count != 1) throw new InvalidOperationException("No se encuentra una única página " + mockup.Producto + ". Vuelva a sincronizar.");
+            paginaTrabajo = paginas[0];
+            paginaTrabajo.Activate();
+            composicion = app.CreateShapeRange();
+            if (mockup.EsCamiseta)
+            {
+                var grupos = BuscarVariantesPagina(paginaTrabajo);
+                var seleccion = grupos.Where(x =>
+                {
+                    var variante = VarianteMockupCamiseta.DesdeCodigo(Normalizar(x.Item2.Name));
+                    return variante.Tipo == opciones.Tipo && variante.Corte == opciones.Corte &&
+                        (variante.EsEspalda || variante.Cuello == opciones.Cuello);
+                }).ToList();
+                if (seleccion.Count != 2 || seleccion.Count(x => VarianteMockupCamiseta.DesdeCodigo(Normalizar(x.Item2.Name)).EsEspalda) != 1)
+                    throw new InvalidOperationException("Falta el frente o la espalda, o hay duplicados para la camiseta seleccionada. Vuelva a analizar el master.");
+                var campos = new Dictionary<string, CampoMockup>(StringComparer.OrdinalIgnoreCase);
+                foreach (var entrada in seleccion)
+                {
+                    Shape grupo = entrada.Item2;
+                    var variante = VarianteMockupCamiseta.DesdeCodigo(Normalizar(grupo.Name));
+                    entrada.Item1.Visible = true;
+                    entrada.Item1.Editable = true;
+                    grupo.Visible = true;
+                    grupo.Locked = false;
+                    grupo.CenterY = paginaTrabajo.CenterY;
+                    foreach (CampoMockup campo in DetectarCamposCamiseta(grupo.Shapes))
+                    {
+                        if (!variante.EsEspalda && campo.Referencia == "manga_corta_derecha")
+                            foreach (Shape destino in campo.Destinos) mangasDerechasFrente.Add(Convert.ToString(destino.StaticID));
+                        if (!campos.ContainsKey(campo.Nombre)) campos.Add(campo.Nombre, campo);
+                        else campos[campo.Nombre].Destinos.AddRange(campo.Destinos);
+                    }
+                    if (!variante.EsEspalda) codigoCamiseta = Normalizar(grupo.Name);
+                    composicion.Add(grupo);
+                }
+                // La copia temporal contiene únicamente las dos vistas elegidas.
+                // Los grupos del master original nunca se modifican.
+                foreach (var entrada in grupos)
+                    if (!seleccion.Any(x => Normalizar(x.Item2.Name) == Normalizar(entrada.Item2.Name))) entrada.Item2.Delete();
+                Campos = campos.Values.ToList();
+                capaTrabajo = seleccion[0].Item1;
+            }
+            else
+            {
+                var contenedores = BuscarContenedoresFundas(paginaTrabajo);
+                if (contenedores.Count != 1) throw new InvalidOperationException("La página Fundas debe contener un solo mockup.");
+                var entrada = contenedores[0];
+                capaTrabajo = entrada.Item1;
+                Shapes objetos = entrada.Item2 == null ? capaTrabajo.Shapes : entrada.Item2.Shapes;
+                string nombre = entrada.Item2 == null ? capaTrabajo.Name : entrada.Item2.Name;
+                Campos = DetectarCamposFundas(objetos, nombre);
+                if (entrada.Item2 == null) composicion = objetos.All();
+                else { entrada.Item2.Visible = true; composicion.Add(entrada.Item2); }
+            }
+            capaTrabajo.Visible = true;
+            capaTrabajo.Editable = true;
+            capaTrabajo.Activate();
         }
 
         public static Dictionary<string, Shape> ValidarReferenciasCapa(Layer capaDiseno, IEnumerable<CampoMockup> campos)
@@ -363,7 +485,7 @@ namespace TithorAutomation.Servicios
                         cambios = true;
                         Shape copia = capaTrabajo.Paste();
                         if (copia == null) throw new InvalidOperationException("No se pudo pegar la referencia " + tarea.Referencia + ".");
-                        if (EsMangaDerechaFrente(tarea))
+                        if (EsMangaDerechaFrente(tarea, destino))
                         {
                             ColocarMangaDerechaFrente(app, copia, destino);
                             continue;
@@ -452,6 +574,7 @@ namespace TithorAutomation.Servicios
             capaTrabajo = null;
             paginaTrabajo = null;
             codigoCamiseta = null;
+            mangasDerechasFrente.Clear();
             Campos.Clear();
             RequiereRecargar = true;
             if (carpetaTemporal != null) { try { Directory.Delete(carpetaTemporal, true); } catch { } }
@@ -470,6 +593,7 @@ namespace TithorAutomation.Servicios
             capaTrabajo = null;
             paginaTrabajo = null;
             codigoCamiseta = null;
+            mangasDerechasFrente.Clear();
             Campos.Clear();
             if (carpetaTemporal != null) { try { Directory.Delete(carpetaTemporal, true); } catch { } }
             carpetaTemporal = null;

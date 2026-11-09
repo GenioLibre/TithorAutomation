@@ -137,7 +137,7 @@ namespace TithorAutomation
 
                 btnAnalizarMasterMockups.Enabled = false;
                 btnSincronizarMockups.Enabled = false;
-                lblEstadoMockups.Text = "Analizando capas y grupos Mockup_*...";
+                lblEstadoMockups.Text = "Analizando páginas Fundas y Camisetas deportivas...";
                 lblEstadoMockups.Refresh();
 
                 List<Mockup> guardados = mockupRepositorio.ObtenerMockups(archivoMockupMasterActual.Id);
@@ -178,6 +178,7 @@ namespace TithorAutomation
                 int indice = dgvCatalogoMockups.Rows.Add(mockup.Estado, mockup.Codigo, mockup.Producto, mockup.NombreGrupo, mockup.Piezas);
                 DataGridViewRow fila = dgvCatalogoMockups.Rows[indice];
                 fila.Tag = mockup;
+                fila.Cells[colNombreGrupoMockup.Index].ToolTipText = mockup.Variantes ?? mockup.Observacion ?? string.Empty;
 
                 if (!mockup.EsValido)
                     {
@@ -214,6 +215,8 @@ namespace TithorAutomation
                     mockup.Estado = "Correcto";
 
                 MostrarMockups(mockupsAnalizados);
+                CargarListaMockups();
+                MostrarSeleccionMockup();
                 btnSincronizarMockups.Enabled = false;
                 lblEstadoMockups.Text = "Master sincronizado correctamente. " + mockupsAnalizados.Count + " mockups y sus vistas JPEG guardados.";
                 }

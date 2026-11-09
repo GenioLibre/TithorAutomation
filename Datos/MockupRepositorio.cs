@@ -69,7 +69,7 @@ VALUES (@Ruta, @Nombre, @Hash, @Tamano, @Fecha, 0, 1); SELECT last_insert_rowid(
             using (SQLiteConnection conexion = BaseDatos.CrearConexion())
                 {
                 conexion.Open();
-                string sql = "SELECT Id, MasterId, Codigo, NombreGrupo, Producto, Estado, FechaAnalisis, Piezas FROM Mockups WHERE MasterId = @MasterId ORDER BY Id;";
+                string sql = "SELECT Id, MasterId, Codigo, NombreGrupo, Producto, Estado, FechaAnalisis, Piezas, NombrePagina, Variantes FROM Mockups WHERE MasterId = @MasterId ORDER BY Id;";
 
                 using (SQLiteCommand comando = new SQLiteCommand(sql, conexion))
                     {
@@ -87,6 +87,8 @@ VALUES (@Ruta, @Nombre, @Hash, @Tamano, @Fecha, 0, 1); SELECT last_insert_rowid(
                                 NombreGrupo = Convert.ToString(lector["NombreGrupo"]),
                                 Producto = Convert.ToString(lector["Producto"]),
                                 Piezas = Convert.ToString(lector["Piezas"]),
+                                NombrePagina = Convert.ToString(lector["NombrePagina"]),
+                                Variantes = Convert.ToString(lector["Variantes"]),
                                 Estado = Convert.ToString(lector["Estado"]),
                                 FechaAnalisis = ConvertirFecha(lector["FechaAnalisis"])
                                 });
@@ -111,8 +113,8 @@ VALUES (@Ruta, @Nombre, @Hash, @Tamano, @Fecha, 0, 1); SELECT last_insert_rowid(
                         borrar.ExecuteNonQuery();
                         }
 
-                    string sql = @"INSERT INTO Mockups (MasterId, Codigo, NombreGrupo, Producto, Estado, FechaAnalisis, Piezas)
-VALUES (@MasterId, @Codigo, @NombreGrupo, @Producto, @Estado, @Fecha, @Piezas);";
+                    string sql = @"INSERT INTO Mockups (MasterId, Codigo, NombreGrupo, Producto, Estado, FechaAnalisis, Piezas, NombrePagina, Variantes)
+VALUES (@MasterId, @Codigo, @NombreGrupo, @Producto, @Estado, @Fecha, @Piezas, @Pagina, @Variantes);";
 
                     foreach (Mockup mockup in mockups)
                         {
@@ -124,6 +126,8 @@ VALUES (@MasterId, @Codigo, @NombreGrupo, @Producto, @Estado, @Fecha, @Piezas);"
                             comando.Parameters.AddWithValue("@Producto", mockup.Producto);
                             comando.Parameters.AddWithValue("@Estado", "Correcto");
                             comando.Parameters.AddWithValue("@Piezas", mockup.Piezas ?? string.Empty);
+                            comando.Parameters.AddWithValue("@Pagina", mockup.NombrePagina ?? string.Empty);
+                            comando.Parameters.AddWithValue("@Variantes", mockup.Variantes ?? string.Empty);
                             comando.Parameters.AddWithValue("@Fecha", DateTime.Now.ToString("o"));
                             comando.ExecuteNonQuery();
                             }
