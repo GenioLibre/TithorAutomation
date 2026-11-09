@@ -131,14 +131,24 @@ namespace TithorAutomation.Servicios
             }
         }
 
-        private bool EsMangaFrente(CampoMockup campo, Shape destino)
+        private bool EsMangaCamiseta(CampoMockup campo)
         {
-            return (codigoCamiseta == "clasico_varon_v" || codigoCamiseta == "clasico_varon_redondo")
-                && (campo.Referencia == "manga_corta_derecha" || campo.Referencia == "manga_corta_izquierda")
-                && (mangasFrente.Count == 0 || mangasFrente.Contains(Convert.ToString(destino.StaticID)));
+            return (codigoCamiseta == "clasico_varon_v" || codigoCamiseta == "clasico_varon_redondo" || codigoCamiseta == "clasico_varon_espalda")
+                && (campo.Referencia == "manga_corta_derecha" || campo.Referencia == "manga_corta_izquierda");
         }
 
-        private void ColocarMangaFrente(VGCore.Application app, Shape copia, Shape destino, double anguloFinal, Action<string> informar)
+        private double AnguloManga(CampoMockup campo, Shape destino)
+        {
+            bool posterior = mangasFrente.Count > 0
+                ? !mangasFrente.Contains(Convert.ToString(destino.StaticID))
+                : codigoCamiseta == "clasico_varon_espalda";
+            bool izquierda = campo.Referencia == "manga_corta_izquierda";
+            // Frente: derecha positiva, izquierda negativa.
+            // Espalda: izquierda positiva, derecha negativa.
+            return izquierda == posterior ? 294.088 : -294.088;
+        }
+
+        private void ColocarMangaCamiseta(VGCore.Application app, Shape copia, Shape destino, double anguloFinal, Action<string> informar)
         {
             informar("Preparando el marco de la manga");
             copia.RotateEx(-copia.RotationAngle, copia.CenterX, copia.CenterY);
@@ -523,10 +533,10 @@ namespace TithorAutomation.Servicios
                         etapa = "Pegando la referencia en el mockup";
                         Shape copia = capaTrabajo.Paste();
                         if (copia == null) throw new InvalidOperationException("No se pudo pegar la referencia " + tarea.Referencia + ".");
-                        if (EsMangaFrente(tarea, destino))
+                        if (EsMangaCamiseta(tarea))
                         {
-                            double angulo = tarea.Referencia == "manga_corta_izquierda" ? -294.088 : 294.088;
-                            ColocarMangaFrente(app, copia, destino, angulo, valor => etapa = valor);
+                            double angulo = AnguloManga(tarea, destino);
+                            ColocarMangaCamiseta(app, copia, destino, angulo, valor => etapa = valor);
                             continue;
                         }
                         etapa = "Midiendo el marco del diseño y el PowerClip de destino";
