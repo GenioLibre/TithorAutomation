@@ -598,13 +598,17 @@ namespace TithorAutomation.Servicios
             documento.Activate();
             paginaTrabajo.Activate();
             capaTrabajo.Activate();
-            composicion.CreateSelection();
-            double ancho = composicion.SizeWidth;
-            double alto = composicion.SizeHeight;
+            // Camisetas: incluir el fondo y los elementos de la página, no solo
+            // los grupos de frente y espalda. Fundas conserva su exportación actual.
+            bool paginaCompleta = !string.IsNullOrWhiteSpace(codigoCamiseta);
+            if (!paginaCompleta) composicion.CreateSelection();
+            double ancho = paginaCompleta ? paginaTrabajo.SizeWidth : composicion.SizeWidth;
+            double alto = paginaCompleta ? paginaTrabajo.SizeHeight : composicion.SizeHeight;
             if (ancho <= 0 || alto <= 0) throw new InvalidOperationException("El mockup no tiene dimensiones válidas.");
             int w = Math.Max(1, (int)Math.Round(ladoMayor * ancho / Math.Max(ancho, alto)));
             int h = Math.Max(1, (int)Math.Round(ladoMayor * alto / Math.Max(ancho, alto)));
-            var filtro = documento.ExportBitmap(ruta, cdrFilter.cdrJPEG, cdrExportRange.cdrSelection, cdrImageType.cdrRGBColorImage, w, h, 150, 150);
+            cdrExportRange rango = paginaCompleta ? cdrExportRange.cdrCurrentPage : cdrExportRange.cdrSelection;
+            var filtro = documento.ExportBitmap(ruta, cdrFilter.cdrJPEG, rango, cdrImageType.cdrRGBColorImage, w, h, 150, 150);
             filtro.Finish();
             if (!File.Exists(ruta) || new FileInfo(ruta).Length == 0) throw new IOException("CorelDRAW no generó el JPEG.");
         }
