@@ -162,6 +162,90 @@ namespace TithorAutomation.Servicios
             return new InvalidOperationException("No se pudo preparar el rib '" + destino.Name + "'. " + detalle);
         }
 
+        // CornerIndices puede cruzar COM como SAFEARRAYs anidados, incluidos
+        // Int32[*] con límite inferior distinto de cero. Mantener su estructura
+        // al devolverlo a Corel; nunca convertir un array completo a Int32.
+        internal static object MapearEsquinas(object valor, int cantidadNodos, Func<int, int> mapear)
+        {
+            object registros = valor;
+            while (registros is Array && ((Array)registros).Length == 1)
+                registros = ((Array)registros).Cast<object>().First();
+            Array matriz = registros as Array;
+            if (matriz == null || matriz.Length != 4)
+                throw new InvalidOperationException("Formato de esquinas no reconocido: " + DescribirMatriz(valor));
+            var filas = matriz.Cast<object>().Select(x =>
+            {
+                var hoja = new List<int>();
+                LeerEnteros(x, hoja);
+                return hoja;
+            }).ToList();
+            int ancho = filas[0].Count;
+            if (ancho == 0 || filas.Any(f => f.Count != ancho))
+                throw new InvalidOperationException("Esquinas con estructura desigual: " + DescribirMatriz(valor));
+            var columnas = new List<int>();
+            var resultados = new Dictionary<int, int[]>();
+            for (int columna = 0; columna < ancho; columna++)
+            {
+                int[] indices = filas.Select(f => f[columna]).ToArray();
+                if (indices.Any(i => i < 1 || i > cantidadNodos) || indices.Distinct().Count() != 4) continue;
+                int[] destino = indices.Select(mapear).ToArray();
+                if (destino.Distinct().Count() != 4) continue;
+                columnas.Add(columna);
+                resultados.Add(columna, destino);
+            }
+            if (columnas.Count != 1)
+                throw new InvalidOperationException("No se pudo identificar una única columna de nodos en las esquinas: " + DescribirMatriz(valor));
+            int elegida = columnas[0], posicion = 0;
+            // Los demás valores de cada registro (si existen) permanecen intactos.
+            return TransformarMatriz(valor, original =>
+            {
+                int fila = posicion / ancho, columna = posicion++ % ancho;
+                return columna == elegida
+                    ? Convert.ChangeType(resultados[elegida][fila], original.GetType(), System.Globalization.CultureInfo.InvariantCulture)
+                    : original;
+            });
+        }
+
+        private static void LeerEnteros(object valor, List<int> salida)
+        {
+            Array matriz = valor as Array;
+            if (matriz != null)
+            {
+                foreach (object elemento in matriz) LeerEnteros(elemento, salida);
+                return;
+            }
+            if (!(valor is int) && !(valor is short) && !(valor is long) && !(valor is byte))
+                throw new InvalidOperationException("Tipo no numérico en CornerIndices: " + (valor == null ? "null" : valor.GetType().FullName));
+            salida.Add(Convert.ToInt32(valor));
+        }
+
+        private static object TransformarMatriz(object valor, Func<object, object> transformar)
+        {
+            Array original = valor as Array;
+            if (original == null) return transformar(valor);
+            Array copia = (Array)original.Clone();
+            int[] indices = new int[original.Rank];
+            Action<int> recorrer = null;
+            recorrer = dimension =>
+            {
+                for (int i = original.GetLowerBound(dimension); i <= original.GetUpperBound(dimension); i++)
+                {
+                    indices[dimension] = i;
+                    if (dimension + 1 < original.Rank) recorrer(dimension + 1);
+                    else copia.SetValue(TransformarMatriz(original.GetValue(indices), transformar), indices);
+                }
+            };
+            recorrer(0);
+            return copia;
+        }
+
+        private static string DescribirMatriz(object valor)
+        {
+            Array matriz = valor as Array;
+            if (matriz == null) return Convert.ToString(valor, System.Globalization.CultureInfo.InvariantCulture);
+            return matriz.GetType().Name + "[" + string.Join(",", matriz.Cast<object>().Select(DescribirMatriz)) + "]";
+        }
+
         internal static void NormalizarOrientacion(Shape copia)
         {
             // Modificar únicamente la copia: el documento fuente conserva su
@@ -206,21 +290,19 @@ namespace TithorAutomation.Servicios
                 false, cdrEnvelopeCopyMode.cdrEnvelopeUseOriginal);
             // Leer el orden de esquinas de Corel, en vez de asumir el orden del
             // SAFEARRAY o la orientación/nodo inicial de la curva del master.
-            Array originales = (Array)efecto.Envelope.CornerIndices;
-            if (originales.Length != 4) throw new InvalidOperationException("CorelDRAW no devolvió las cuatro esquinas de la envolvente del rib.");
+            informar("Leyendo las esquinas de la envolvente de CorelDRAW");
             Curve neutra = efecto.Envelope.Container;
-            int[] esquinas = new int[4];
-            int posicion = 0;
-            foreach (object indice in originales)
+            object esquinas = MapearEsquinas(efecto.Envelope.CornerIndices, neutra.Nodes.Count, indice =>
             {
-                Node nodo = neutra.Nodes[Convert.ToInt32(indice)];
+                Node nodo = neutra.Nodes[indice];
                 bool izquierda = nodo.PositionX < tramo.Largo / 2;
                 bool superior = nodo.PositionY > tramo.Alto / 2;
-                esquinas[posicion++] = izquierda
+                return izquierda
                     ? (superior ? tramo.SuperiorIzquierdo : tramo.InferiorIzquierdo)
                     : (superior ? tramo.SuperiorDerecho : tramo.InferiorDerecho);
-            }
-            if (esquinas.Distinct().Count() != 4 || !efecto.Envelope.CopyFromCurve(tramo.Contorno,
+            });
+            informar("Aplicando la envolvente curva al rib");
+            if (!efecto.Envelope.CopyFromCurve(tramo.Contorno,
                 cdrEnvelopeMode.cdrEnvelopeOriginal, false, cdrEnvelopeCopyMode.cdrEnvelopeUseOriginal, esquinas))
                 throw new InvalidOperationException("No se pudo adaptar la envolvente del rib al cuello.");
             return imagen;
