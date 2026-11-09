@@ -48,16 +48,15 @@ estos PowerClips y por encima: el contenido de cada destino se reemplaza.
    su flujo anterior y no exigen esta referencia.
 2. Usar una tira de prueba con franjas de colores, números de izquierda a derecha
    y una marca en el borde superior. Aplicar por lote y después individualmente.
-   Los tramos deben recibir recortes sucesivos, primero frente y luego espalda;
-   dentro de cada vista, de izquierda a derecha. No deben repetirse todos los
-   dibujos completos en cada destino ni quedar el borde superior abajo.
+   Cada tramo debe recibir una copia independiente centrada del mismo rib.
+   Puede repetirse el estampado entre destinos; no debe quedar el borde superior abajo.
 3. Comprobar curvas redondas y en V, con distintos nodos iniciales y direcciones
    del contorno. La envolvente debe seguir los bordes originales sin cruzarse.
 4. El grosor se obtiene del promedio de ambos cierres laterales, NO de la caja
    envolvente del cuello. El largo se obtiene del promedio de ambos bordes
    curvos. El excedente del rectángulo se recorta simétricamente en sus extremos.
-5. Usar un rib demasiado corto y una curva abierta: mostrar error antes de
-   modificar destinos. No comprimir/estirar el ancho para cubrirlos.
+5. Usar un rib corto: repetir copias a los lados para cubrir el destino sin
+   comprimir/estirar el ancho. Una curva abierta sí debe mostrar error.
    Probar el rib rotado a 0°, 45°, 90°, 180°, 359.999° y un rectángulo dibujado
    verticalmente: orientar y medir la copia horizontal antes de calcular tramos.
    El diseño fuente debe conservar tamaño, rotación y estado de guardado.
@@ -102,8 +101,17 @@ sintaxis C#; compilación y ejecución COM pendientes en Windows/CorelDRAW.
 - Para una prueba visual, colorear de rojo la mitad superior y de azul la inferior.
   Solo debe aparecer azul en TODOS los tramos del cuello, en lote e individual.
 - El alto visible se ajusta al grosor del tramo; la copia completa tiene el doble
-  de ese alto. Recortar la mitad superior y repartir tramos consecutivos del largo.
+  de ese alto. Recortar la mitad superior y centrar una copia independiente en cada destino.
 - Se permite cualquier sobrante lateral: recortarlo centrado sin comprimirlo
-  para mostrar el diseño completo. Si realmente falta largo después del ajuste
-  por mitad de alto, mantener el aviso; no estirar ni repetir el estampado.
+  para mostrar el diseño completo. Si falta largo en un destino después del ajuste
+  por mitad de alto, repetir copias contiguas a ambos lados, sin estirar.
 - El original debe conservar sus 600 × 60 mm y el contenido completo.
+
+## Copia independiente por cada parte del cuello
+
+Con rib de 600 × 60 mm, usar la mitad inferior (600 × 30 mm visibles).
+Probar varios destinos cuyo largo combinado supere 600 mm: deben procesarse
+sin el antiguo aviso de longitud total. Cada destino muestra el centro del mismo
+diseño; el sobrante lateral queda recortado por su marco. Probar también un tramo
+más largo que la copia escalada: debe quedar cubierto por repeticiones laterales,
+sin huecos y sin cambiar el alto visible. Comprobar en lote e individual.

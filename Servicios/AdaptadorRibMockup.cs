@@ -27,18 +27,12 @@ namespace TithorAutomation.Servicios
         internal static List<TramoRibMockup> Preparar(IEnumerable<Shape> destinos, double proporcionOrigen)
         {
             var tramos = destinos.Select(LeerContorno).ToList();
-            // Cada tramo conserva la escala dada por su grosor. El ancho restante
-            // se recorta; nunca se comprime horizontalmente el rectángulo completo.
-            double requerido = tramos.Sum(t => t.Largo / t.Alto);
-            if (double.IsNaN(proporcionOrigen) || double.IsInfinity(proporcionOrigen) ||
-                proporcionOrigen <= 0 || requerido > proporcionOrigen + 1e-6)
-                throw new InvalidOperationException("La mitad inferior del rib no alcanza para todos los tramos del cuello al ajustar por su alto visible. Aumente el largo del diseño rib; no se estiró ni se modificó el mockup.");
-            double inicio = Math.Max(0, (proporcionOrigen - requerido) / 2);
+            if (double.IsNaN(proporcionOrigen) || double.IsInfinity(proporcionOrigen) || proporcionOrigen <= 0)
+                throw new InvalidOperationException("El diseño rib no tiene dimensiones válidas.");
+            // Cada destino recibe su propia copia completa, centrada. No consumir
+            // una sola tira entre frente, espalda y los demás destinos del cuello.
             foreach (var tramo in tramos)
-            {
-                tramo.InicioNormalizado = inicio;
-                inicio += tramo.Largo / tramo.Alto;
-            }
+                tramo.InicioNormalizado = (proporcionOrigen - tramo.Largo / tramo.Alto) / 2.0;
             return tramos;
         }
 
@@ -283,7 +277,18 @@ namespace TithorAutomation.Servicios
             // Borde inferior de la copia en Y=0. El recorte [0, tramo.Alto]
             // contiene exactamente la mitad inferior del diseño.
             copia.CenterY = altoCompleto / 2;
-            copia.AddToPowerClip(marco, cdrTriState.cdrFalse);
+            // Una copia completa para cada destino. Si un tramo fuese más largo
+            // que la copia ajustada por alto, repetir a ambos lados, sin estirar.
+            int laterales = (int)Math.Max(0, Math.Ceiling((tramo.Largo - ancho) / (2.0 * ancho)));
+            if (laterales > 1000)
+                throw new InvalidOperationException("El contorno del rib requiere demasiadas repeticiones. Revise el grosor de sus extremos.");
+            var copias = new List<Shape> { copia };
+            for (int i = 1; i <= laterales; i++)
+            {
+                copias.Add(copia.Duplicate(-i * ancho, 0));
+                copias.Add(copia.Duplicate(i * ancho, 0));
+            }
+            foreach (Shape parte in copias) parte.AddToPowerClip(marco, cdrTriState.cdrFalse);
             // Rasterizar únicamente el recorte del mockup, no el diseño fuente.
             // Corel puede deformar el bitmap sin depender de grupos anidados.
             Curve rectangulo = marco.DisplayCurve.GetCopy();
