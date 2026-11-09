@@ -138,24 +138,43 @@ namespace TithorAutomation.Servicios
                 && (mangasDerechasFrente.Count == 0 || mangasDerechasFrente.Contains(Convert.ToString(destino.StaticID)));
         }
 
-        private void ColocarMangaDerechaFrente(VGCore.Application app, Shape copia, Shape destino)
+        private void ColocarMangaDerechaFrente(VGCore.Application app, Shape copia, Shape destino, Action<string> informar)
         {
-            // Neutralizar la rotación de la referencia para medir su marco, no su contenido.
+            informar("Preparando el marco de la manga");
             copia.RotateEx(-copia.RotationAngle, copia.CenterX, copia.CenterY);
             double alto = app.ConvertUnits(196.652, cdrUnit.cdrMillimeter, documento.Unit);
+            double desplazamiento = app.ConvertUnits(10.0, cdrUnit.cdrMillimeter, documento.Unit);
             double ancho = copia.SizeWidth * alto / copia.SizeHeight;
             if (!DimensionValida(ancho)) throw new InvalidOperationException("La manga no tiene un marco válido.");
             double x, y;
+            informar("Calculando el punto superior del contorno");
             ObtenerPuntoSuperior(destino, out x, out y);
-            Shapes anteriores = destino.PowerClip.Shapes;
-            for (int i = anteriores.Count; i >= 1; i--) anteriores[i].Delete();
-            copia.AddToPowerClip(destino, cdrTriState.cdrFalse);
+            informar("Escalando la manga a 196.652 mm de alto");
             copia.SetSize(ancho, alto);
             copia.CenterX = x;
             copia.CenterY = y - alto / 2.0;
-            copia.RotateEx(294.088 - copia.RotationAngle, x, y);
+            // Conservar la alineación superior previa; bajar solo el pivote 10 mm
+            // dentro del rectángulo antes de girar.
+            double pivoteY = y - desplazamiento;
+            informar("Rotando la manga a 294.088 grados");
+            copia.RotateEx(294.088 - copia.RotationAngle, x, pivoteY);
             copia.RotationCenterX = x;
-            copia.RotationCenterY = y;
+            copia.RotationCenterY = pivoteY;
+            ReemplazarContenidoMockup(copia, destino, informar);
+        }
+
+        private static void ReemplazarContenidoMockup(Shape copia, Shape destino, Action<string> informar)
+        {
+            informar("Leyendo el contenido anterior del PowerClip");
+            var anteriores = new List<Shape>();
+            Shapes contenido = destino.PowerClip.Shapes;
+            for (int i = 1; i <= contenido.Count; i++) anteriores.Add(contenido[i]);
+            // Insertar antes de borrar mantiene el PowerClip con contenido durante
+            // toda la operación. La copia ya tiene su tamaño y posición finales.
+            informar("Insertando el diseño en el PowerClip");
+            copia.AddToPowerClip(destino, cdrTriState.cdrFalse);
+            informar("Eliminando el contenido anterior del PowerClip");
+            for (int i = anteriores.Count - 1; i >= 0; i--) anteriores[i].Delete();
         }
 
         private static void ObtenerPuntoSuperior(Shape destino, out double x, out double y)
@@ -434,6 +453,16 @@ namespace TithorAutomation.Servicios
 
         public void Aplicar(VGCore.Application app, Document origen, Shape seleccionado, CampoMockup individual, bool lote, Layer capaOrigen = null)
         {
+            try { AplicarInterno(app, origen, seleccionado, individual, lote, capaOrigen); }
+            catch (System.Runtime.InteropServices.COMException ex)
+            {
+                throw new InvalidOperationException("CorelDRAW falló al validar las referencias o los destinos antes del reemplazo. Código: 0x" +
+                    ex.HResult.ToString("X8") + "\n" + ex.Message, ex);
+            }
+        }
+
+        private void AplicarInterno(VGCore.Application app, Document origen, Shape seleccionado, CampoMockup individual, bool lote, Layer capaOrigen)
+        {
             if (documento == null) throw new InvalidOperationException("Seleccione primero un mockup.");
             if (EscaladorPowerClip.MismoDocumento(origen, documento)) throw new InvalidOperationException("Seleccione el diseño en su documento original, no en la copia del mockup.");
             var referencias = new Dictionary<string, Shape>(StringComparer.OrdinalIgnoreCase);
@@ -466,6 +495,9 @@ namespace TithorAutomation.Servicios
             bool optimizacion = app.Optimization;
             bool abierto = false;
             bool cambios = false;
+            string etapa = "Iniciando el reemplazo";
+            string pieza = "Sin iniciar";
+            int indiceDestino = 0;
             try
             {
                 app.EventsEnabled = false;
@@ -475,21 +507,28 @@ namespace TithorAutomation.Servicios
                 abierto = true;
                 foreach (CampoMockup tarea in tareas)
                 {
+                    indiceDestino = 0;
+                    pieza = tarea.Nombre;
                     foreach (Shape destino in tarea.Destinos)
                     {
+                        indiceDestino++;
+                        etapa = "Copiando la referencia desde el documento de diseño";
                         origen.Activate();
                         referencias[tarea.Referencia].Copy();
+                        etapa = "Activando el documento de mockup";
                         documento.Activate();
                         paginaTrabajo.Activate();
                         capaTrabajo.Activate();
                         cambios = true;
+                        etapa = "Pegando la referencia en el mockup";
                         Shape copia = capaTrabajo.Paste();
                         if (copia == null) throw new InvalidOperationException("No se pudo pegar la referencia " + tarea.Referencia + ".");
                         if (EsMangaDerechaFrente(tarea, destino))
                         {
-                            ColocarMangaDerechaFrente(app, copia, destino);
+                            ColocarMangaDerechaFrente(app, copia, destino, valor => etapa = valor);
                             continue;
                         }
+                        etapa = "Midiendo el marco del diseño y el PowerClip de destino";
                         if (tarea.Invertido) copia.Rotate(180);
                         // Medir el marco de la copia ya pegada, en las unidades del destino.
                         // Si es PowerClip, se usa su tamaño exterior, no el de su contenido.
@@ -503,23 +542,31 @@ namespace TithorAutomation.Servicios
                             throw new InvalidOperationException("No se pudo calcular el tamaño de " + tarea.Referencia + ".");
                         double x = destino.CenterX;
                         double bordeSuperior = destino.CenterY + destino.SizeHeight / 2.0;
-                        Shapes anteriores = destino.PowerClip.Shapes;
-                        for (int i = anteriores.Count; i >= 1; i--) anteriores[i].Delete();
-                        copia.AddToPowerClip(destino, cdrTriState.cdrFalse);
+                        etapa = "Escalando y alineando el diseño";
                         copia.SetSize(anchoFinal, altoFinal);
                         copia.CenterX = x;
                         copia.CenterY = bordeSuperior - altoFinal / 2.0;
+                        ReemplazarContenidoMockup(copia, destino, valor => etapa = valor);
                     }
                 }
+                etapa = "Finalizando el reemplazo";
                 documento.EndCommandGroup();
                 abierto = false;
                 foreach (CampoMockup tarea in tareas) tarea.Aplicado = true;
             }
-            catch
+            catch (Exception ex)
             {
                 if (abierto) { try { documento.EndCommandGroup(); } catch { } abierto = false; }
-                if (cambios) { RequiereRecargar = true; try { documento.Undo(); } catch { } }
-                throw;
+                string recuperacion = "No se modificó el mockup.";
+                if (cambios)
+                {
+                    RequiereRecargar = true;
+                    try { documento.Undo(); recuperacion = "Se deshicieron los cambios de este intento."; }
+                    catch (Exception errorUndo) { recuperacion = "No se pudo deshacer este intento: " + errorUndo.Message; }
+                }
+                throw new InvalidOperationException("Pieza: " + pieza + " (destino " + indiceDestino + ").\n" +
+                    "Etapa: " + etapa + ".\nCódigo: 0x" + ex.HResult.ToString("X8") +
+                    "\n" + ex.Message + "\n" + recuperacion, ex);
             }
             finally
             {
