@@ -180,6 +180,7 @@
     <Compile Include="Servicios\AnalizadorMasterCorel.cs" />
     <Compile Include="Servicios\AnalizadorMockupCorel.cs" />
     <Compile Include="Servicios\EditorMockupCorel.cs" />
+    <Compile Include="Servicios\AdaptadorRibMockup.cs" />
     <Compile Include="Servicios\EscaladorPowerClip.cs" />
     <Compile Include="frmPrincipal.Escalar.cs">
       <DependentUpon>frmPrincipal.cs</DependentUpon>

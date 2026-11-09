@@ -24,6 +24,7 @@ namespace TithorAutomation.Servicios
         private Layer capaTrabajo;
         private Page paginaTrabajo;
         private string codigoCamiseta;
+        private readonly HashSet<string> ribsFrente = new HashSet<string>();
         private readonly HashSet<string> mangasFrente = new HashSet<string>();
         public bool RequiereRecargar { get; private set; }
         private string carpetaTemporal;
@@ -117,17 +118,19 @@ namespace TithorAutomation.Servicios
             {
                 Shape objeto = objetos[i];
                 string nombre = Normalizar(objeto.Name);
-                bool pieza = nombre == "frente" || nombre == "espalda" || nombre == "manga_corta_izquierda" || nombre == "manga_corta_derecha";
+                bool rib = AdaptadorRibMockup.EsNombre(nombre);
+                bool pieza = rib || nombre == "frente" || nombre == "espalda" || nombre == "manga_corta_izquierda" || nombre == "manga_corta_derecha";
                 if (pieza)
                 {
-                    if (objeto.PowerClip == null) throw new InvalidOperationException("La pieza " + nombre + " debe ser un PowerClip.");
+                    if (objeto.PowerClip == null && !(rib && objeto.Type == cdrShapeType.cdrCurveShape)) throw new InvalidOperationException("La pieza " + nombre + " debe ser un PowerClip (rib también admite una curva cerrada).");
+                    if (rib) nombre = "rib";
                     if (!campos.ContainsKey(nombre))
                         campos.Add(nombre, new CampoMockup { Nombre = nombre, Referencia = nombre, Destinos = new List<Shape>() });
                     campos[nombre].Destinos.Add(objeto);
                 }
                 else if (objeto.PowerClip == null && objeto.Type == cdrShapeType.cdrGroupShape)
                     RecogerCamposCamiseta(objeto.Shapes, campos);
-                // Conservar decoración, bitmap, rib y piezas aún no habilitadas.
+                // Conservar decoración, bitmap y piezas aún no habilitadas.
             }
         }
 
@@ -177,8 +180,11 @@ namespace TithorAutomation.Servicios
         {
             informar("Leyendo el contenido anterior del PowerClip");
             var anteriores = new List<Shape>();
-            Shapes contenido = destino.PowerClip.Shapes;
-            for (int i = 1; i <= contenido.Count; i++) anteriores.Add(contenido[i]);
+            if (destino.PowerClip != null)
+            {
+                Shapes contenido = destino.PowerClip.Shapes;
+                for (int i = 1; i <= contenido.Count; i++) anteriores.Add(contenido[i]);
+            }
             // Insertar antes de borrar mantiene el PowerClip con contenido durante
             // toda la operación. La copia ya tiene su tamaño y posición finales.
             informar("Insertando el diseño en el PowerClip");
@@ -397,6 +403,8 @@ namespace TithorAutomation.Servicios
                     grupo.CenterY = paginaTrabajo.CenterY;
                     foreach (CampoMockup campo in DetectarCamposCamiseta(grupo.Shapes))
                     {
+                        if (!variante.EsEspalda && campo.Referencia == "rib")
+                            foreach (Shape destino in campo.Destinos) ribsFrente.Add(Convert.ToString(destino.StaticID));
                         if (!variante.EsEspalda && (campo.Referencia == "manga_corta_derecha" || campo.Referencia == "manga_corta_izquierda"))
                             foreach (Shape destino in campo.Destinos) mangasFrente.Add(Convert.ToString(destino.StaticID));
                         if (!campos.ContainsKey(campo.Nombre)) campos.Add(campo.Nombre, campo);
@@ -496,9 +504,22 @@ namespace TithorAutomation.Servicios
                     throw new InvalidOperationException("El diseño no tiene dimensiones válidas para escalar.");
             foreach (Shape destino in tareas.SelectMany(x => x.Destinos))
             {
-                if (destino.Locked || destino.PowerClip == null) throw new InvalidOperationException("Hay destinos bloqueados o sin PowerClip. Vuelva a cargar el mockup.");
+                if (destino.Locked || (destino.PowerClip == null && !(codigoCamiseta != null && AdaptadorRibMockup.EsNombre(Normalizar(destino.Name)) && destino.Type == cdrShapeType.cdrCurveShape))) throw new InvalidOperationException("Hay destinos bloqueados o sin PowerClip. Vuelva a cargar el mockup.");
                 if (!DimensionValida(destino.SizeWidth) || !DimensionValida(destino.SizeHeight))
                     throw new InvalidOperationException("El PowerClip " + destino.Name + " no tiene dimensiones válidas.");
+            }
+
+            var tramosRib = new Dictionary<string, TramoRibMockup>();
+            if (!string.IsNullOrWhiteSpace(codigoCamiseta) && tareas.Any(t => t.Referencia == "rib"))
+            {
+                Shape referenciaRib = referencias["rib"];
+                if (Math.Abs(referenciaRib.RotationAngle % 360) > 0.001)
+                    throw new InvalidOperationException("Coloque el diseño rib horizontal, sin rotación, antes de aplicarlo.");
+                var destinosRib = Campos.Where(t => t.Referencia == "rib").SelectMany(t => t.Destinos)
+                    .OrderBy(d => ribsFrente.Contains(Convert.ToString(d.StaticID)) ? 0 : 1)
+                    .ThenBy(d => d.CenterX).ToList();
+                foreach (var tramo in AdaptadorRibMockup.Preparar(destinosRib, referenciaRib.SizeWidth / referenciaRib.SizeHeight))
+                    tramosRib.Add(Convert.ToString(tramo.Destino.StaticID), tramo);
             }
 
             bool eventos = app.EventsEnabled;
@@ -533,6 +554,12 @@ namespace TithorAutomation.Servicios
                         etapa = "Pegando la referencia en el mockup";
                         Shape copia = capaTrabajo.Paste();
                         if (copia == null) throw new InvalidOperationException("No se pudo pegar la referencia " + tarea.Referencia + ".");
+                        if (tarea.Referencia == "rib" && tramosRib.Count > 0)
+                        {
+                            Shape rib = AdaptadorRibMockup.Deformar(copia, tramosRib[Convert.ToString(destino.StaticID)], capaTrabajo, valor => etapa = valor);
+                            ReemplazarContenidoMockup(rib, destino, valor => etapa = valor);
+                            continue;
+                        }
                         if (EsMangaCamiseta(tarea))
                         {
                             double angulo = AnguloManga(tarea, destino);
@@ -637,6 +664,7 @@ namespace TithorAutomation.Servicios
             paginaTrabajo = null;
             codigoCamiseta = null;
             mangasFrente.Clear();
+            ribsFrente.Clear();
             Campos.Clear();
             RequiereRecargar = true;
             if (carpetaTemporal != null) { try { Directory.Delete(carpetaTemporal, true); } catch { } }
@@ -656,6 +684,7 @@ namespace TithorAutomation.Servicios
             paginaTrabajo = null;
             codigoCamiseta = null;
             mangasFrente.Clear();
+            ribsFrente.Clear();
             Campos.Clear();
             if (carpetaTemporal != null) { try { Directory.Delete(carpetaTemporal, true); } catch { } }
             carpetaTemporal = null;
