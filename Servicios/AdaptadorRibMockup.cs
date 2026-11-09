@@ -32,7 +32,7 @@ namespace TithorAutomation.Servicios
             double requerido = tramos.Sum(t => t.Largo / t.Alto);
             if (double.IsNaN(proporcionOrigen) || double.IsInfinity(proporcionOrigen) ||
                 proporcionOrigen <= 0 || requerido > proporcionOrigen + 1e-6)
-                throw new InvalidOperationException("El rib no alcanza para todos los tramos del cuello al ajustar por alto. Aumente el largo del diseño rib; no se estiró ni se modificó el mockup.");
+                throw new InvalidOperationException("La mitad inferior del rib no alcanza para todos los tramos del cuello al ajustar por su alto visible. Aumente el largo del diseño rib; no se estiró ni se modificó el mockup.");
             double inicio = Math.Max(0, (proporcionOrigen - requerido) / 2);
             foreach (var tramo in tramos)
             {
@@ -266,17 +266,23 @@ namespace TithorAutomation.Servicios
 
         internal static Shape Deformar(Shape copia, TramoRibMockup tramo, Layer capa, Action<string> informar)
         {
-            informar("Ajustando el rib por alto y recortando el tramo del contorno");
+            informar("Ajustando la mitad inferior del rib y recortando el sobrante lateral");
             NormalizarOrientacion(copia);
-            double ancho = copia.SizeWidth * tramo.Alto / copia.SizeHeight;
-            copia.SetSize(ancho, tramo.Alto);
+            // El rib se dobla por la mitad: solo la mitad inferior es visible.
+            // Escalar toda la copia proporcionalmente para que esa mitad tenga
+            // el grosor del destino; el marco elimina la mitad superior.
+            double altoCompleto = tramo.Alto * 2.0;
+            double ancho = copia.SizeWidth * altoCompleto / copia.SizeHeight;
+            copia.SetSize(ancho, altoCompleto);
             // Crear el marco en coordenadas explícitas, sin depender del punto
             // de referencia seleccionado por el usuario en CorelDRAW.
             Shape marco = capa.CreateRectangle2(0, 0, tramo.Largo, tramo.Alto);
             marco.Fill.ApplyNoFill();
             marco.Outline.SetNoOutline();
             copia.CenterX = ancho / 2 - tramo.InicioNormalizado * tramo.Alto;
-            copia.CenterY = tramo.Alto / 2;
+            // Borde inferior de la copia en Y=0. El recorte [0, tramo.Alto]
+            // contiene exactamente la mitad inferior del diseño.
+            copia.CenterY = altoCompleto / 2;
             copia.AddToPowerClip(marco, cdrTriState.cdrFalse);
             // Rasterizar únicamente el recorte del mockup, no el diseño fuente.
             // Corel puede deformar el bitmap sin depender de grupos anidados.

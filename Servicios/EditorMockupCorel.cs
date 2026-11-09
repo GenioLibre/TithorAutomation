@@ -546,7 +546,7 @@ namespace TithorAutomation.Servicios
                         .OrderBy(d => ribsFrente.Contains(Convert.ToString(d.StaticID)) ? 0 : 1)
                         .ThenBy(d => d.CenterX).ToList();
                     etapa = "Validando los tramos del cuello";
-                    foreach (var tramo in AdaptadorRibMockup.Preparar(destinosRib, muestraRib.SizeWidth / muestraRib.SizeHeight))
+                    foreach (var tramo in AdaptadorRibMockup.Preparar(destinosRib, muestraRib.SizeWidth / (muestraRib.SizeHeight / 2.0)))
                         tramosRib.Add(Convert.ToString(tramo.Destino.StaticID), tramo);
                     muestraRib.Delete();
                 }

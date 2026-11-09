@@ -94,3 +94,16 @@ Undo, antes de reemplazar cualquier destino. Si falla, no debe quedar la muestra
 temporal en la página. Comparar el reparto del mismo rib horizontal y rotado;
 la medición no debe usar la caja envolvente rotada del original. Validación local:
 sintaxis C#; compilación y ejecución COM pendientes en Windows/CorelDRAW.
+
+## Rib doblado: mitad inferior visible
+
+- Referencia de 600 mm de largo por 60 mm de alto: usar 600 × 30 mm visibles,
+  sin acortar el largo del diseño. La proporción disponible es 20, no 10.
+- Para una prueba visual, colorear de rojo la mitad superior y de azul la inferior.
+  Solo debe aparecer azul en TODOS los tramos del cuello, en lote e individual.
+- El alto visible se ajusta al grosor del tramo; la copia completa tiene el doble
+  de ese alto. Recortar la mitad superior y repartir tramos consecutivos del largo.
+- Se permite cualquier sobrante lateral: recortarlo centrado sin comprimirlo
+  para mostrar el diseño completo. Si realmente falta largo después del ajuste
+  por mitad de alto, mantener el aviso; no estirar ni repetir el estampado.
+- El original debe conservar sus 600 × 60 mm y el contenido completo.
