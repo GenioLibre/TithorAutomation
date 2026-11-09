@@ -135,6 +135,7 @@
     </Compile>
     <Compile Include="frmPrincipal.Mockups.Edicion.cs">
       <DependentUpon>frmPrincipal.cs</DependentUpon>
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmPrincipal.Mockups.cs">
       <DependentUpon>frmPrincipal.cs</DependentUpon>

@@ -3,7 +3,7 @@
 #if !FileExists(BuildDir + "\" + AppExe)
   #error Compile primero Release x64 o ejecute build-installer.bat.
 #endif
-#define AppBuildVersion GetFileVersion(BuildDir + "\" + AppExe)
+#define AppBuildVersion GetVersionNumbersString(BuildDir + "\" + AppExe)
 [Setup]
 AppId=TithorAutomation
 AppName=Tithor Automation
