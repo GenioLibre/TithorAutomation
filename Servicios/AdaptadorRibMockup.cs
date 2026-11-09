@@ -162,10 +162,28 @@ namespace TithorAutomation.Servicios
             return new InvalidOperationException("No se pudo preparar el rib '" + destino.Name + "'. " + detalle);
         }
 
+        internal static void NormalizarOrientacion(Shape copia)
+        {
+            // Modificar únicamente la copia: el documento fuente conserva su
+            // rotación, contenido y estado de guardado.
+            double angulo = copia.RotationAngle % 360;
+            if (angulo > 180) angulo -= 360;
+            if (angulo < -180) angulo += 360;
+            if (Math.Abs(angulo) > 0.000001)
+                copia.RotateEx(-angulo, copia.CenterX, copia.CenterY);
+            // También admitir un rectángulo dibujado verticalmente con ángulo 0.
+            if (copia.SizeHeight > copia.SizeWidth)
+                copia.RotateEx(90, copia.CenterX, copia.CenterY);
+            if (copia.SizeWidth <= 0 || copia.SizeHeight <= 0 ||
+                double.IsNaN(copia.SizeWidth) || double.IsNaN(copia.SizeHeight) ||
+                double.IsInfinity(copia.SizeWidth) || double.IsInfinity(copia.SizeHeight))
+                throw new InvalidOperationException("El diseño rib no tiene dimensiones válidas después de orientar la copia.");
+        }
+
         internal static Shape Deformar(Shape copia, TramoRibMockup tramo, Layer capa, Action<string> informar)
         {
             informar("Ajustando el rib por alto y recortando el tramo del contorno");
-            copia.RotateEx(-copia.RotationAngle, copia.CenterX, copia.CenterY);
+            NormalizarOrientacion(copia);
             double ancho = copia.SizeWidth * tramo.Alto / copia.SizeHeight;
             copia.SetSize(ancho, tramo.Alto);
             // Crear el marco en coordenadas explícitas, sin depender del punto

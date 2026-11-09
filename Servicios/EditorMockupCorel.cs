@@ -510,17 +510,7 @@ namespace TithorAutomation.Servicios
             }
 
             var tramosRib = new Dictionary<string, TramoRibMockup>();
-            if (!string.IsNullOrWhiteSpace(codigoCamiseta) && tareas.Any(t => t.Referencia == "rib"))
-            {
-                Shape referenciaRib = referencias["rib"];
-                if (Math.Abs(referenciaRib.RotationAngle % 360) > 0.001)
-                    throw new InvalidOperationException("Coloque el diseño rib horizontal, sin rotación, antes de aplicarlo.");
-                var destinosRib = Campos.Where(t => t.Referencia == "rib").SelectMany(t => t.Destinos)
-                    .OrderBy(d => ribsFrente.Contains(Convert.ToString(d.StaticID)) ? 0 : 1)
-                    .ThenBy(d => d.CenterX).ToList();
-                foreach (var tramo in AdaptadorRibMockup.Preparar(destinosRib, referenciaRib.SizeWidth / referenciaRib.SizeHeight))
-                    tramosRib.Add(Convert.ToString(tramo.Destino.StaticID), tramo);
-            }
+            bool aplicarRib = !string.IsNullOrWhiteSpace(codigoCamiseta) && tareas.Any(t => t.Referencia == "rib");
 
             bool eventos = app.EventsEnabled;
             bool optimizacion = app.Optimization;
@@ -536,6 +526,30 @@ namespace TithorAutomation.Servicios
                 documento.Activate();
                 documento.BeginCommandGroup("Tithor - Aplicar mockup");
                 abierto = true;
+                if (aplicarRib)
+                {
+                    // Medir una copia en el documento de trabajo. SizeWidth/Height
+                    // del original rotado son su caja envolvente, no el rectángulo
+                    // horizontal que se utilizará para distribuir el estampado.
+                    pieza = "rib";
+                    etapa = "Preparando la orientación del rib";
+                    origen.Activate();
+                    referencias["rib"].Copy();
+                    documento.Activate();
+                    paginaTrabajo.Activate();
+                    capaTrabajo.Activate();
+                    cambios = true;
+                    Shape muestraRib = capaTrabajo.Paste();
+                    if (muestraRib == null) throw new InvalidOperationException("No se pudo copiar el diseño rib.");
+                    AdaptadorRibMockup.NormalizarOrientacion(muestraRib);
+                    var destinosRib = Campos.Where(t => t.Referencia == "rib").SelectMany(t => t.Destinos)
+                        .OrderBy(d => ribsFrente.Contains(Convert.ToString(d.StaticID)) ? 0 : 1)
+                        .ThenBy(d => d.CenterX).ToList();
+                    etapa = "Validando los tramos del cuello";
+                    foreach (var tramo in AdaptadorRibMockup.Preparar(destinosRib, muestraRib.SizeWidth / muestraRib.SizeHeight))
+                        tramosRib.Add(Convert.ToString(tramo.Destino.StaticID), tramo);
+                    muestraRib.Delete();
+                }
                 foreach (CampoMockup tarea in tareas)
                 {
                     indiceDestino = 0;

@@ -56,8 +56,11 @@ estos PowerClips y por encima: el contenido de cada destino se reemplaza.
 4. El grosor se obtiene del promedio de ambos cierres laterales, NO de la caja
    envolvente del cuello. El largo se obtiene del promedio de ambos bordes
    curvos. El excedente del rectángulo se recorta simétricamente en sus extremos.
-5. Usar un rib demasiado corto, uno rotado y una curva abierta: mostrar error
-   antes de modificar destinos. No comprimir/estirar el ancho para cubrirlos.
+5. Usar un rib demasiado corto y una curva abierta: mostrar error antes de
+   modificar destinos. No comprimir/estirar el ancho para cubrirlos.
+   Probar el rib rotado a 0°, 45°, 90°, 180°, 359.999° y un rectángulo dibujado
+   verticalmente: orientar y medir la copia horizontal antes de calcular tramos.
+   El diseño fuente debe conservar tamaño, rotación y estado de guardado.
 6. En un error COM durante la envolvente, comprobar el mensaje de etapa/pieza,
    la recuperación con Undo y la posibilidad de volver a cargar/reintentar.
 7. Confirmar que el original sigue vectorial/intacto: solo el recorte temporal
@@ -85,3 +88,9 @@ si el master contiene otra topología, el mensaje pide corregir el contorno.
 Validación de esta corrección: sintaxis C# y 132 casos geométricos numéricos
 independientes (cintas U/V/rectas, cierres subdivididos, sentidos y nodos iniciales).
 No sustituye la prueba del master real en CorelDRAW ni una compilación Windows.
+
+Regresión de orientación: la preparación del rib debe ocurrir dentro del grupo
+Undo, antes de reemplazar cualquier destino. Si falla, no debe quedar la muestra
+temporal en la página. Comparar el reparto del mismo rib horizontal y rotado;
+la medición no debe usar la caja envolvente rotada del original. Validación local:
+sintaxis C#; compilación y ejecución COM pendientes en Windows/CorelDRAW.
