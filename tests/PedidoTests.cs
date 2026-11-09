@@ -25,12 +25,28 @@ internal static class PedidoTests
 
     public static void Ejecutar()
     {
+        VariantesMockup();
         CantidadesExcel();
         Identificadores();
         PlanesFundas();
         TallasFundasDesdeCatalogo();
         PlanesCamisetas();
         Console.WriteLine("PASS: " + comprobaciones + " comprobaciones de pedidos, cantidades y nombres.");
+    }
+
+    private static void VariantesMockup()
+    {
+        var catalogo = new Mockup { Codigo = "camisetas_deportivas",
+            Variantes = "clasico_varon_redondo\nclasico_varon_espalda\nranglan_dama_frente_camisero\nranglan_mujer_espalda\n" };
+        var variantes = catalogo.ObtenerVariantes();
+        Exigir(catalogo.EsCamiseta && variantes.Count == 4, "El catálogo conserva las variantes después de persistirlas.");
+        var frente = variantes.Single(x => x.Cuello == "camisero");
+        Exigir(frente.Tipo == "ranglan" && frente.Corte == "mujer", "Dama y Mujer deben corresponder al mismo corte.");
+        Exigir(variantes.Any(x => x.Tipo == frente.Tipo && x.Corte == frente.Corte && x.EsEspalda), "El frente de Dama encuentra su espalda Mujer.");
+        Exigir(VarianteMockupCamiseta.DesdeCodigo("clasico_varon") == null, "Un nombre incompleto no debe ser una variante.");
+        Exigir(VarianteMockupCamiseta.DesdeCodigo("manga_corta_derecha") == null, "Una pieza no debe confundirse con un grupo.");
+        var opciones = new OpcionesMockupCamiseta();
+        Exigir(opciones.Tipo == "clasico" && opciones.Corte == "varon" && opciones.Cuello == "redondo", "La vista genérica debe usar clásico varón redondo.");
     }
 
     private static void CantidadesExcel()

@@ -1685,7 +1685,7 @@ namespace TithorAutomation
             // 
             // colNombreGrupoMockup
             // 
-            this.colNombreGrupoMockup.HeaderText = "Capa o grupo";
+            this.colNombreGrupoMockup.HeaderText = "Página";
             this.colNombreGrupoMockup.Name = "colNombreGrupoMockup";
             this.colNombreGrupoMockup.ReadOnly = true;
             // 
