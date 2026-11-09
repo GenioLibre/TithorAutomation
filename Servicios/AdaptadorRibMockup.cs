@@ -42,60 +42,111 @@ namespace TithorAutomation.Servicios
             return tramos;
         }
 
-        private static TramoRibMockup LeerContorno(Shape destino)
+        private sealed class ExtremoRib
         {
-            Curve curva = destino.DisplayCurve;
-            if (curva == null || curva.SubPaths.Count != 1 || !curva.SubPaths[1].Closed || curva.Segments.Count < 4)
-                throw ErrorContorno(destino);
-            // Una cinta cerrada tiene dos bordes largos y dos cierres cortos,
-            // uno a cada extremo. Se admiten nodos intermedios en los bordes.
-            var segmentos = Enumerable.Range(1, curva.Segments.Count).Select(i => curva.Segments[i]).ToList();
-            double centro = destino.CenterX, ancho = destino.SizeWidth;
-            Func<Segment, double> medioX = s => (s.StartNode.PositionX + s.EndNode.PositionX) / 2;
-            Func<Segment, bool> cierre = s =>
-            {
-                double dx = s.EndNode.PositionX - s.StartNode.PositionX;
-                double dy = s.EndNode.PositionY - s.StartNode.PositionY;
-                double cuerda = Math.Sqrt(dx * dx + dy * dy);
-                int anterior = (s.Index + segmentos.Count - 2) % segmentos.Count;
-                int siguiente = s.Index % segmentos.Count;
-                return cuerda > 0 && s.Length <= cuerda * 1.05 && s.Length < ancho * 0.3 &&
-                    TieneEsquina(segmentos[anterior], s) && TieneEsquina(s, segmentos[siguiente]);
-            };
-            var izquierda = segmentos.Where(s => cierre(s) && medioX(s) < centro - ancho * 0.25).OrderBy(s => s.Length).FirstOrDefault();
-            var derecha = segmentos.Where(s => cierre(s) && medioX(s) > centro + ancho * 0.25).OrderBy(s => s.Length).FirstOrDefault();
-            if (izquierda == null || derecha == null) throw ErrorContorno(destino);
-            int a = izquierda.Index, b = derecha.Index;
-            double camino = 0, alturaCamino = 0;
-            var indicesCamino = new HashSet<int>();
-            int pasos = 0;
-            for (int i = a % segmentos.Count + 1; i != b; i = i % segmentos.Count + 1)
-            {
-                if (++pasos > segmentos.Count) throw ErrorContorno(destino);
-                Segment segmento = curva.Segments[i];
-                camino += segmento.Length;
-                alturaCamino += segmento.GetPointAt(0.5, cdrSegmentOffsetType.cdrParamSegmentOffset).y * segmento.Length;
-                indicesCamino.Add(i);
-            }
-            double otro = segmentos.Sum(s => s.Length) - izquierda.Length - derecha.Length - camino;
-            double alto = (izquierda.Length + derecha.Length) / 2;
-            if (alto <= 0 || camino <= alto * 2 || otro <= alto * 2) throw ErrorContorno(destino);
-            double alturaOtro = segmentos.Where(s => s.Index != a && s.Index != b && !indicesCamino.Contains(s.Index))
-                .Sum(s => s.GetPointAt(0.5, cdrSegmentOffsetType.cdrParamSegmentOffset).y * s.Length);
-            bool caminoSuperior = alturaCamino / camino >= alturaOtro / otro;
-            Node si = caminoSuperior ? izquierda.EndNode : izquierda.StartNode;
-            Node ii = caminoSuperior ? izquierda.StartNode : izquierda.EndNode;
-            Node sd = caminoSuperior ? derecha.StartNode : derecha.EndNode;
-            Node id = caminoSuperior ? derecha.EndNode : derecha.StartNode;
-            // Rechazar esquinas ambiguas en lugar de generar una envolvente cruzada.
-            if (new[] { si.Index, ii.Index, sd.Index, id.Index }.Distinct().Count() != 4)
-                throw ErrorContorno(destino);
-            return new TramoRibMockup { Destino = destino, Contorno = curva, Alto = alto,
-                Largo = (camino + otro) / 2, SuperiorIzquierdo = si.Index, InferiorIzquierdo = ii.Index,
-                SuperiorDerecho = sd.Index, InferiorDerecho = id.Index };
+            public int Primero, Ultimo;
+            public double Largo, Puntuacion;
+            public HashSet<int> Indices = new HashSet<int>();
         }
 
-        private static bool TieneEsquina(Segment anterior, Segment siguiente)
+        private static TramoRibMockup LeerContorno(Shape destino)
+        {
+            Curve curva = destino.Type == cdrShapeType.cdrCurveShape ? destino.Curve : destino.DisplayCurve;
+            if (curva == null) throw ErrorContorno(destino, "CorelDRAW no devolvió una curva.");
+            if (curva.SubPaths.Count != 1)
+                throw ErrorContorno(destino, "Tiene " + curva.SubPaths.Count + " subtrayectos; se necesita una sola cinta, no un anillo compuesto.");
+            if (!curva.SubPaths[1].Closed)
+                throw ErrorContorno(destino, "CorelDRAW informa que el subtrayecto está abierto. El relleno visible no confirma el cierre de los nodos.");
+            if (curva.Segments.Count < 4)
+                throw ErrorContorno(destino, "La curva está cerrada, pero tiene menos de cuatro segmentos para identificar las cuatro esquinas de la cinta.");
+            var segmentos = Enumerable.Range(1, curva.Segments.Count).Select(i => curva.Segments[i]).ToList();
+            int n = segmentos.Count;
+            double ancho = destino.SizeWidth, centro = destino.CenterX;
+            double total = segmentos.Sum(s => s.Length);
+            var giros = Enumerable.Range(0, n).Select(i => Giro(segmentos[(i + n - 1) % n], segmentos[i])).ToArray();
+            var izquierdos = BuscarExtremos(segmentos, giros, centro, ancho, true);
+            var derechos = BuscarExtremos(segmentos, giros, centro, ancho, false);
+            TramoRibMockup mejor = null;
+            double puntuacion = double.NegativeInfinity;
+            foreach (var izquierda in izquierdos)
+            foreach (var derecha in derechos)
+            {
+                if (izquierda.Indices.Overlaps(derecha.Indices)) continue;
+                var camino = new List<int>();
+                int i = (izquierda.Ultimo + 1) % n;
+                while (i != derecha.Primero && camino.Count < n)
+                {
+                    camino.Add(i);
+                    i = (i + 1) % n;
+                }
+                if (camino.Count == n || camino.Any(k => izquierda.Indices.Contains(k) || derecha.Indices.Contains(k))) continue;
+                var otro = Enumerable.Range(0, n).Where(k => !izquierda.Indices.Contains(k) &&
+                    !derecha.Indices.Contains(k) && !camino.Contains(k)).ToList();
+                double largoA = camino.Sum(k => segmentos[k].Length);
+                double largoB = total - izquierda.Largo - derecha.Largo - largoA;
+                double alto = (izquierda.Largo + derecha.Largo) / 2;
+                if (alto <= 0 || largoA <= alto * 2 || largoB <= alto * 2 || otro.Count == 0) continue;
+                double score = izquierda.Puntuacion + derecha.Puntuacion;
+                if (score <= puntuacion) continue;
+                Func<List<int>, double> altura = ids => ids.Sum(k =>
+                    segmentos[k].GetPointAt(0.5, cdrSegmentOffsetType.cdrParamSegmentOffset).y * segmentos[k].Length) /
+                    ids.Sum(k => segmentos[k].Length);
+                bool superior = altura(camino) >= altura(otro);
+                Node inicioI = segmentos[izquierda.Primero].StartNode, finI = segmentos[izquierda.Ultimo].EndNode;
+                Node inicioD = segmentos[derecha.Primero].StartNode, finD = segmentos[derecha.Ultimo].EndNode;
+                if (new[] { inicioI.Index, finI.Index, inicioD.Index, finD.Index }.Distinct().Count() != 4) continue;
+                mejor = new TramoRibMockup { Destino = destino, Contorno = curva.GetCopy(), Alto = alto,
+                    Largo = (largoA + largoB) / 2,
+                    SuperiorIzquierdo = superior ? finI.Index : inicioI.Index,
+                    InferiorIzquierdo = superior ? inicioI.Index : finI.Index,
+                    SuperiorDerecho = superior ? inicioD.Index : finD.Index,
+                    InferiorDerecho = superior ? finD.Index : inicioD.Index };
+                puntuacion = score;
+            }
+            if (mejor == null)
+                throw ErrorContorno(destino, "La curva SÍ está cerrada (" + curva.Nodes.Count + " nodos, " + n +
+                    " segmentos), pero no se pudieron separar los bordes interior/exterior y los extremos. Candidatos: " +
+                    izquierdos.Count + " izquierdos y " + derechos.Count + " derechos.");
+            return mejor;
+        }
+
+        private static List<ExtremoRib> BuscarExtremos(List<Segment> segmentos, double[] giros,
+            double centro, double ancho, bool izquierda)
+        {
+            int n = segmentos.Count;
+            var candidatos = new List<ExtremoRib>();
+            // Cachear las lecturas COM antes de explorar las combinaciones.
+            var longitudes = segmentos.Select(s => s.Length).ToArray();
+            var centrosX = segmentos.Select(s => s.GetPointAt(0.5, cdrSegmentOffsetType.cdrParamSegmentOffset).x).ToArray();
+            for (int inicio = 0; inicio < n; inicio++)
+            {
+                double largo = 0, interiores = 0, xAcumulado = 0;
+                var indices = new HashSet<int>();
+                for (int paso = 0; paso < n - 2; paso++)
+                {
+                    int actual = (inicio + paso) % n;
+                    double x = centrosX[actual];
+                    if (izquierda ? x >= centro - ancho * 0.2 : x <= centro + ancho * 0.2) break;
+                    largo += longitudes[actual];
+                    if (largo > ancho * 0.4) break;
+                    if (paso > 0) interiores += giros[actual];
+                    xAcumulado += x * longitudes[actual];
+                    indices.Add(actual);
+                    if (largo <= 0) continue;
+                    // Admitir cierres curvos y subdivididos. Favorecer las esquinas
+                    // en los extremos del cierre, sin exigir un ángulo mínimo ni
+                    // que el segmento sea casi recto. Los giros interiores aportan
+                    // menos peso para reconocer un cierre curvo subdividido.
+                    double score = giros[inicio] + giros[(actual + 1) % n] + interiores * 0.5 +
+                        Math.Abs(xAcumulado / largo - centro) / ancho * 0.1;
+                    candidatos.Add(new ExtremoRib { Primero = inicio, Ultimo = actual, Largo = largo,
+                        Puntuacion = score, Indices = new HashSet<int>(indices) });
+                }
+            }
+            return candidatos.OrderByDescending(c => c.Puntuacion).Take(16).ToList();
+        }
+
+        private static double Giro(Segment anterior, Segment siguiente)
         {
             VGCore.Point a = anterior.GetPointAt(0.99, cdrSegmentOffsetType.cdrParamSegmentOffset);
             VGCore.Point b = anterior.GetPointAt(1, cdrSegmentOffsetType.cdrParamSegmentOffset);
@@ -103,14 +154,12 @@ namespace TithorAutomation.Servicios
             VGCore.Point d = siguiente.GetPointAt(0.01, cdrSegmentOffsetType.cdrParamSegmentOffset);
             double ax = b.x - a.x, ay = b.y - a.y, bx = d.x - c.x, by = d.y - c.y;
             double norma = Math.Sqrt((ax * ax + ay * ay) * (bx * bx + by * by));
-            // Evitar confundir un pequeño segmento de un borde subdividido con
-            // el cierre lateral: sus dos extremos deben ser esquinas reales.
-            return norma > 0 && (ax * bx + ay * by) / norma < Math.Cos(25 * Math.PI / 180);
+            return norma > 0 ? Math.Acos(Math.Max(-1, Math.Min(1, (ax * bx + ay * by) / norma))) : 0;
         }
 
-        private static Exception ErrorContorno(Shape destino)
+        private static Exception ErrorContorno(Shape destino, string detalle)
         {
-            return new InvalidOperationException("El rib '" + destino.Name + "' debe ser una cinta cerrada: dos bordes largos y un cierre recto corto en cada extremo izquierdo/derecho. Revise los nodos del contorno; no use un anillo con dos subtrayectos.");
+            return new InvalidOperationException("No se pudo preparar el rib '" + destino.Name + "'. " + detalle);
         }
 
         internal static Shape Deformar(Shape copia, TramoRibMockup tramo, Layer capa, Action<string> informar)

@@ -38,8 +38,8 @@ repetible y persistencia de las variantes. Los pasos visuales y COM requieren Co
 Preparar el diseño fuente como rectángulo horizontal llamado `rib` (también
 admite PowerClip), junto a las otras piezas de la capa de diseño. En el master,
 nombrar las cintas cerradas `rib` o `rib_01`, `rib_02`, etc. Se admite curva cerrada
-sin contenido o PowerClip. Los cierres laterales deben ser segmentos rectos
-cortos, sin subdividir; los bordes largos pueden tener nodos intermedios. No usar
+sin contenido o PowerClip. Los cierres laterales pueden ser curvos o estar subdivididos en varios
+segmentos; los bordes largos también pueden tener nodos intermedios. No usar
 anillos con dos subtrayectos. Las sombras/costuras estáticas se dejan fuera de
 estos PowerClips y por encima: el contenido de cada destino se reemplaza.
 
@@ -68,3 +68,20 @@ estos PowerClips y por encima: el contenido de cada destino se reemplaza.
 Pendiente de validación: compilación Windows y resultado visual/COM con el master
 real. La geometría requiere una cinta con cierres izquierdo y derecho reconocibles;
 si el master contiene otra topología, el mensaje pide corregir el contorno.
+
+## Regresión: rib cerrado rechazado al identificar los extremos
+
+- Probar `rib_01` cerrado con cierres laterales curvos; no debe exigirse que
+  sean rectos ni que sus esquinas alcancen un ángulo mínimo.
+- Subdividir ambos cierres en varios segmentos y comprobar que el alto se
+  calcula a partir del cierre completo, no de un fragmento pequeño.
+- Cambiar el nodo inicial y el sentido del trayecto: se conservan las esquinas
+  superior/inferior y los mismos tramos del diseño.
+- Ante geometría no reconocida, el mensaje debe decir explícitamente que la
+  curva sí está cerrada e incluir nodos/segmentos y candidatos por extremo.
+- Una curva realmente abierta debe recibir un mensaje diferente; dos
+  subtrayectos también deben identificarse explícitamente.
+
+Validación de esta corrección: sintaxis C# y 132 casos geométricos numéricos
+independientes (cintas U/V/rectas, cierres subdivididos, sentidos y nodos iniciales).
+No sustituye la prueba del master real en CorelDRAW ni una compilación Windows.
