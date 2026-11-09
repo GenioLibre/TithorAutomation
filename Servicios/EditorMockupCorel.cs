@@ -91,6 +91,19 @@ namespace TithorAutomation.Servicios
                 && (partes[1] == "varon" || partes[1] == "mujer");
         }
 
+        public static List<Shape> BuscarGruposCamiseta(Shapes objetos)
+        {
+            var resultado = new List<Shape>();
+            for (int i = 1; i <= objetos.Count; i++)
+            {
+                Shape objeto = objetos[i];
+                if (objeto.Type != cdrShapeType.cdrGroupShape || objeto.PowerClip != null) continue;
+                if (EsGrupoCamiseta(objeto.Name)) resultado.Add(objeto);
+                else resultado.AddRange(BuscarGruposCamiseta(objeto.Shapes));
+            }
+            return resultado;
+        }
+
         public static List<CampoMockup> DetectarCamposCamiseta(Shapes objetos)
         {
             var campos = new Dictionary<string, CampoMockup>(StringComparer.OrdinalIgnoreCase);
@@ -212,6 +225,22 @@ namespace TithorAutomation.Servicios
                     for (int l = 1; l <= pagina.Layers.Count; l++)
                     {
                         Layer capa = pagina.Layers[l];
+                        if (EsGrupoCamiseta(mockup.Codigo))
+                        {
+                            foreach (Shape variante in BuscarGruposCamiseta(capa.Shapes).Where(x => Normalizar(x.Name) == mockup.Codigo))
+                            {
+                                coincidencias++;
+                                pagina.Activate();
+                                Campos = DetectarCamposCamiseta(variante.Shapes);
+                                codigoCamiseta = Normalizar(variante.Name);
+                                variante.CreateSelection();
+                                composicion = documento.SelectionRange;
+                                capaTrabajo = capa;
+                                paginaTrabajo = pagina;
+                            }
+                            continue;
+                        }
+
                         if (Normalizar(capa.Name) == mockup.Codigo)
                         {
                             coincidencias++;

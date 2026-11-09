@@ -54,6 +54,17 @@ namespace TithorAutomation.Servicios
                 VGCore.Layer capa = pagina.Layers[indiceCapa];
                 string nombreCapa = (capa.Name ?? string.Empty).Trim();
 
+                // Las variantes pueden estar directamente en la capa o dentro de
+                // un grupo contenedor Mockup Camisetas, sin depender del nombre de página.
+                var variantes = EditorMockupCorel.BuscarGruposCamiseta(capa.Shapes);
+                if (variantes.Count > 0)
+                    {
+                    foreach (VGCore.Shape variante in variantes)
+                        AgregarMockup(resultado, variante.Name, variante.Shapes, "Grupo", false, null, true);
+                    continue;
+                    }
+
+
                 if (AnalizadorMasterCorel.NormalizarCodigo(nombreCapa) == "diseno" && EditorMockupCorel.Normalizar(pagina.Name) != "camisetas")
                     {
                     AgregarMockup(resultado, nombreCapa, capa.Shapes, "Capa", true, nombreArchivo);
@@ -70,12 +81,6 @@ namespace TithorAutomation.Servicios
                     {
                     VGCore.Shape objeto = capa.Shapes[indice];
                     string nombre = ObtenerNombreSeguro(objeto);
-
-                    if (EditorMockupCorel.Normalizar(pagina.Name) == "camisetas" && EditorMockupCorel.EsGrupoCamiseta(nombre) && objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
-                        {
-                        AgregarMockup(resultado, nombre, objeto.Shapes, "Grupo", false, null, true);
-                        continue;
-                        }
 
                     if (EsNombreMockup(nombre) && objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
                         AgregarMockup(resultado, nombre, objeto.Shapes, "Grupo");
