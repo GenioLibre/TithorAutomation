@@ -292,7 +292,8 @@ namespace TithorAutomation.Servicios
             // SAFEARRAY o la orientación/nodo inicial de la curva del master.
             informar("Leyendo las esquinas de la envolvente de CorelDRAW");
             Curve neutra = efecto.Envelope.Container;
-            object esquinas = MapearEsquinas(efecto.Envelope.CornerIndices, neutra.Nodes.Count, indice =>
+            object indicesCorel = (object)efecto.Envelope.CornerIndices;
+            Func<int, int> mapearNodo = indice =>
             {
                 Node nodo = neutra.Nodes[indice];
                 bool izquierda = nodo.PositionX < tramo.Largo / 2;
@@ -300,7 +301,8 @@ namespace TithorAutomation.Servicios
                 return izquierda
                     ? (superior ? tramo.SuperiorIzquierdo : tramo.InferiorIzquierdo)
                     : (superior ? tramo.SuperiorDerecho : tramo.InferiorDerecho);
-            });
+            };
+            object esquinas = MapearEsquinas(indicesCorel, neutra.Nodes.Count, mapearNodo);
             informar("Aplicando la envolvente curva al rib");
             if (!efecto.Envelope.CopyFromCurve(tramo.Contorno,
                 cdrEnvelopeMode.cdrEnvelopeOriginal, false, cdrEnvelopeCopyMode.cdrEnvelopeUseOriginal, esquinas))
