@@ -23,6 +23,7 @@ namespace TithorAutomation.Servicios
         private ShapeRange composicion;
         private Layer capaTrabajo;
         private Page paginaTrabajo;
+        private string codigoCamiseta;
         public bool RequiereRecargar { get; private set; }
         private string carpetaTemporal;
         public List<CampoMockup> Campos { get; private set; } = new List<CampoMockup>();
@@ -82,6 +83,115 @@ namespace TithorAutomation.Servicios
             }
         }
 
+
+        public static bool EsGrupoCamiseta(string nombre)
+        {
+            string[] partes = Normalizar(nombre).Split('_');
+            return partes.Length >= 3 && (partes[0] == "clasico" || partes[0] == "ranglan")
+                && (partes[1] == "varon" || partes[1] == "mujer");
+        }
+
+        public static List<CampoMockup> DetectarCamposCamiseta(Shapes objetos)
+        {
+            var campos = new Dictionary<string, CampoMockup>(StringComparer.OrdinalIgnoreCase);
+            RecogerCamposCamiseta(objetos, campos);
+            if (campos.Count == 0) throw new InvalidOperationException("Nombre los PowerClips: frente, espalda, manga_corta_izquierda o manga_corta_derecha.");
+            return campos.Values.ToList();
+        }
+
+        private static void RecogerCamposCamiseta(Shapes objetos, Dictionary<string, CampoMockup> campos)
+        {
+            for (int i = 1; i <= objetos.Count; i++)
+            {
+                Shape objeto = objetos[i];
+                string nombre = Normalizar(objeto.Name);
+                bool pieza = nombre == "frente" || nombre == "espalda" || nombre == "manga_corta_izquierda" || nombre == "manga_corta_derecha";
+                if (pieza)
+                {
+                    if (objeto.PowerClip == null) throw new InvalidOperationException("La pieza " + nombre + " debe ser un PowerClip.");
+                    if (!campos.ContainsKey(nombre))
+                        campos.Add(nombre, new CampoMockup { Nombre = nombre, Referencia = nombre, Destinos = new List<Shape>() });
+                    campos[nombre].Destinos.Add(objeto);
+                }
+                else if (objeto.PowerClip == null && objeto.Type == cdrShapeType.cdrGroupShape)
+                    RecogerCamposCamiseta(objeto.Shapes, campos);
+                // Conservar decoración, bitmap, rib y piezas aún no habilitadas.
+            }
+        }
+
+        private bool EsMangaDerechaFrente(CampoMockup campo)
+        {
+            return (codigoCamiseta == "clasico_varon_v" || codigoCamiseta == "clasico_varon_redondo")
+                && campo.Referencia == "manga_corta_derecha";
+        }
+
+        private void ColocarMangaDerechaFrente(VGCore.Application app, Shape copia, Shape destino)
+        {
+            // Neutralizar la rotación de la referencia para medir su marco, no su contenido.
+            copia.RotateEx(-copia.RotationAngle, copia.CenterX, copia.CenterY);
+            double alto = app.ConvertUnits(196.652, cdrUnit.cdrMillimeter, documento.Unit);
+            double ancho = copia.SizeWidth * alto / copia.SizeHeight;
+            if (!DimensionValida(ancho)) throw new InvalidOperationException("La manga no tiene un marco válido.");
+            double x, y;
+            ObtenerPuntoSuperior(destino, out x, out y);
+            Shapes anteriores = destino.PowerClip.Shapes;
+            for (int i = anteriores.Count; i >= 1; i--) anteriores[i].Delete();
+            copia.AddToPowerClip(destino, cdrTriState.cdrFalse);
+            copia.SetSize(ancho, alto);
+            copia.CenterX = x;
+            copia.CenterY = y - alto / 2.0;
+            copia.RotateEx(294.088 - copia.RotationAngle, x, y);
+            copia.RotationCenterX = x;
+            copia.RotationCenterY = y;
+        }
+
+        private static void ObtenerPuntoSuperior(Shape destino, out double x, out double y)
+        {
+            Curve curva = destino.DisplayCurve;
+            if (curva == null || curva.Segments.Count == 0)
+                throw new InvalidOperationException("No se pudo leer el contorno de " + destino.Name + ".");
+            x = 0;
+            y = double.NegativeInfinity;
+            double centro = destino.CenterX;
+            // Cada segmento es lineal o Bézier cúbico. Resolver dy/dt incluye máximos
+            // entre nodos; el centro del bounding box no necesariamente está en el contorno.
+            for (int i = 1; i <= curva.Segments.Count; i++)
+            {
+                Segment segmento = curva.Segments[i];
+                double y0 = segmento.GetPointAt(0, cdrSegmentOffsetType.cdrParamSegmentOffset).y;
+                double d1 = segmento.GetPointAt(1.0 / 3, cdrSegmentOffsetType.cdrParamSegmentOffset).y - y0;
+                double d2 = segmento.GetPointAt(2.0 / 3, cdrSegmentOffsetType.cdrParamSegmentOffset).y - y0;
+                double d3 = segmento.GetPointAt(1, cdrSegmentOffsetType.cdrParamSegmentOffset).y - y0;
+                double a = 4.5 * (d3 - 3 * d2 + 3 * d1);
+                double b = 4.5 * (d2 - 2 * d1) - a;
+                double c = d3 - a - b;
+                double tolerancia = Math.Max(1, Math.Max(Math.Abs(a), Math.Max(Math.Abs(b), Math.Abs(c)))) * 1e-10;
+                var candidatos = new List<double> { 0, 0.5, 1 };
+                if (Math.Abs(a) <= tolerancia)
+                {
+                    if (Math.Abs(b) > tolerancia) candidatos.Add(-c / (2 * b));
+                }
+                else
+                {
+                    double discriminante = 4 * b * b - 12 * a * c;
+                    if (discriminante >= 0)
+                    {
+                        double raiz = Math.Sqrt(discriminante);
+                        candidatos.Add((-2 * b + raiz) / (6 * a));
+                        candidatos.Add((-2 * b - raiz) / (6 * a));
+                    }
+                }
+                foreach (double t in candidatos.Where(v => v >= 0 && v <= 1))
+                {
+                    VGCore.Point punto = segmento.GetPointAt(t, cdrSegmentOffsetType.cdrParamSegmentOffset);
+                    double px = punto.x, py = punto.y;
+                    if (py > y + tolerancia || (Math.Abs(py - y) <= tolerancia && Math.Abs(px - centro) < Math.Abs(x - centro)))
+                    { x = px; y = py; }
+                }
+            }
+            if (double.IsNaN(y) || double.IsInfinity(y)) throw new InvalidOperationException("No se encontró el punto superior de la manga.");
+        }
+
         public void Cargar(VGCore.Application app, string rutaMaster, Mockup mockup)
         {
             if (!File.Exists(rutaMaster)) throw new FileNotFoundException("No se encuentra el master de mockups.", rutaMaster);
@@ -119,7 +229,9 @@ namespace TithorAutomation.Servicios
                                 if (grupo.Type != cdrShapeType.cdrGroupShape || Normalizar(grupo.Name) != mockup.Codigo) continue;
                                 coincidencias++;
                                 pagina.Activate();
-                                Campos = DetectarCampos(grupo.Shapes);
+                                bool camiseta = Normalizar(pagina.Name) == "camisetas" && EsGrupoCamiseta(grupo.Name);
+                                Campos = camiseta ? DetectarCamposCamiseta(grupo.Shapes) : DetectarCampos(grupo.Shapes);
+                                codigoCamiseta = camiseta ? Normalizar(grupo.Name) : null;
                                 grupo.CreateSelection();
                                 composicion = documento.SelectionRange;
                                 capaTrabajo = capa;
@@ -222,6 +334,11 @@ namespace TithorAutomation.Servicios
                         cambios = true;
                         Shape copia = capaTrabajo.Paste();
                         if (copia == null) throw new InvalidOperationException("No se pudo pegar la referencia " + tarea.Referencia + ".");
+                        if (EsMangaDerechaFrente(tarea))
+                        {
+                            ColocarMangaDerechaFrente(app, copia, destino);
+                            continue;
+                        }
                         if (tarea.Invertido) copia.Rotate(180);
                         // Medir el marco de la copia ya pegada, en las unidades del destino.
                         // Si es PowerClip, se usa su tamaño exterior, no el de su contenido.
@@ -305,6 +422,7 @@ namespace TithorAutomation.Servicios
             composicion = null;
             capaTrabajo = null;
             paginaTrabajo = null;
+            codigoCamiseta = null;
             Campos.Clear();
             RequiereRecargar = true;
             if (carpetaTemporal != null) { try { Directory.Delete(carpetaTemporal, true); } catch { } }
@@ -322,6 +440,7 @@ namespace TithorAutomation.Servicios
             composicion = null;
             capaTrabajo = null;
             paginaTrabajo = null;
+            codigoCamiseta = null;
             Campos.Clear();
             if (carpetaTemporal != null) { try { Directory.Delete(carpetaTemporal, true); } catch { } }
             carpetaTemporal = null;

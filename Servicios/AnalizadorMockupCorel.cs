@@ -54,7 +54,7 @@ namespace TithorAutomation.Servicios
                 VGCore.Layer capa = pagina.Layers[indiceCapa];
                 string nombreCapa = (capa.Name ?? string.Empty).Trim();
 
-                if (AnalizadorMasterCorel.NormalizarCodigo(nombreCapa) == "diseno")
+                if (AnalizadorMasterCorel.NormalizarCodigo(nombreCapa) == "diseno" && EditorMockupCorel.Normalizar(pagina.Name) != "camisetas")
                     {
                     AgregarMockup(resultado, nombreCapa, capa.Shapes, "Capa", true, nombreArchivo);
                     continue;
@@ -71,16 +71,22 @@ namespace TithorAutomation.Servicios
                     VGCore.Shape objeto = capa.Shapes[indice];
                     string nombre = ObtenerNombreSeguro(objeto);
 
+                    if (EditorMockupCorel.Normalizar(pagina.Name) == "camisetas" && EditorMockupCorel.EsGrupoCamiseta(nombre) && objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
+                        {
+                        AgregarMockup(resultado, nombre, objeto.Shapes, "Grupo", false, null, true);
+                        continue;
+                        }
+
                     if (EsNombreMockup(nombre) && objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
                         AgregarMockup(resultado, nombre, objeto.Shapes, "Grupo");
                     }
                 }
             }
 
-        private void AgregarMockup(List<Mockup> resultado, string nombre, VGCore.Shapes objetos, string origen, bool partesDirectas = false, string nombreArchivo = null)
+        private void AgregarMockup(List<Mockup> resultado, string nombre, VGCore.Shapes objetos, string origen, bool partesDirectas = false, string nombreArchivo = null, bool camiseta = false)
             {
             string codigo = AnalizadorMasterCorel.NormalizarCodigo(nombre);
-            string producto = partesDirectas ? nombreArchivo : ObtenerProducto(nombre);
+            string producto = camiseta ? nombre.Replace('_', ' ') : partesDirectas ? nombreArchivo : ObtenerProducto(nombre);
 
             Mockup mockup = new Mockup
                 {
@@ -107,7 +113,7 @@ namespace TithorAutomation.Servicios
                 {
                 try
                     {
-                    var campos = EditorMockupCorel.DetectarCampos(objetos, partesDirectas);
+                    var campos = camiseta ? EditorMockupCorel.DetectarCamposCamiseta(objetos) : EditorMockupCorel.DetectarCampos(objetos, partesDirectas);
                     mockup.Piezas = string.Join(", ", campos.Select(x => x.Nombre));
                     mockup.Observacion = "Piezas: " + mockup.Piezas;
                     }
