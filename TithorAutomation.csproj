@@ -182,6 +182,7 @@
     <Compile Include="Servicios\EditorMockupCorel.cs" />
     <Compile Include="Servicios\AdaptadorRibMockup.cs" />
     <Compile Include="Servicios\EscaladorPowerClip.cs" />
+    <Compile Include="Servicios\RegistroDiagnostico.cs" />
     <Compile Include="frmPrincipal.Escalar.cs">
       <DependentUpon>frmPrincipal.cs</DependentUpon>
       <SubType>Form</SubType>
