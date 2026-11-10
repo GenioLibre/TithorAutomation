@@ -555,7 +555,7 @@ namespace TithorAutomation.Servicios
                             double anchoRib, altoRib;
                             EscaladorPowerClip.CalcularTamanoCobertura(copia.SizeWidth, copia.SizeHeight,
                                 destino.SizeWidth * 1.01, destino.SizeHeight * 1.01, out anchoRib, out altoRib);
-                            double altoMinimoRib = app.ConvertUnits(84.055, cdrUnit.cdrMillimeter, documento.Unit);
+                            double altoMinimoRib = app.ConvertUnits(85.0, cdrUnit.cdrMillimeter, documento.Unit);
                             if (altoRib < altoMinimoRib)
                             {
                                 anchoRib *= altoMinimoRib / altoRib;
