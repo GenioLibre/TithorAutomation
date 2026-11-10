@@ -429,58 +429,85 @@ namespace TithorAutomation.Servicios
                 throw new InvalidOperationException("Se detectaron contenedores duplicados. Revise los grupos del documento.");
         }
 
+        private static T? LeerFormatoTexto<T>(Func<T> leer, string propiedad) where T : struct
+        {
+            try { return leer(); }
+            catch (COMException ex)
+            {
+                RegistroDiagnostico.Guardar(ex, "Advertencia: no se pudo leer " + propiedad);
+                return null;
+            }
+        }
+
+        private static void RestaurarFormatoTexto(Action restaurar, string propiedad)
+        {
+            try { restaurar(); }
+            catch (COMException ex)
+            {
+                RegistroDiagnostico.Guardar(ex, "Advertencia: Corel rechazó restaurar " + propiedad +
+                    ". El texto se reemplazó; revisar visualmente su formato.");
+            }
+        }
+
+        private static bool EspaciadoValido(float? valor)
+        {
+            return valor.HasValue && valor.Value >= 0 &&
+                !float.IsNaN(valor.Value) && !float.IsInfinity(valor.Value);
+        }
+
         private static void ReemplazarTextoConEspaciado(VGCore.Text texto, string nuevoTexto)
         {
             if (texto == null) return;
-
             TextRange story = texto.Story;
             bool esArtistico = texto.IsArtisticText;
-            cdrLineSpacingType tipoEspaciadoLinea = story.LineSpacingType;
-            float espaciadoLinea = story.LineSpacing;
-            float espaciadoAntesParrafo = esArtistico ? -1 : story.ParaSpacingBefore;
-            float espaciadoDespuesParrafo = esArtistico ? -1 : story.ParaSpacingAfter;
-            float espaciadoCaracteres = story.CharSpacing;
-            float espaciadoPalabras = story.WordSpacing;
-            int espaciadoManual = story.RangeKerning;
+            var tipoLinea = LeerFormatoTexto(() => story.LineSpacingType, "LineSpacingType");
+            var linea = LeerFormatoTexto(() => story.LineSpacing, "LineSpacing");
+            var antes = esArtistico ? (float?)null : LeerFormatoTexto(() => story.ParaSpacingBefore, "ParaSpacingBefore");
+            var despues = esArtistico ? (float?)null : LeerFormatoTexto(() => story.ParaSpacingAfter, "ParaSpacingAfter");
+            var caracteres = LeerFormatoTexto(() => story.CharSpacing, "CharSpacing");
+            var palabras = LeerFormatoTexto(() => story.WordSpacing, "WordSpacing");
+            var kerning = LeerFormatoTexto(() => story.RangeKerning, "RangeKerning");
 
+            // Reemplazar el texto es obligatorio: sus errores siguen deteniendo la
+            // operación. Solo las propiedades auxiliares de formato son tolerantes.
             story.Text = nuevoTexto ?? string.Empty;
             story = texto.Story;
-
-            // Un valor vacío (por ejemplo un pedido sin número) no tiene caracteres
-            // a los que restaurar espaciado.
             if (string.IsNullOrEmpty(nuevoTexto)) return;
 
-            // Corel puede restablecer estos valores al sustituir el contenido del Story.
-            // Restaurarlos mantiene, por ejemplo, un espaciado de caracteres o líneas de 120%.
-            // Corel devuelve valores especiales para rangos con formato mixto.
-            // No reenviarlos al setter ni reescribir un valor ya conservado.
-            if (!float.IsNaN(espaciadoCaracteres) && !float.IsInfinity(espaciadoCaracteres) && espaciadoCaracteres >= 0)
-            {
-                try
+            if (EspaciadoValido(caracteres))
+                RestaurarFormatoTexto(() =>
                 {
-                    if (Math.Abs(story.CharSpacing - espaciadoCaracteres) > 0.001f)
-                        story.CharSpacing = espaciadoCaracteres;
-                }
-                catch (COMException ex)
+                    if (Math.Abs(story.CharSpacing - caracteres.Value) > 0.001f)
+                        story.CharSpacing = caracteres.Value;
+                }, "CharSpacing");
+            // Sin espacios entre palabras, WordSpacing no tiene nada que ajustar.
+            if (EspaciadoValido(palabras) && nuevoTexto.Any(char.IsWhiteSpace))
+                RestaurarFormatoTexto(() =>
                 {
-                    // El texto ya se sustituyó. Mantener el formato que Corel haya
-                    // conservado y registrar el rechazo sin cancelar todo el pedido.
-                    RegistroDiagnostico.Guardar(ex, "Advertencia de formato: Corel rechazó CharSpacing=" +
-                        espaciadoCaracteres.ToString(System.Globalization.CultureInfo.InvariantCulture) +
-                        "; texto artístico=" + esArtistico + "; caracteres=" + nuevoTexto.Length);
-                }
-            }
-            story.WordSpacing = espaciadoPalabras;
-            // El texto artístico (incluido el ajustado a trayecto) admite interlineado,
-            // pero no separación antes/después del párrafo. Omitir esos argumentos.
-            if (esArtistico)
-                story.SetLineSpacing(tipoEspaciadoLinea, espaciadoLinea);
-            else
-                story.SetLineSpacing(tipoEspaciadoLinea, espaciadoLinea, espaciadoAntesParrafo, espaciadoDespuesParrafo);
-
-            // El rango de espaciado manual es independiente de CharSpacing.
-            // Reaplicarlo al rango nuevo después del resto del formato.
-            story.RangeKerning = espaciadoManual;
+                    if (Math.Abs(story.WordSpacing - palabras.Value) > 0.001f)
+                        story.WordSpacing = palabras.Value;
+                }, "WordSpacing");
+            if (tipoLinea.HasValue && EspaciadoValido(linea))
+                RestaurarFormatoTexto(() =>
+                {
+                    if (esArtistico)
+                    {
+                        if (story.LineSpacingType != tipoLinea.Value || Math.Abs(story.LineSpacing - linea.Value) > 0.001f)
+                            story.SetLineSpacing(tipoLinea.Value, linea.Value);
+                    }
+                    else if (EspaciadoValido(antes) && EspaciadoValido(despues))
+                    {
+                        if (story.LineSpacingType != tipoLinea.Value || Math.Abs(story.LineSpacing - linea.Value) > 0.001f ||
+                            Math.Abs(story.ParaSpacingBefore - antes.Value) > 0.001f ||
+                            Math.Abs(story.ParaSpacingAfter - despues.Value) > 0.001f)
+                            story.SetLineSpacing(tipoLinea.Value, linea.Value, antes.Value, despues.Value);
+                    }
+                }, "Interlineado y párrafos");
+            if (kerning.HasValue)
+                RestaurarFormatoTexto(() =>
+                {
+                    if (story.RangeKerning != kerning.Value) story.RangeKerning = kerning.Value;
+                }, "RangeKerning");
         }
 
         private void ReemplazarVariables(Shape objeto, PiezaEscalable destino)
