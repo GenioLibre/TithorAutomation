@@ -446,9 +446,30 @@ namespace TithorAutomation.Servicios
             story.Text = nuevoTexto ?? string.Empty;
             story = texto.Story;
 
+            // Un valor vacío (por ejemplo un pedido sin número) no tiene caracteres
+            // a los que restaurar espaciado.
+            if (string.IsNullOrEmpty(nuevoTexto)) return;
+
             // Corel puede restablecer estos valores al sustituir el contenido del Story.
             // Restaurarlos mantiene, por ejemplo, un espaciado de caracteres o líneas de 120%.
-            story.CharSpacing = espaciadoCaracteres;
+            // Corel devuelve valores especiales para rangos con formato mixto.
+            // No reenviarlos al setter ni reescribir un valor ya conservado.
+            if (!float.IsNaN(espaciadoCaracteres) && !float.IsInfinity(espaciadoCaracteres) && espaciadoCaracteres >= 0)
+            {
+                try
+                {
+                    if (Math.Abs(story.CharSpacing - espaciadoCaracteres) > 0.001f)
+                        story.CharSpacing = espaciadoCaracteres;
+                }
+                catch (COMException ex)
+                {
+                    // El texto ya se sustituyó. Mantener el formato que Corel haya
+                    // conservado y registrar el rechazo sin cancelar todo el pedido.
+                    RegistroDiagnostico.Guardar(ex, "Advertencia de formato: Corel rechazó CharSpacing=" +
+                        espaciadoCaracteres.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                        "; texto artístico=" + esArtistico + "; caracteres=" + nuevoTexto.Length);
+                }
+            }
             story.WordSpacing = espaciadoPalabras;
             // El texto artístico (incluido el ajustado a trayecto) admite interlineado,
             // pero no separación antes/después del párrafo. Omitir esos argumentos.
