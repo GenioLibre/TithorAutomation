@@ -556,7 +556,11 @@ namespace TithorAutomation.Servicios
             }
         public int Aplicar(Document documento, Shape diseno, IList<PiezaEscalable> destinos, bool reemplazar, Action<int, int> progreso = null, VGCore.Application corelApp = null)
             {
-            Validar(diseno, destinos, reemplazar);
+            try { Validar(diseno, destinos, reemplazar); }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(ex.Message + "\n" + RegistroDiagnostico.Guardar(ex, "Escalar: validación previa"), ex);
+            }
 
             double anchoDiseno = diseno.SizeWidth;
             double altoDiseno = diseno.SizeHeight;
@@ -564,6 +568,10 @@ namespace TithorAutomation.Servicios
             double baseDisenoY = diseno.CenterY - altoDiseno / 2.0;
             bool disenoEsPowerClip = diseno.PowerClip != null;
 
+            string etapa = "Preparando CorelDRAW";
+            string contexto = "Escalar; destinos=" + destinos.Count;
+            try { if (corelApp != null) contexto += "; Corel=" + corelApp.VersionMajor; } catch { }
+            string entorno = contexto;
             bool abierto = false;
             bool huboCambios = false;
             bool eventosDesactivados = false;
@@ -594,6 +602,8 @@ namespace TithorAutomation.Servicios
 
                     try
                         {
+                        contexto = entorno + "; destino=" + (indiceDestino + 1) + "/" + destinos.Count + "; pieza=" + destino.Pieza + "; talla=" + destino.Talla + "; fila=" + destino.FilaExcel + "; grupo=" + destino.NombreGrupo;
+                        etapa = "Leyendo dimensiones del PowerClip";
                         Shape contenedor = destino.Contenedor;
                         double anchoContenedor = contenedor.SizeWidth;
                         double altoContenedor = contenedor.SizeHeight;
@@ -604,7 +614,10 @@ namespace TithorAutomation.Servicios
 
                         CalcularTamanoCobertura(anchoDiseno, altoDiseno, anchoContenedor, altoContenedor, out anchoFinal, out altoFinal);
 
+                        contexto += "; marco origen=" + anchoDiseno + "x" + altoDiseno + "; marco destino=" + anchoContenedor + "x" + altoContenedor;
+                        etapa = "Duplicando y extrayendo la plantilla";
                         Shape copia = CrearCopiaDiseno(diseno, () => huboCambios = true);
+                        etapa = "Reemplazando textos nombre/número y su formato";
                         ReemplazarVariables(copia, destino);
 
                         // Conservar el desplazamiento del contenido respecto al marco de la plantilla.
@@ -617,6 +630,7 @@ namespace TithorAutomation.Servicios
                             centroFinalY = baseContenedorY + (copia.CenterY - baseDisenoY) * factorEscala;
                             }
 
+                        etapa = "Eliminando el diseño anterior";
                         if (reemplazar && contenedor.PowerClip != null)
                             {
                             Shapes anteriores = contenedor.PowerClip.Shapes;
@@ -628,7 +642,9 @@ namespace TithorAutomation.Servicios
                                 }
                             }
 
+                        etapa = "Insertando el diseño en el PowerClip";
                         copia.AddToPowerClip(contenedor, cdrTriState.cdrTrue);
+                        etapa = "Escalando el diseño";
 
                         if (disenoEsPowerClip)
                             {
@@ -639,6 +655,7 @@ namespace TithorAutomation.Servicios
                             copia.SetSize(anchoFinal, altoFinal);
                             }
 
+                        etapa = "Alineando y ordenando el diseño";
                         copia.CenterX = centroFinalX;
                         copia.CenterY = centroFinalY;
                         copia.Name = "TITHOR_DISENO_" + destino.Pieza.Replace(' ', '_');
@@ -653,7 +670,7 @@ namespace TithorAutomation.Servicios
                         throw new InvalidOperationException(
                             "Falló el destino " + (indiceDestino + 1) + " de " + destinos.Count +
                             " (" + destino.Pieza + ", talla " + destino.Talla + ", fila Excel " + destino.FilaExcel + "). " +
-                            errorDestino.Message,
+                            "Etapa: " + etapa + ". HRESULT: 0x" + errorDestino.HResult.ToString("X8") + ". " + errorDestino.Message,
                             errorDestino
                         );
                         }
@@ -681,14 +698,14 @@ namespace TithorAutomation.Servicios
                     {
                     throw new InvalidOperationException(
                         "Falló la aplicación y no se pudo confirmar la reversión. Revise el documento antes de guardar. " +
-                        errorReversion.Message,
+                        errorReversion.Message + "\n" + RegistroDiagnostico.Guardar(new AggregateException(error, errorReversion), contexto + "; etapa=" + etapa + "; reversión fallida"),
                         error
                     );
                     }
 
                 throw new InvalidOperationException(
                     "No se completó la aplicación. Los cambios realizados se deshicieron. " +
-                    error.Message,
+                    error.Message + "\n" + RegistroDiagnostico.Guardar(error, contexto + "; etapa=" + etapa + "; reversión completada"),
                     error
                 );
                 }

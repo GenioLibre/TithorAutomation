@@ -20,12 +20,19 @@ try {
     # Barras normales evitan escapar la comilla final en rutas con espacios.
     $solutionDir = $projectRoot.Replace('\', '/') + '/'
     $packagesDir = $solutionDir + 'packages'
-    & $msbuild (Join-Path $projectRoot 'TithorAutomation.csproj') /restore /t:Rebuild /p:RestorePackagesConfig=true "/p:SolutionDir=$solutionDir" "/p:RestoreRepositoryPath=$packagesDir" /p:Configuration=Release /p:Platform=x64 /nologo
+    $buildLog = Join-Path $PSScriptRoot 'build-installer.log'
+    & $msbuild (Join-Path $projectRoot 'TithorAutomation.csproj') /restore /t:Rebuild /p:RestorePackagesConfig=true "/p:SolutionDir=$solutionDir" "/p:RestoreRepositoryPath=$packagesDir" /p:Configuration=Release /p:Platform=x64 /nologo "/flp:logfile=$buildLog;verbosity=normal"
     if ($LASTEXITCODE -ne 0) { throw 'Fallo la compilacion de TithorAutomation. No se genero un instalador nuevo.' }
     $output = Join-Path $projectRoot 'bin\x64\Release'
     foreach ($file in @('TithorAutomation.exe','TithorAutomation.exe.config','System.Data.SQLite.dll','x64\SQLite.Interop.dll','Interop.CorelDRAW.dll')) {
         if (!(Test-Path (Join-Path $output $file))) { throw "Falta dependencia: $file. Revisa la salida Release x64." }
     }
+    # Permite comparar exactamente los archivos distribuidos en ambas PCs.
+    Get-ChildItem $output -File -Recurse | Where-Object { $_.Extension -in @('.exe','.dll','.config') } |
+        ForEach-Object {
+            $hash = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
+            "$hash  $($_.FullName.Substring($output.Length + 1))"
+        } | Set-Content (Join-Path $output 'manifest-sha256.txt') -Encoding UTF8
     & $InnoCompiler (Join-Path $PSScriptRoot 'TithorAutomation.iss')
     if ($LASTEXITCODE -ne 0) { throw 'Fallo Inno Setup. No distribuyas un instalador de una compilacion anterior.' }
     Write-Host "Instalador generado: $PSScriptRoot\dist\TithorAutomation-Setup.exe"
