@@ -509,9 +509,6 @@ namespace TithorAutomation.Servicios
                     throw new InvalidOperationException("El PowerClip " + destino.Name + " no tiene dimensiones válidas.");
             }
 
-            var tramosRib = new Dictionary<string, TramoRibMockup>();
-            bool aplicarRib = !string.IsNullOrWhiteSpace(codigoCamiseta) && tareas.Any(t => t.Referencia == "rib");
-
             bool eventos = app.EventsEnabled;
             bool optimizacion = app.Optimization;
             bool abierto = false;
@@ -526,30 +523,6 @@ namespace TithorAutomation.Servicios
                 documento.Activate();
                 documento.BeginCommandGroup("Tithor - Aplicar mockup");
                 abierto = true;
-                if (aplicarRib)
-                {
-                    // Medir una copia en el documento de trabajo. SizeWidth/Height
-                    // del original rotado son su caja envolvente, no el rectángulo
-                    // horizontal que se utilizará para distribuir el estampado.
-                    pieza = "rib";
-                    etapa = "Preparando la orientación del rib";
-                    origen.Activate();
-                    referencias["rib"].Copy();
-                    documento.Activate();
-                    paginaTrabajo.Activate();
-                    capaTrabajo.Activate();
-                    cambios = true;
-                    Shape muestraRib = capaTrabajo.Paste();
-                    if (muestraRib == null) throw new InvalidOperationException("No se pudo copiar el diseño rib.");
-                    AdaptadorRibMockup.NormalizarOrientacion(muestraRib);
-                    var destinosRib = Campos.Where(t => t.Referencia == "rib").SelectMany(t => t.Destinos)
-                        .OrderBy(d => ribsFrente.Contains(Convert.ToString(d.StaticID)) ? 0 : 1)
-                        .ThenBy(d => d.CenterX).ToList();
-                    etapa = "Validando los tramos del cuello";
-                    foreach (var tramo in AdaptadorRibMockup.Preparar(destinosRib, muestraRib.SizeWidth / (muestraRib.SizeHeight / 2.0)))
-                        tramosRib.Add(Convert.ToString(tramo.Destino.StaticID), tramo);
-                    muestraRib.Delete();
-                }
                 foreach (CampoMockup tarea in tareas)
                 {
                     indiceDestino = 0;
@@ -568,10 +541,18 @@ namespace TithorAutomation.Servicios
                         etapa = "Pegando la referencia en el mockup";
                         Shape copia = capaTrabajo.Paste();
                         if (copia == null) throw new InvalidOperationException("No se pudo pegar la referencia " + tarea.Referencia + ".");
-                        if (tarea.Referencia == "rib" && tramosRib.Count > 0)
+                        if (tarea.Referencia == "rib" && !string.IsNullOrWhiteSpace(codigoCamiseta))
                         {
-                            Shape rib = AdaptadorRibMockup.Deformar(copia, tramosRib[Convert.ToString(destino.StaticID)], capaTrabajo, valor => etapa = valor);
-                            ReemplazarContenidoMockup(rib, destino, valor => etapa = valor);
+                            etapa = "Escalando el rib para cubrir el PowerClip";
+                            // Cobertura proporcional del marco completo, sin envolventes,
+                            // rasterización, reparto ni extracción de la mitad inferior.
+                            double anchoRib, altoRib;
+                            EscaladorPowerClip.CalcularTamanoCobertura(copia.SizeWidth, copia.SizeHeight,
+                                destino.SizeWidth, destino.SizeHeight, out anchoRib, out altoRib);
+                            copia.SetSize(anchoRib, altoRib);
+                            copia.CenterX = destino.CenterX;
+                            copia.CenterY = destino.CenterY;
+                            ReemplazarContenidoMockup(copia, destino, valor => etapa = valor);
                             continue;
                         }
                         if (EsMangaCamiseta(tarea))
