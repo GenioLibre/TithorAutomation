@@ -543,16 +543,21 @@ namespace TithorAutomation.Servicios
                         if (copia == null) throw new InvalidOperationException("No se pudo pegar la referencia " + tarea.Referencia + ".");
                         if (tarea.Referencia == "rib" && !string.IsNullOrWhiteSpace(codigoCamiseta))
                         {
-                            etapa = "Escalando el rib para cubrir el PowerClip";
-                            // Cobertura proporcional del marco completo, sin envolventes,
-                            // rasterización, reparto ni extracción de la mitad inferior.
+                            etapa = "Orientando el marco del rib";
+                            // Una caja envolvente rotada puede cubrir las medidas
+                            // del cuello pero dejar vacías sus esquinas.
+                            copia.RotateEx(-copia.RotationAngle, copia.CenterX, copia.CenterY);
+                            etapa = "Insertando el rib en el PowerClip";
+                            ReemplazarContenidoMockup(copia, destino, valor => etapa = valor);
+                            // Ajustar DESPUÉS de insertar: Corel puede cambiar el
+                            // tamaño/posición con sus preferencias de PowerClip.
+                            etapa = "Cubriendo y centrando el rib dentro del PowerClip";
                             double anchoRib, altoRib;
                             EscaladorPowerClip.CalcularTamanoCobertura(copia.SizeWidth, copia.SizeHeight,
-                                destino.SizeWidth, destino.SizeHeight, out anchoRib, out altoRib);
+                                destino.SizeWidth * 1.01, destino.SizeHeight * 1.01, out anchoRib, out altoRib);
                             copia.SetSize(anchoRib, altoRib);
                             copia.CenterX = destino.CenterX;
                             copia.CenterY = destino.CenterY;
-                            ReemplazarContenidoMockup(copia, destino, valor => etapa = valor);
                             continue;
                         }
                         if (EsMangaCamiseta(tarea))
