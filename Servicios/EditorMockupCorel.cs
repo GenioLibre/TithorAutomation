@@ -563,7 +563,8 @@ namespace TithorAutomation.Servicios
                             }
                             copia.SetSize(anchoRib, altoRib);
                             copia.CenterX = destino.CenterX;
-                            copia.CenterY = destino.CenterY;
+                            // Alinear los bordes superiores; conservar el centrado horizontal.
+                            copia.CenterY = destino.CenterY + destino.SizeHeight / 2.0 - copia.SizeHeight / 2.0;
                             continue;
                         }
                         if (EsMangaCamiseta(tarea))
