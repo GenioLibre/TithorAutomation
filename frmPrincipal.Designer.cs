@@ -184,6 +184,7 @@ namespace TithorAutomation
             this.prgEscalar = new System.Windows.Forms.ProgressBar();
             this.lblEstadoEscalar = new System.Windows.Forms.Label();
             this.btnFinalizarEscalar = new System.Windows.Forms.Button();
+            this.chkConvertirTodoBitmap = new System.Windows.Forms.CheckBox();
             this.btnAnalizarEscalar = new System.Windows.Forms.Button();
             this.btnAplicarEscalar = new System.Windows.Forms.Button();
             this.chkReemplazoPorLote = new System.Windows.Forms.CheckBox();
@@ -2021,6 +2022,7 @@ namespace TithorAutomation
             this.groupBox1.Controls.Add(this.prgEscalar);
             this.groupBox1.Controls.Add(this.lblEstadoEscalar);
             this.groupBox1.Controls.Add(this.btnFinalizarEscalar);
+            this.groupBox1.Controls.Add(this.chkConvertirTodoBitmap);
             this.groupBox1.Controls.Add(this.btnAnalizarEscalar);
             this.groupBox1.Controls.Add(this.btnAplicarEscalar);
             this.groupBox1.Controls.Add(this.chkReemplazoPorLote);
@@ -2069,6 +2071,16 @@ namespace TithorAutomation
             this.btnFinalizarEscalar.Text = "Finalizar";
             this.btnFinalizarEscalar.UseVisualStyleBackColor = false;
             this.btnFinalizarEscalar.Click += new System.EventHandler(this.btnFinalizarEscalar_Click);
+            // chkConvertirTodoBitmap
+            this.chkConvertirTodoBitmap.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+            this.chkConvertirTodoBitmap.AutoSize = true;
+            this.chkConvertirTodoBitmap.Location = new System.Drawing.Point(668, 78);
+            this.chkConvertirTodoBitmap.Name = "chkConvertirTodoBitmap";
+            this.chkConvertirTodoBitmap.Size = new System.Drawing.Size(220, 17);
+            this.chkConvertirTodoBitmap.TabIndex = 47;
+            this.chkConvertirTodoBitmap.Text = "Convertir todo a mapa de bits";
+            this.chkConvertirTodoBitmap.UseVisualStyleBackColor = true;
+
             // 
             // btnAnalizarEscalar
             // 
@@ -3800,6 +3812,7 @@ namespace TithorAutomation
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnFinalizarEscalar;
+        private System.Windows.Forms.CheckBox chkConvertirTodoBitmap;
         private System.Windows.Forms.Button btnAnalizarEscalar;
         private System.Windows.Forms.Button btnAplicarEscalar;
         private System.Windows.Forms.CheckBox chkReemplazarContenidoEscalar;

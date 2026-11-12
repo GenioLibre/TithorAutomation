@@ -835,6 +835,43 @@ namespace TithorAutomation
                 }
             }
 
+        private void RecogerTextosExternosFinales(VGCore.Shapes objetos, List<VGCore.Shape> textos)
+            {
+            for (int i = 1; i <= objetos.Count; i++)
+                {
+                VGCore.Shape objeto = objetos[i];
+                if (objeto.Type == VGCore.cdrShapeType.cdrTextShape) textos.Add(objeto);
+                if (objeto.PowerClip == null && objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
+                    RecogerTextosExternosFinales(objeto.Shapes, textos);
+                }
+            }
+
+        private void RecogerPowerClipsFinales(VGCore.Shapes objetos, List<VGCore.Shape> clips)
+            {
+            for (int i = 1; i <= objetos.Count; i++)
+                {
+                VGCore.Shape objeto = objetos[i];
+                if (objeto.PowerClip != null) clips.Add(objeto);
+                else if (objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
+                    RecogerPowerClipsFinales(objeto.Shapes, clips);
+                }
+            }
+
+        private void AplanarContenidoFinal(VGCore.Shape clip)
+            {
+            var anteriores = new List<VGCore.Shape>();
+            for (int i = 1; i <= clip.PowerClip.Shapes.Count; i++) anteriores.Add(clip.PowerClip.Shapes[i]);
+            if (anteriores.Count == 0) return;
+            // Rasterizar una copia del PowerClip visible: recorta el excedente
+            // al renderizar, sin operaciones booleanas sobre bitmaps.
+            VGCore.Shape temporal = clip.Duplicate(0, 0);
+            temporal.Outline.SetNoOutline();
+            VGCore.Shape imagen = temporal.ConvertToBitmapEx(VGCore.cdrImageType.cdrCMYKColorImage, false, true, 100);
+            imagen.Name = "TITHOR_CONTENIDO_FINAL";
+            imagen.AddToPowerClip(clip, VGCore.cdrTriState.cdrFalse);
+            foreach (VGCore.Shape anterior in anteriores) anterior.Delete();
+            }
+
         private void btnFinalizarEscalar_Click(object sender, EventArgs e)
             {
             if (!btnAnalizarEscalar.Enabled) return;
@@ -864,7 +901,17 @@ namespace TithorAutomation
                 RecogerObjetosFinales(capa.Shapes, false, textos, grupos);
                 var bitmaps = new List<Tuple<VGCore.Shape, double[]>>();
                 RecogerBitmapsParaRecorte(capa.Shapes, null, bitmaps);
-                int total = textos.Count + grupos.Count + bitmaps.Count;
+                var clipsFinales = new List<VGCore.Shape>();
+                bool aplanar = chkConvertirTodoBitmap.Checked;
+                if (aplanar)
+                    {
+                    RecogerPowerClipsFinales(capa.Shapes, clipsFinales);
+                    textos.Clear(); // Los textos internos se renderizan en la imagen.
+                    RecogerTextosExternosFinales(capa.Shapes, textos);
+                    // Los bitmaps internos se procesan junto con todo el PowerClip.
+                    bitmaps = bitmaps.Where(x => x.Item2 == null).ToList();
+                    }
+                int total = textos.Count + grupos.Count + bitmaps.Count + clipsFinales.Count;
                 if (total == 0)
                     {
                     lblEstadoEscalar.Text = "Los elementos ya están separados y no quedan textos editables.";
@@ -872,7 +919,7 @@ namespace TithorAutomation
                     }
                 if (MessageBox.Show(this,
                     "Se convertirán los textos a curvas y se desagruparán los moldes de TITHOR_PRODUCCION en la página activa.\n\nLos textos dejarán de ser editables y se limpiarán las tareas de escalado. También se recortará el excedente dentro de los PowerClips y todas las imágenes de esta capa se convertirán a CMYK a 100 ppp.\n¿Desea finalizar?",
-                    "Confirmar finalización", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+                    "Confirmar finalización" + (aplanar ? " — contenido a bitmap CMYK 100 ppp" : ""), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                     return;
                 btnFinalizarEscalar.Enabled = false;
                 btnAnalizarEscalar.Enabled = false;
@@ -888,6 +935,12 @@ namespace TithorAutomation
                 int actual = 0;
                 MostrarProgresoOperacion(prgEscalar, 0, total);
                 int recortados = 0;
+                foreach (VGCore.Shape clip in clipsFinales)
+                    {
+                    cambios = true;
+                    AplanarContenidoFinal(clip);
+                    MostrarProgresoOperacion(prgEscalar, ++actual, total);
+                    }
                 foreach (var entrada in bitmaps)
                     {
                     cambios = true;
@@ -900,13 +953,10 @@ namespace TithorAutomation
                         if (!EscaladorPowerClip.MismoObjetoCom(imagen, recorte)) recortados++;
                         imagen = recorte;
                         }
-                    double anchoImagen = imagen.SizeWidth, altoImagen = imagen.SizeHeight;
-                    double centroImagenX = imagen.CenterX, centroImagenY = imagen.CenterY;
                     imagen.Bitmap.ConvertTo(VGCore.cdrImageType.cdrCMYKColorImage);
                     imagen.Bitmap.Resample(0, 0, true, 100, 100);
-                    imagen.SetSize(anchoImagen, altoImagen);
-                    imagen.CenterX = centroImagenX;
-                    imagen.CenterY = centroImagenY;
+                    // Resample conserva el tamaño físico. No volver a llamar a
+                    // SetSize sobre la referencia COM recién remuestreada.
                     MostrarProgresoOperacion(prgEscalar, ++actual, total);
                     }
                 foreach (VGCore.Shape texto in textos)
@@ -933,7 +983,7 @@ namespace TithorAutomation
                 cboTareaEscalar.DataSource = null;
                 cboTareaEscalar.Items.Clear();
                 dgvEscalar.Rows.Clear();
-                lblEstadoEscalar.Text = textos.Count + " textos convertidos; " + recortados + " mapas de bits recortados; " + bitmaps.Count + " imágenes en CMYK a 100 ppp. Moldes separados para moverlos.";
+                lblEstadoEscalar.Text = clipsFinales.Count + " PowerClips con contenido unificado; " + textos.Count + " textos convertidos; " + recortados + " mapas de bits recortados; " + bitmaps.Count + " imágenes en CMYK a 100 ppp. Moldes separados para moverlos.";
                 }
             catch (Exception ex)
                 {
