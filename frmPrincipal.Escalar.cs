@@ -786,8 +786,8 @@ namespace TithorAutomation
             for (int i = 1; i <= objetos.Count; i++)
                 {
                 VGCore.Shape objeto = objetos[i];
-                if (objeto.Type == VGCore.cdrShapeType.cdrBitmapShape && limite != null)
-                    bitmaps.Add(Tuple.Create(objeto, (double[])limite.Clone()));
+                if (objeto.Type == VGCore.cdrShapeType.cdrBitmapShape)
+                    bitmaps.Add(Tuple.Create(objeto, limite == null ? null : (double[])limite.Clone()));
                 if (objeto.PowerClip != null)
                     {
                     double[] marco = { objeto.CenterX - objeto.SizeWidth / 2, objeto.CenterY - objeto.SizeHeight / 2,
@@ -869,7 +869,7 @@ namespace TithorAutomation
                     return;
                     }
                 if (MessageBox.Show(this,
-                    "Se convertirán los textos a curvas y se desagruparán los moldes de TITHOR_PRODUCCION en la página activa.\n\nLos textos dejarán de ser editables y se limpiarán las tareas de escalado. También se recortará el excedente de los mapas de bits dentro de los PowerClips.\n¿Desea finalizar?",
+                    "Se convertirán los textos a curvas y se desagruparán los moldes de TITHOR_PRODUCCION en la página activa.\n\nLos textos dejarán de ser editables y se limpiarán las tareas de escalado. También se recortará el excedente dentro de los PowerClips y todas las imágenes de esta capa se convertirán a CMYK a 100 ppp.\n¿Desea finalizar?",
                     "Confirmar finalización", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                     return;
                 btnFinalizarEscalar.Enabled = false;
@@ -889,7 +889,16 @@ namespace TithorAutomation
                 foreach (var entrada in bitmaps)
                     {
                     cambios = true;
-                    if (RecortarBitmapFinal(entrada.Item1, entrada.Item2, capa)) recortados++;
+                    if (entrada.Item2 != null && RecortarBitmapFinal(entrada.Item1, entrada.Item2, capa)) recortados++;
+                    // Normalizar también los bitmaps sin PowerClip de esta capa.
+                    VGCore.Shape imagen = entrada.Item1;
+                    double anchoImagen = imagen.SizeWidth, altoImagen = imagen.SizeHeight;
+                    double centroImagenX = imagen.CenterX, centroImagenY = imagen.CenterY;
+                    imagen.Bitmap.ConvertTo(VGCore.cdrImageType.cdrCMYKColorImage);
+                    imagen.Bitmap.Resample(0, 0, true, 100, 100);
+                    imagen.SetSize(anchoImagen, altoImagen);
+                    imagen.CenterX = centroImagenX;
+                    imagen.CenterY = centroImagenY;
                     MostrarProgresoOperacion(prgEscalar, ++actual, total);
                     }
                 foreach (VGCore.Shape texto in textos)
@@ -916,7 +925,7 @@ namespace TithorAutomation
                 cboTareaEscalar.DataSource = null;
                 cboTareaEscalar.Items.Clear();
                 dgvEscalar.Rows.Clear();
-                lblEstadoEscalar.Text = textos.Count + " textos convertidos; " + recortados + " mapas de bits recortados. Moldes separados para moverlos.";
+                lblEstadoEscalar.Text = textos.Count + " textos convertidos; " + recortados + " mapas de bits recortados; " + bitmaps.Count + " imágenes en CMYK a 100 ppp. Moldes separados para moverlos.";
                 }
             catch (Exception ex)
                 {
