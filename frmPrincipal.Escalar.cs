@@ -805,33 +805,32 @@ namespace TithorAutomation
                 }
             }
 
-        private bool RecortarBitmapFinal(VGCore.Shape imagen, double[] marco, VGCore.Layer capa)
+        private VGCore.Shape RecortarBitmapFinal(VGCore.Shape imagen, double[] marco, VGCore.Layer capa)
             {
             double izquierda = imagen.CenterX - imagen.SizeWidth / 2, abajo = imagen.CenterY - imagen.SizeHeight / 2;
             double derecha = imagen.CenterX + imagen.SizeWidth / 2, arriba = imagen.CenterY + imagen.SizeHeight / 2;
             double tolerancia = Math.Max(imagen.SizeWidth, imagen.SizeHeight) * 1e-8;
             if (izquierda >= marco[0] - tolerancia && abajo >= marco[1] - tolerancia &&
-                derecha <= marco[2] + tolerancia && arriba <= marco[3] + tolerancia) return false;
-            // Intersectar solo las curvas de recorte; conservar el bitmap original,
-            // su transformación, posición, grupo y orden de apilamiento.
-            VGCore.Shape rectangulo = null, mascara = null, interseccion = null;
+                derecha <= marco[2] + tolerancia && arriba <= marco[3] + tolerancia) return imagen;
+            VGCore.Shape rectangulo = null;
             try
                 {
                 rectangulo = capa.CreateRectangle2(marco[0], marco[1], marco[2] - marco[0], marco[3] - marco[1]);
-                // CropEnvelope puede devolver una curva no copiable cuando el bitmap
-                // no tiene recorte previo. DisplayCurve representa su contorno
-                // visible actual y ya incluye el recorte que pudiera tener.
-                mascara = capa.CreateCurve(imagen.DisplayCurve);
-                interseccion = mascara.Intersect(rectangulo, true, true);
-                if (interseccion == null) return false; // Imagen sin área visible.
-                imagen.Bitmap.CropEnvelope.CopyAssign(interseccion.DisplayCurve);
-                imagen.Bitmap.Crop();
-                return true;
+                // El bitmap no ofrece una curva copiable en todas las versiones
+                // de Corel. Intersectar directamente, conservando el original
+                // hasta comprobar el resultado.
+                VGCore.Shape recorte = rectangulo.Intersect(imagen, true, true);
+                if (recorte == null) return imagen;
+                if (recorte.Type != VGCore.cdrShapeType.cdrBitmapShape)
+                    throw new InvalidOperationException("CorelDRAW no devolvió un bitmap al intersectar el recorte.");
+                recorte.OrderFrontOf(imagen);
+                recorte.Name = imagen.Name;
+                recorte.Bitmap.Crop();
+                imagen.Delete();
+                return recorte;
                 }
             finally
                 {
-                if (interseccion != null) interseccion.Delete();
-                if (mascara != null) mascara.Delete();
                 if (rectangulo != null) rectangulo.Delete();
                 }
             }
@@ -892,9 +891,15 @@ namespace TithorAutomation
                 foreach (var entrada in bitmaps)
                     {
                     cambios = true;
-                    if (entrada.Item2 != null && RecortarBitmapFinal(entrada.Item1, entrada.Item2, capa)) recortados++;
+
                     // Normalizar también los bitmaps sin PowerClip de esta capa.
                     VGCore.Shape imagen = entrada.Item1;
+                    if (entrada.Item2 != null)
+                        {
+                        VGCore.Shape recorte = RecortarBitmapFinal(imagen, entrada.Item2, capa);
+                        if (!EscaladorPowerClip.MismoObjetoCom(imagen, recorte)) recortados++;
+                        imagen = recorte;
+                        }
                     double anchoImagen = imagen.SizeWidth, altoImagen = imagen.SizeHeight;
                     double centroImagenX = imagen.CenterX, centroImagenY = imagen.CenterY;
                     imagen.Bitmap.ConvertTo(VGCore.cdrImageType.cdrCMYKColorImage);
