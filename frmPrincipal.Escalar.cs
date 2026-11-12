@@ -780,6 +780,59 @@ namespace TithorAutomation
                 }
             }
 
+        private void RecogerBitmapsParaRecorte(VGCore.Shapes objetos, double[] limite,
+            List<Tuple<VGCore.Shape, double[]>> bitmaps)
+            {
+            for (int i = 1; i <= objetos.Count; i++)
+                {
+                VGCore.Shape objeto = objetos[i];
+                if (objeto.Type == VGCore.cdrShapeType.cdrBitmapShape && limite != null)
+                    bitmaps.Add(Tuple.Create(objeto, (double[])limite.Clone()));
+                if (objeto.PowerClip != null)
+                    {
+                    double[] marco = { objeto.CenterX - objeto.SizeWidth / 2, objeto.CenterY - objeto.SizeHeight / 2,
+                        objeto.CenterX + objeto.SizeWidth / 2, objeto.CenterY + objeto.SizeHeight / 2 };
+                    if (limite != null)
+                        {
+                        marco[0] = Math.Max(marco[0], limite[0]); marco[1] = Math.Max(marco[1], limite[1]);
+                        marco[2] = Math.Min(marco[2], limite[2]); marco[3] = Math.Min(marco[3], limite[3]);
+                        }
+                    if (marco[2] > marco[0] && marco[3] > marco[1])
+                        RecogerBitmapsParaRecorte(objeto.PowerClip.Shapes, marco, bitmaps);
+                    }
+                else if (objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
+                    RecogerBitmapsParaRecorte(objeto.Shapes, limite, bitmaps);
+                }
+            }
+
+        private bool RecortarBitmapFinal(VGCore.Shape imagen, double[] marco, VGCore.Layer capa)
+            {
+            double izquierda = imagen.CenterX - imagen.SizeWidth / 2, abajo = imagen.CenterY - imagen.SizeHeight / 2;
+            double derecha = imagen.CenterX + imagen.SizeWidth / 2, arriba = imagen.CenterY + imagen.SizeHeight / 2;
+            double tolerancia = Math.Max(imagen.SizeWidth, imagen.SizeHeight) * 1e-8;
+            if (izquierda >= marco[0] - tolerancia && abajo >= marco[1] - tolerancia &&
+                derecha <= marco[2] + tolerancia && arriba <= marco[3] + tolerancia) return false;
+            // Intersectar solo las curvas de recorte; conservar el bitmap original,
+            // su transformación, posición, grupo y orden de apilamiento.
+            VGCore.Shape rectangulo = null, mascara = null, interseccion = null;
+            try
+                {
+                rectangulo = capa.CreateRectangle2(marco[0], marco[1], marco[2] - marco[0], marco[3] - marco[1]);
+                mascara = capa.CreateCurve(imagen.Bitmap.CropEnvelope.GetCopy());
+                interseccion = mascara.Intersect(rectangulo, true, true);
+                if (interseccion == null) return false; // Imagen sin área visible.
+                imagen.Bitmap.CropEnvelope.CopyAssign(interseccion.DisplayCurve);
+                imagen.Bitmap.Crop();
+                return true;
+                }
+            finally
+                {
+                if (interseccion != null) interseccion.Delete();
+                if (mascara != null) mascara.Delete();
+                if (rectangulo != null) rectangulo.Delete();
+                }
+            }
+
         private void btnFinalizarEscalar_Click(object sender, EventArgs e)
             {
             if (!btnAnalizarEscalar.Enabled) return;
@@ -807,14 +860,16 @@ namespace TithorAutomation
                 var textos = new List<VGCore.Shape>();
                 var grupos = new List<VGCore.Shape>();
                 RecogerObjetosFinales(capa.Shapes, false, textos, grupos);
-                int total = textos.Count + grupos.Count;
+                var bitmaps = new List<Tuple<VGCore.Shape, double[]>>();
+                RecogerBitmapsParaRecorte(capa.Shapes, null, bitmaps);
+                int total = textos.Count + grupos.Count + bitmaps.Count;
                 if (total == 0)
                     {
                     lblEstadoEscalar.Text = "Los elementos ya están separados y no quedan textos editables.";
                     return;
                     }
                 if (MessageBox.Show(this,
-                    "Se convertirán los textos a curvas y se desagruparán los moldes de TITHOR_PRODUCCION en la página activa.\n\nLos textos dejarán de ser editables y se limpiarán las tareas de escalado.\n¿Desea finalizar?",
+                    "Se convertirán los textos a curvas y se desagruparán los moldes de TITHOR_PRODUCCION en la página activa.\n\nLos textos dejarán de ser editables y se limpiarán las tareas de escalado. También se recortará el excedente de los mapas de bits dentro de los PowerClips.\n¿Desea finalizar?",
                     "Confirmar finalización", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
                     return;
                 btnFinalizarEscalar.Enabled = false;
@@ -830,6 +885,13 @@ namespace TithorAutomation
                 abierto = true;
                 int actual = 0;
                 MostrarProgresoOperacion(prgEscalar, 0, total);
+                int recortados = 0;
+                foreach (var entrada in bitmaps)
+                    {
+                    cambios = true;
+                    if (RecortarBitmapFinal(entrada.Item1, entrada.Item2, capa)) recortados++;
+                    MostrarProgresoOperacion(prgEscalar, ++actual, total);
+                    }
                 foreach (VGCore.Shape texto in textos)
                     {
                     texto.ConvertToCurves();
@@ -854,11 +916,11 @@ namespace TithorAutomation
                 cboTareaEscalar.DataSource = null;
                 cboTareaEscalar.Items.Clear();
                 dgvEscalar.Rows.Clear();
-                lblEstadoEscalar.Text = textos.Count + " textos convertidos. Moldes separados para moverlos.";
+                lblEstadoEscalar.Text = textos.Count + " textos convertidos; " + recortados + " mapas de bits recortados. Moldes separados para moverlos.";
                 }
             catch (Exception ex)
                 {
-                string detalle = ex.Message;
+                string detalle = ex.Message + "\n" + RegistroDiagnostico.Guardar(ex, "Finalizar: curvas, recorte de bitmaps y separación");
                 try
                     {
                     if (abierto) { documento.EndCommandGroup(); abierto = false; }
