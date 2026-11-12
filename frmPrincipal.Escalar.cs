@@ -805,32 +805,34 @@ namespace TithorAutomation
                 }
             }
 
-        private VGCore.Shape RecortarBitmapFinal(VGCore.Shape imagen, double[] marco, VGCore.Layer capa, Action<string> informar)
+        private VGCore.Shape RecortarBitmapFinal(VGCore.Shape imagen, double[] marco, VGCore.Layer capa)
             {
-            informar("Leyendo límites del bitmap");
             double izquierda = imagen.CenterX - imagen.SizeWidth / 2, abajo = imagen.CenterY - imagen.SizeHeight / 2;
             double derecha = imagen.CenterX + imagen.SizeWidth / 2, arriba = imagen.CenterY + imagen.SizeHeight / 2;
             double tolerancia = Math.Max(imagen.SizeWidth, imagen.SizeHeight) * 1e-8;
             if (izquierda >= marco[0] - tolerancia && abajo >= marco[1] - tolerancia &&
                 derecha <= marco[2] + tolerancia && arriba <= marco[3] + tolerancia) return imagen;
-            double x = Math.Max(izquierda, marco[0]), y = Math.Max(abajo, marco[1]);
-            double ancho = Math.Min(derecha, marco[2]) - x, alto = Math.Min(arriba, marco[3]) - y;
-            if (ancho <= 0 || alto <= 0) return imagen;
-            informar("Creando marco temporal de recorte");
-            VGCore.Shape temporal = capa.CreateRectangle2(x, y, ancho, alto);
-            temporal.Fill.ApplyNoFill();
-            temporal.Outline.SetNoOutline();
-            informar("Copiando el bitmap al marco temporal");
-            VGCore.Shape copia = imagen.Duplicate(0, 0);
-            copia.AddToPowerClip(temporal, VGCore.cdrTriState.cdrFalse);
-            informar("Renderizando recorte CMYK a 100 ppp");
-            VGCore.Shape recorte = temporal.ConvertToBitmapEx(VGCore.cdrImageType.cdrCMYKColorImage, false, true, 100);
-            informar("Restaurando orden del bitmap recortado");
-            recorte.OrderFrontOf(imagen);
-            recorte.Name = imagen.Name;
-            informar("Retirando el bitmap original");
-            imagen.Delete();
-            return recorte;
+            VGCore.Shape rectangulo = null;
+            try
+                {
+                rectangulo = capa.CreateRectangle2(marco[0], marco[1], marco[2] - marco[0], marco[3] - marco[1]);
+                // El bitmap no ofrece una curva copiable en todas las versiones
+                // de Corel. Intersectar directamente, conservando el original
+                // hasta comprobar el resultado.
+                VGCore.Shape recorte = rectangulo.Intersect(imagen, true, true);
+                if (recorte == null) return imagen;
+                if (recorte.Type != VGCore.cdrShapeType.cdrBitmapShape)
+                    throw new InvalidOperationException("CorelDRAW no devolvió un bitmap al intersectar el recorte.");
+                recorte.OrderFrontOf(imagen);
+                recorte.Name = imagen.Name;
+                recorte.Bitmap.Crop();
+                imagen.Delete();
+                return recorte;
+                }
+            finally
+                {
+                if (rectangulo != null) rectangulo.Delete();
+                }
             }
 
         private void RecogerTextosExternosFinales(VGCore.Shapes objetos, List<VGCore.Shape> textos)
@@ -880,8 +882,6 @@ namespace TithorAutomation
             bool temporizador = tmrConexionCorel.Enabled;
             bool aplicarHabilitado = btnAplicarEscalar.Enabled;
             bool terminado = false;
-            string etapaFinal = "Validación previa";
-            int indiceImagenFinal = 0;
             try
                 {
                 documento = DocumentoActivoEscalar();
@@ -938,7 +938,6 @@ namespace TithorAutomation
                 foreach (VGCore.Shape clip in clipsFinales)
                     {
                     cambios = true;
-                    etapaFinal = "Unificando PowerClip " + (++indiceImagenFinal);
                     AplanarContenidoFinal(clip);
                     MostrarProgresoOperacion(prgEscalar, ++actual, total);
                     }
@@ -947,34 +946,27 @@ namespace TithorAutomation
                     cambios = true;
 
                     // Normalizar también los bitmaps sin PowerClip de esta capa.
-                    indiceImagenFinal++;
-                    etapaFinal = "Preparando bitmap " + indiceImagenFinal;
                     VGCore.Shape imagen = entrada.Item1;
-                    bool yaConvertido = false;
                     if (entrada.Item2 != null)
                         {
-                        VGCore.Shape recorte = RecortarBitmapFinal(imagen, entrada.Item2, capa, valor => etapaFinal = "Bitmap " + indiceImagenFinal + ": " + valor);
-                        if (!EscaladorPowerClip.MismoObjetoCom(imagen, recorte)) { recortados++; yaConvertido = true; }
+                        VGCore.Shape recorte = RecortarBitmapFinal(imagen, entrada.Item2, capa);
+                        if (!EscaladorPowerClip.MismoObjetoCom(imagen, recorte)) recortados++;
                         imagen = recorte;
                         }
-                    etapaFinal = "Convirtiendo bitmap " + indiceImagenFinal + " a CMYK 100 ppp";
-                    // Una única conversión, sin encadenar ConvertTo + Resample
-                    // sobre una referencia COM que Corel puede haber sustituido.
-                    if (!yaConvertido) imagen.ConvertToBitmapEx(VGCore.cdrImageType.cdrCMYKColorImage, false, true, 100);
+                    imagen.Bitmap.ConvertTo(VGCore.cdrImageType.cdrCMYKColorImage);
+                    imagen.Bitmap.Resample(0, 0, true, 100, 100);
                     // Resample conserva el tamaño físico. No volver a llamar a
                     // SetSize sobre la referencia COM recién remuestreada.
                     MostrarProgresoOperacion(prgEscalar, ++actual, total);
                     }
                 foreach (VGCore.Shape texto in textos)
                     {
-                    etapaFinal = "Convirtiendo textos a curvas";
                     texto.ConvertToCurves();
                     cambios = true;
                     MostrarProgresoOperacion(prgEscalar, ++actual, total);
                     }
                 foreach (VGCore.Shape grupo in grupos)
                     {
-                    etapaFinal = "Desagrupando moldes";
                     grupo.Ungroup();
                     cambios = true;
                     MostrarProgresoOperacion(prgEscalar, ++actual, total);
@@ -995,7 +987,7 @@ namespace TithorAutomation
                 }
             catch (Exception ex)
                 {
-                string detalle = "Etapa: " + etapaFinal + "\n" + ex.Message + "\n" + RegistroDiagnostico.Guardar(ex, "Finalizar; etapa=" + etapaFinal + "; imagen=" + indiceImagenFinal);
+                string detalle = ex.Message + "\n" + RegistroDiagnostico.Guardar(ex, "Finalizar: curvas, recorte de bitmaps y separación");
                 try
                     {
                     if (abierto) { documento.EndCommandGroup(); abierto = false; }
