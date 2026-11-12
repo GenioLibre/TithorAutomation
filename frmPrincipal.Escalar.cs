@@ -818,7 +818,10 @@ namespace TithorAutomation
             try
                 {
                 rectangulo = capa.CreateRectangle2(marco[0], marco[1], marco[2] - marco[0], marco[3] - marco[1]);
-                mascara = capa.CreateCurve(imagen.Bitmap.CropEnvelope.GetCopy());
+                // CropEnvelope puede devolver una curva no copiable cuando el bitmap
+                // no tiene recorte previo. DisplayCurve representa su contorno
+                // visible actual y ya incluye el recorte que pudiera tener.
+                mascara = capa.CreateCurve(imagen.DisplayCurve);
                 interseccion = mascara.Intersect(rectangulo, true, true);
                 if (interseccion == null) return false; // Imagen sin área visible.
                 imagen.Bitmap.CropEnvelope.CopyAssign(interseccion.DisplayCurve);
