@@ -613,7 +613,7 @@ namespace TithorAutomation.Servicios
             double anchoDiseno = diseno.SizeWidth;
             double altoDiseno = diseno.SizeHeight;
             double centroDisenoX = diseno.CenterX;
-            double baseDisenoY = diseno.CenterY - altoDiseno / 2.0;
+            double superiorDisenoY = diseno.CenterY + altoDiseno / 2.0;
             bool disenoEsPowerClip = diseno.PowerClip != null;
 
             string etapa = "Preparando CorelDRAW";
@@ -656,7 +656,7 @@ namespace TithorAutomation.Servicios
                         double anchoContenedor = contenedor.SizeWidth;
                         double altoContenedor = contenedor.SizeHeight;
                         double centroX = contenedor.CenterX;
-                        double baseContenedorY = contenedor.CenterY - altoContenedor / 2.0;
+                        double superiorContenedorY = contenedor.CenterY + altoContenedor / 2.0;
                         double anchoFinal;
                         double altoFinal;
 
@@ -671,11 +671,11 @@ namespace TithorAutomation.Servicios
                         // Conservar el desplazamiento del contenido respecto al marco de la plantilla.
                         double factorEscala = anchoFinal / anchoDiseno;
                         double centroFinalX = centroX;
-                        double centroFinalY = baseContenedorY + altoFinal / 2.0;
+                        double centroFinalY = superiorContenedorY - altoFinal / 2.0;
                         if (disenoEsPowerClip)
                             {
                             centroFinalX += (copia.CenterX - centroDisenoX) * factorEscala;
-                            centroFinalY = baseContenedorY + (copia.CenterY - baseDisenoY) * factorEscala;
+                            centroFinalY = superiorContenedorY + (copia.CenterY - superiorDisenoY) * factorEscala;
                             }
 
                         etapa = "Eliminando el diseño anterior";
