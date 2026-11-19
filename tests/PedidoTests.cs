@@ -31,6 +31,7 @@ internal static class PedidoTests
         PlanesFundas();
         TallasFundasDesdeCatalogo();
         PlanesCamisetas();
+        TiposShortDesdeCatalogo();
         Console.WriteLine("PASS: " + comprobaciones + " comprobaciones de pedidos, cantidades y nombres.");
     }
 
@@ -195,6 +196,37 @@ internal static class PedidoTests
             Exigir(!otroPedido.Lineas[0].Procesable, "Aceptó una talla de otra capa");
         }
         finally { if (File.Exists(archivo)) File.Delete(archivo); }
+    }
+
+
+    private static void TiposShortDesdeCatalogo()
+    {
+        foreach (string capa in new[] { "Molde Short Plizada", "Moldes Short Plizada", "Short Plizada" })
+        foreach (string tipo in new[] { "plizada", "short_plizada" })
+        {
+            var pedido = new ResultadoAnalisisPedido { CodigoProducto = "CAMISETAS" };
+            var catalogo = new List<Molde>();
+            foreach (string talla in new[] { "XS", "S", "M", "L", "16", "XL" })
+            {
+                var linea = new LineaPedido { NumeroFila = pedido.Lineas.Count + 2, Diseno = "Azul", Cantidad = 1 };
+                linea.AgregarCampo("prenda", "solo_short");
+                linea.AgregarCampo("tipo_short", tipo);
+                linea.AgregarCampo("talla_short", talla);
+                pedido.Lineas.Add(linea);
+                foreach (string pieza in new[] { "falda_frente", "falda_espalda", "pretina" })
+                    catalogo.Add(new Molde { Codigo = capa + "__molde_" + talla + "__" + pieza,
+                        Capa = capa, Talla = talla, NombreObjeto = pieza, Estado = "Correcto" });
+            }
+            var planificador = new PlanificadorCamisetas();
+            var plan = planificador.CrearPlan(pedido, catalogo);
+            Exigir(plan.EsValido && plan.TotalMoldes == 6, "No reconoce " + tipo + " en " + capa);
+            Exigir(plan.Moldes.All(x => x.PiezasIncluidas.Count == 3 && x.CapaMaster == capa),
+                "Debe conservar todas las piezas y la capa original del tipo nuevo.");
+            catalogo.RemoveAll(x => x.Talla == "XL");
+            Exigir(!planificador.CrearPlan(pedido, catalogo).EsValido, "Aceptó una talla ausente.");
+            foreach (Molde molde in catalogo) molde.Capa = "Molde Short Basket";
+            Exigir(!planificador.CrearPlan(pedido, catalogo).EsValido, "Confundió tipos distintos de short.");
+        }
     }
 
     private static void PlanesCamisetas()

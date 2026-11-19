@@ -590,8 +590,18 @@ namespace TithorAutomation.Servicios
                         etapa = "Escalando y alineando el diseño";
                         copia.SetSize(anchoFinal, altoFinal);
                         copia.CenterX = x;
-                        copia.CenterY = bordeSuperior - altoFinal / 2.0;
+                        bool alinearBase = string.IsNullOrWhiteSpace(codigoCamiseta) && tarea.Referencia == "superior";
+                        copia.CenterY = alinearBase
+                            ? destino.CenterY - destino.SizeHeight / 2.0 + altoFinal / 2.0
+                            : bordeSuperior - altoFinal / 2.0;
                         ReemplazarContenidoMockup(copia, destino, valor => etapa = valor);
+                        // Reafirmar tras insertar por si Corel ajusta el contenido al PowerClip.
+                        if (alinearBase)
+                        {
+                            copia.SetSize(anchoFinal, altoFinal);
+                            copia.CenterX = destino.CenterX;
+                            copia.CenterY = destino.CenterY - destino.SizeHeight / 2.0 + copia.SizeHeight / 2.0;
+                        }
                     }
                 }
                 etapa = "Finalizando el reemplazo";

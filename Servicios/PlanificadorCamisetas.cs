@@ -209,8 +209,11 @@ namespace TithorAutomation.Servicios
             if (esShort)
                 {
                 string tipo = corte == "falda_short" ? "falda" : corte;
-                string nombre = capa.StartsWith("moldes_") ? capa.Substring(7) : capa;
-                return nombre == "short_" + tipo || (corte == "falda_short" && nombre == "falda_short");
+                string nombre = capa.StartsWith("moldes_") ? capa.Substring(7)
+                    : capa.StartsWith("molde_") ? capa.Substring(6) : capa;
+                // El Excel puede indicar "plizada" o el nombre completo "short_plizada".
+                string nombreShort = tipo.StartsWith("short_") ? tipo : "short_" + tipo;
+                return nombre == nombreShort || (corte == "falda_short" && nombre == "falda_short");
                 }
 
             if (ContieneToken(capa, "short") || !ContieneToken(capa, modelo))
@@ -296,6 +299,10 @@ namespace TithorAutomation.Servicios
 
             foreach (List<string> alternativas in piezas)
                 nombres.Add(string.Join("/", alternativas));
+
+            if (piezas.Count == 0)
+                return "Fila " + fila + ": no existe un grupo de talla " + talla.ToUpperInvariant() +
+                    " registrado para " + modelo + ", " + corte + ". Revise la capa del master y sincronice el catálogo.";
 
             return "Fila " + fila + ": no existe un grupo completo para " + modelo + ", " + corte + ", talla " + talla.ToUpperInvariant() + ". Piezas requeridas: " + string.Join(", ", nombres) + ".";
             }
