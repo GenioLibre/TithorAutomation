@@ -857,19 +857,85 @@ namespace TithorAutomation
                 }
             }
 
+        private VGCore.Shape BuscarContenidoFinal(VGCore.Shape clip, string id)
+            {
+            VGCore.Shapes contenidos = clip.PowerClip.Shapes;
+            for (int i = 1; i <= contenidos.Count; i++)
+                {
+                VGCore.Shape contenido = contenidos[i];
+                if (Convert.ToString(contenido.StaticID) == id) return contenido;
+                }
+            return null;
+            }
+
         private void AplanarContenidoFinal(VGCore.Shape clip)
             {
-            var anteriores = new List<VGCore.Shape>();
-            for (int i = 1; i <= clip.PowerClip.Shapes.Count; i++) anteriores.Add(clip.PowerClip.Shapes[i]);
-            if (anteriores.Count == 0) return;
-            // Rasterizar una copia del PowerClip visible: recorta el excedente
-            // al renderizar, sin operaciones booleanas sobre bitmaps.
-            VGCore.Shape temporal = clip.Duplicate(0, 0);
-            temporal.Outline.SetNoOutline();
-            VGCore.Shape imagen = temporal.ConvertToBitmapEx(VGCore.cdrImageType.cdrCMYKColorImage, false, true, 100);
-            imagen.Name = "TITHOR_CONTENIDO_FINAL";
-            imagen.AddToPowerClip(clip, VGCore.cdrTriState.cdrFalse);
-            foreach (VGCore.Shape anterior in anteriores) anterior.Delete();
+            string identificacion = clip.Name + " (ID " + Convert.ToString(clip.StaticID) + ")";
+            string etapa = "Comprobando el contenido original";
+            try
+                {
+                if (clip.PowerClip.Shapes.Count == 0) return;
+                // No conservar referencias a los hijos: Corel puede invalidarlas
+                // al duplicar, rasterizar o insertar contenido en el PowerClip.
+                etapa = "Rasterizando la copia visible en CMYK a 100 ppp";
+                VGCore.Shape temporal = clip.Duplicate(0, 0);
+                temporal.Outline.SetNoOutline();
+                VGCore.Shape imagen = temporal.ConvertToBitmapEx(VGCore.cdrImageType.cdrCMYKColorImage, false, true, 100);
+                if (imagen == null || imagen.Type != VGCore.cdrShapeType.cdrBitmapShape ||
+                    !(imagen.SizeWidth > 0) || !(imagen.SizeHeight > 0))
+                    throw new InvalidOperationException("CorelDRAW no devolvió una imagen válida. No se continuará con el borrado.");
+
+                imagen.Name = "TITHOR_CONTENIDO_FINAL";
+                etapa = "Insertando y comprobando la nueva imagen";
+                imagen.AddToPowerClip(clip, VGCore.cdrTriState.cdrFalse);
+                string idImagen = Convert.ToString(imagen.StaticID);
+
+                while (true)
+                    {
+                    // Volver a consultar la colección tras cada modificación.
+                    // Nunca eliminar usando una lista capturada antes de rasterizar.
+                    VGCore.Shapes contenidos = clip.PowerClip.Shapes;
+                    int cantidadAnterior = contenidos.Count;
+                    VGCore.Shape anterior = null;
+                    bool imagenPresente = false;
+                    for (int i = 1; i <= contenidos.Count; i++)
+                        {
+                        VGCore.Shape contenido = contenidos[i];
+                        if (Convert.ToString(contenido.StaticID) == idImagen)
+                            imagenPresente = true;
+                        else if (anterior == null)
+                            anterior = contenido;
+                        }
+                    if (!imagenPresente)
+                        throw new InvalidOperationException("La imagen nueva no está dentro del PowerClip. No se continuará eliminando contenido.");
+                    if (anterior == null) break;
+
+                    string idAnterior = Convert.ToString(anterior.StaticID);
+                    etapa = "Retirando contenido anterior ID " + idAnterior;
+                    try { anterior.Delete(); }
+                    catch (System.Runtime.InteropServices.COMException errorBorrado) when (errorBorrado.HResult == unchecked((int)0x80004005))
+                        {
+                        // Algunos efectos eliminan objetos asociados. Solo aceptar
+                        // el error si el objeto ya salió y la imagen sigue dentro.
+                        if (BuscarContenidoFinal(clip, idAnterior) != null ||
+                            BuscarContenidoFinal(clip, idImagen) == null)
+                            throw;
+                        }
+                    if (clip.PowerClip.Shapes.Count >= cantidadAnterior)
+                        throw new InvalidOperationException("CorelDRAW no retiró el contenido anterior. Se detuvo la limpieza.");
+                    }
+
+                etapa = "Verificando el resultado final";
+                VGCore.Shape resultado = BuscarContenidoFinal(clip, idImagen);
+                if (clip.PowerClip.Shapes.Count != 1 || resultado == null ||
+                    resultado.Type != VGCore.cdrShapeType.cdrBitmapShape)
+                    throw new InvalidOperationException("El PowerClip no quedó con una única imagen. Se revertirá la operación.");
+                }
+            catch (Exception ex)
+                {
+                throw new InvalidOperationException("No se pudo finalizar el PowerClip " + identificacion +
+                    ". Etapa: " + etapa + ". HRESULT: 0x" + ex.HResult.ToString("X8") + ". " + ex.Message, ex);
+                }
             }
 
         private void btnFinalizarEscalar_Click(object sender, EventArgs e)
