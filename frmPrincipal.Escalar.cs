@@ -762,47 +762,53 @@ namespace TithorAutomation
             }
 
 
-        private void RecogerObjetosFinales(VGCore.Shapes objetos, bool dentroPowerClip, List<VGCore.Shape> textos, List<VGCore.Shape> grupos)
+        private void RecogerElementosFinales(VGCore.Shapes objetos, bool dentroPowerClip, double[] limite, bool aplanar,
+            List<VGCore.Shape> textos, List<VGCore.Shape> grupos,
+            List<Tuple<VGCore.Shape, double[]>> bitmaps, List<VGCore.Shape> clips, Action<VGCore.Shape> informar)
             {
-            // Recorrido sin modificar colecciones. Grupos en orden de hijos a padres.
-            for (int i = 1; i <= objetos.Count; i++)
+            // Un solo recorrido, sin validar previamente cada objeto ni entrar
+            // en el contenido de los PowerClips que se rasterizarán completos.
+            int cantidad = objetos.Count;
+            for (int i = 1; i <= cantidad; i++)
                 {
                 VGCore.Shape objeto = objetos[i];
-                if (objeto.Locked) throw new InvalidOperationException("Hay objetos bloqueados. Desbloquéelos antes de finalizar.");
-                if (objeto.Type == VGCore.cdrShapeType.cdrTextShape) textos.Add(objeto);
-                if (objeto.PowerClip != null)
-                    RecogerObjetosFinales(objeto.PowerClip.Shapes, true, textos, grupos);
-                else if (objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
+                informar(objeto);
+                VGCore.PowerClip powerClip = objeto.PowerClip;
+                if (aplanar && powerClip != null)
                     {
-                    RecogerObjetosFinales(objeto.Shapes, dentroPowerClip, textos, grupos);
-                    if (!dentroPowerClip) grupos.Add(objeto);
+                    clips.Add(objeto);
+                    continue;
                     }
-                }
-            }
-
-        private void RecogerBitmapsParaRecorte(VGCore.Shapes objetos, double[] limite,
-            List<Tuple<VGCore.Shape, double[]>> bitmaps)
-            {
-            for (int i = 1; i <= objetos.Count; i++)
-                {
-                VGCore.Shape objeto = objetos[i];
-                if (objeto.Type == VGCore.cdrShapeType.cdrBitmapShape)
-                    bitmaps.Add(Tuple.Create(objeto, limite == null ? null : (double[])limite.Clone()));
-                if (objeto.PowerClip != null)
+                VGCore.cdrShapeType tipo = objeto.Type;
+                if (tipo == VGCore.cdrShapeType.cdrTextShape) textos.Add(objeto);
+                if (tipo == VGCore.cdrShapeType.cdrBitmapShape &&
+                    (limite == null || (limite[2] > limite[0] && limite[3] > limite[1])))
+                    bitmaps.Add(Tuple.Create(objeto, limite));
+                if (powerClip != null)
                     {
-                    double[] marco = { objeto.CenterX - objeto.SizeWidth / 2, objeto.CenterY - objeto.SizeHeight / 2,
-                        objeto.CenterX + objeto.SizeWidth / 2, objeto.CenterY + objeto.SizeHeight / 2 };
+                    double x = objeto.CenterX, y = objeto.CenterY;
+                    double ancho = objeto.SizeWidth, alto = objeto.SizeHeight;
+                    double[] marco = { x - ancho / 2, y - alto / 2, x + ancho / 2, y + alto / 2 };
                     if (limite != null)
                         {
                         marco[0] = Math.Max(marco[0], limite[0]); marco[1] = Math.Max(marco[1], limite[1]);
                         marco[2] = Math.Min(marco[2], limite[2]); marco[3] = Math.Min(marco[3], limite[3]);
                         }
-                    if (marco[2] > marco[0] && marco[3] > marco[1])
-                        RecogerBitmapsParaRecorte(objeto.PowerClip.Shapes, marco, bitmaps);
+                    RecogerElementosFinales(powerClip.Shapes, true, marco, aplanar, textos, grupos, bitmaps, clips, informar);
                     }
-                else if (objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
-                    RecogerBitmapsParaRecorte(objeto.Shapes, limite, bitmaps);
+                else if (tipo == VGCore.cdrShapeType.cdrGroupShape)
+                    {
+                    RecogerElementosFinales(objeto.Shapes, dentroPowerClip, limite, aplanar, textos, grupos, bitmaps, clips, informar);
+                    if (!dentroPowerClip) grupos.Add(objeto);
+                    }
                 }
+            }
+
+        private string DescribirObjetoFinal(VGCore.Shape objeto)
+            {
+            string nombre = objeto.Name;
+            return (string.IsNullOrWhiteSpace(nombre) ? "Objeto sin nombre" : nombre) +
+                " (ID " + Convert.ToString(objeto.StaticID) + ")";
             }
 
         private VGCore.Shape RecortarBitmapFinal(VGCore.Shape imagen, double[] marco, VGCore.Layer capa)
@@ -835,28 +841,6 @@ namespace TithorAutomation
                 }
             }
 
-        private void RecogerTextosExternosFinales(VGCore.Shapes objetos, List<VGCore.Shape> textos)
-            {
-            for (int i = 1; i <= objetos.Count; i++)
-                {
-                VGCore.Shape objeto = objetos[i];
-                if (objeto.Type == VGCore.cdrShapeType.cdrTextShape) textos.Add(objeto);
-                if (objeto.PowerClip == null && objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
-                    RecogerTextosExternosFinales(objeto.Shapes, textos);
-                }
-            }
-
-        private void RecogerPowerClipsFinales(VGCore.Shapes objetos, List<VGCore.Shape> clips)
-            {
-            for (int i = 1; i <= objetos.Count; i++)
-                {
-                VGCore.Shape objeto = objetos[i];
-                if (objeto.PowerClip != null) clips.Add(objeto);
-                else if (objeto.Type == VGCore.cdrShapeType.cdrGroupShape)
-                    RecogerPowerClipsFinales(objeto.Shapes, clips);
-                }
-            }
-
         private VGCore.Shape BuscarContenidoFinal(VGCore.Shape clip, string id)
             {
             VGCore.Shapes contenidos = clip.PowerClip.Shapes;
@@ -868,7 +852,7 @@ namespace TithorAutomation
             return null;
             }
 
-        private void AplanarContenidoFinal(VGCore.Shape clip)
+        private void AplanarContenidoFinal(VGCore.Shape clip, Action<string> informar)
             {
             string identificacion = clip.Name + " (ID " + Convert.ToString(clip.StaticID) + ")";
             string etapa = "Comprobando el contenido original";
@@ -878,6 +862,7 @@ namespace TithorAutomation
                 // No conservar referencias a los hijos: Corel puede invalidarlas
                 // al duplicar, rasterizar o insertar contenido en el PowerClip.
                 etapa = "Rasterizando la copia visible en CMYK a 100 ppp";
+                informar(etapa);
                 VGCore.Shape temporal = clip.Duplicate(0, 0);
                 temporal.Outline.SetNoOutline();
                 VGCore.Shape imagen = temporal.ConvertToBitmapEx(VGCore.cdrImageType.cdrCMYKColorImage, false, true, 100);
@@ -887,31 +872,25 @@ namespace TithorAutomation
 
                 imagen.Name = "TITHOR_CONTENIDO_FINAL";
                 etapa = "Insertando y comprobando la nueva imagen";
+                informar(etapa);
                 imagen.AddToPowerClip(clip, VGCore.cdrTriState.cdrFalse);
                 string idImagen = Convert.ToString(imagen.StaticID);
 
-                while (true)
+                if (BuscarContenidoFinal(clip, idImagen) == null)
+                    throw new InvalidOperationException("La imagen nueva no está dentro del PowerClip. No se continuará eliminando contenido.");
+
+                while (clip.PowerClip.Shapes.Count > 1)
                     {
-                    // Volver a consultar la colección tras cada modificación.
-                    // Nunca eliminar usando una lista capturada antes de rasterizar.
+                    // Obtener solo el siguiente hijo actual. Evitar recorrer todos
+                    // los hijos por cada borrado (antes el coste era cuadrático).
                     VGCore.Shapes contenidos = clip.PowerClip.Shapes;
                     int cantidadAnterior = contenidos.Count;
-                    VGCore.Shape anterior = null;
-                    bool imagenPresente = false;
-                    for (int i = 1; i <= contenidos.Count; i++)
-                        {
-                        VGCore.Shape contenido = contenidos[i];
-                        if (Convert.ToString(contenido.StaticID) == idImagen)
-                            imagenPresente = true;
-                        else if (anterior == null)
-                            anterior = contenido;
-                        }
-                    if (!imagenPresente)
-                        throw new InvalidOperationException("La imagen nueva no está dentro del PowerClip. No se continuará eliminando contenido.");
-                    if (anterior == null) break;
+                    VGCore.Shape anterior = contenidos[1];
+                    if (Convert.ToString(anterior.StaticID) == idImagen) anterior = contenidos[2];
 
                     string idAnterior = Convert.ToString(anterior.StaticID);
                     etapa = "Retirando contenido anterior ID " + idAnterior;
+                    informar(etapa);
                     try { anterior.Delete(); }
                     catch (System.Runtime.InteropServices.COMException errorBorrado) when (errorBorrado.HResult == unchecked((int)0x80004005))
                         {
@@ -926,6 +905,7 @@ namespace TithorAutomation
                     }
 
                 etapa = "Verificando el resultado final";
+                informar(etapa);
                 VGCore.Shape resultado = BuscarContenidoFinal(clip, idImagen);
                 if (clip.PowerClip.Shapes.Count != 1 || resultado == null ||
                     resultado.Type != VGCore.cdrShapeType.cdrBitmapShape)
@@ -948,6 +928,21 @@ namespace TithorAutomation
             bool temporizador = tmrConexionCorel.Enabled;
             bool aplicarHabilitado = btnAplicarEscalar.Enabled;
             bool terminado = false;
+            int actual = 0, total = 0;
+            string pasoActual = "Buscando TITHOR_PRODUCCION en la página activa";
+            var relojEstado = System.Diagnostics.Stopwatch.StartNew();
+            Action<string, bool> informar = (paso, forzar) =>
+                {
+                pasoActual = paso;
+                // Actualizar siempre el diagnóstico; limitar solo el repintado
+                // de preparaciones/borrados rápidos para no ralentizar Corel.
+                if (forzar || relojEstado.ElapsedMilliseconds >= 100)
+                    {
+                    lblEstadoEscalar.Text = paso;
+                    lblEstadoEscalar.Refresh();
+                    relojEstado.Restart();
+                    }
+                };
             try
                 {
                 documento = DocumentoActivoEscalar();
@@ -962,27 +957,7 @@ namespace TithorAutomation
                 if (capa == null || capa.Shapes.Count == 0)
                     throw new InvalidOperationException("No hay moldes en TITHOR_PRODUCCION en la página activa.");
                 if (!capa.Editable) throw new InvalidOperationException("La capa TITHOR_PRODUCCION está bloqueada.");
-                var textos = new List<VGCore.Shape>();
-                var grupos = new List<VGCore.Shape>();
-                RecogerObjetosFinales(capa.Shapes, false, textos, grupos);
-                var bitmaps = new List<Tuple<VGCore.Shape, double[]>>();
-                RecogerBitmapsParaRecorte(capa.Shapes, null, bitmaps);
-                var clipsFinales = new List<VGCore.Shape>();
                 bool aplanar = chkConvertirTodoBitmap.Checked;
-                if (aplanar)
-                    {
-                    RecogerPowerClipsFinales(capa.Shapes, clipsFinales);
-                    textos.Clear(); // Los textos internos se renderizan en la imagen.
-                    RecogerTextosExternosFinales(capa.Shapes, textos);
-                    // Los bitmaps internos se procesan junto con todo el PowerClip.
-                    bitmaps = bitmaps.Where(x => x.Item2 == null).ToList();
-                    }
-                int total = textos.Count + grupos.Count + bitmaps.Count + clipsFinales.Count;
-                if (total == 0)
-                    {
-                    lblEstadoEscalar.Text = "Los elementos ya están separados y no quedan textos editables.";
-                    return;
-                    }
                 if (MessageBox.Show(this,
                     "Se convertirán los textos a curvas y se desagruparán los moldes de TITHOR_PRODUCCION en la página activa.\n\nLos textos dejarán de ser editables y se limpiarán las tareas de escalado. También se recortará el excedente dentro de los PowerClips y todas las imágenes de esta capa se convertirán a CMYK a 100 ppp.\n¿Desea finalizar?",
                     "Confirmar finalización" + (aplanar ? " — contenido a bitmap CMYK 100 ppp" : ""), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) != DialogResult.Yes)
@@ -996,15 +971,32 @@ namespace TithorAutomation
                 estadoCapturado = true;
                 corel.EventsEnabled = false;
                 corel.Optimization = true;
+                informar("Preparando Finalizar: TITHOR_PRODUCCION", true);
+                MostrarProgresoOperacion(prgEscalar, 0, 0);
+                var textos = new List<VGCore.Shape>();
+                var grupos = new List<VGCore.Shape>();
+                var bitmaps = new List<Tuple<VGCore.Shape, double[]>>();
+                var clipsFinales = new List<VGCore.Shape>();
+                RecogerElementosFinales(capa.Shapes, false, null, aplanar, textos, grupos, bitmaps, clipsFinales,
+                    objeto => informar("Preparando: " + DescribirObjetoFinal(objeto), false));
+                total = textos.Count + grupos.Count + bitmaps.Count + clipsFinales.Count;
+                if (total == 0)
+                    {
+                    MostrarProgresoOperacion(prgEscalar, 0, 1);
+                    informar("No hay elementos pendientes de finalizar.", true);
+                    return;
+                    }
                 documento.BeginCommandGroup("Tithor - Textos a curvas y separar moldes");
                 abierto = true;
-                int actual = 0;
                 MostrarProgresoOperacion(prgEscalar, 0, total);
                 int recortados = 0;
                 foreach (VGCore.Shape clip in clipsFinales)
                     {
+                    string objetoActual = "[" + (actual + 1) + "/" + total + "] PowerClip: " + DescribirObjetoFinal(clip);
+                    informar(objetoActual, true);
                     cambios = true;
-                    AplanarContenidoFinal(clip);
+                    AplanarContenidoFinal(clip, paso => informar(objetoActual + " — " + paso,
+                        !paso.StartsWith("Retirando contenido", StringComparison.Ordinal)));
                     MostrarProgresoOperacion(prgEscalar, ++actual, total);
                     }
                 foreach (var entrada in bitmaps)
@@ -1013,13 +1005,17 @@ namespace TithorAutomation
 
                     // Normalizar también los bitmaps sin PowerClip de esta capa.
                     VGCore.Shape imagen = entrada.Item1;
+                    string objetoActual = "[" + (actual + 1) + "/" + total + "] Imagen: " + DescribirObjetoFinal(imagen);
                     if (entrada.Item2 != null)
                         {
+                        informar(objetoActual + " — Recortando excedente", true);
                         VGCore.Shape recorte = RecortarBitmapFinal(imagen, entrada.Item2, capa);
                         if (!EscaladorPowerClip.MismoObjetoCom(imagen, recorte)) recortados++;
                         imagen = recorte;
                         }
+                    informar(objetoActual + " — Convirtiendo a CMYK", true);
                     imagen.Bitmap.ConvertTo(VGCore.cdrImageType.cdrCMYKColorImage);
+                    informar(objetoActual + " — Remuestreando a 100 ppp", true);
                     imagen.Bitmap.Resample(0, 0, true, 100, 100);
                     // Resample conserva el tamaño físico. No volver a llamar a
                     // SetSize sobre la referencia COM recién remuestreada.
@@ -1027,16 +1023,19 @@ namespace TithorAutomation
                     }
                 foreach (VGCore.Shape texto in textos)
                     {
-                    texto.ConvertToCurves();
+                    informar("[" + (actual + 1) + "/" + total + "] Texto: " + DescribirObjetoFinal(texto) + " — Convirtiendo a curvas", true);
                     cambios = true;
+                    texto.ConvertToCurves();
                     MostrarProgresoOperacion(prgEscalar, ++actual, total);
                     }
                 foreach (VGCore.Shape grupo in grupos)
                     {
-                    grupo.Ungroup();
+                    informar("[" + (actual + 1) + "/" + total + "] Grupo: " + DescribirObjetoFinal(grupo) + " — Separando", true);
                     cambios = true;
+                    grupo.Ungroup();
                     MostrarProgresoOperacion(prgEscalar, ++actual, total);
                     }
+                informar("Cerrando la operación Finalizar", true);
                 documento.EndCommandGroup();
                 abierto = false;
                 terminado = true;
@@ -1053,14 +1052,21 @@ namespace TithorAutomation
                 }
             catch (Exception ex)
                 {
-                string detalle = ex.Message + "\n" + RegistroDiagnostico.Guardar(ex, "Finalizar: curvas, recorte de bitmaps y separación");
+                string puntoFallo = pasoActual;
+                string detalle = "Se detuvo en: " + puntoFallo + "\n" + ex.Message + "\n" +
+                    RegistroDiagnostico.Guardar(ex, "Finalizar; completados=" + actual + "/" + total + "; " + puntoFallo);
                 try
                     {
                     if (abierto) { documento.EndCommandGroup(); abierto = false; }
-                    if (cambios) documento.Undo();
+                    if (cambios)
+                        {
+                        documento.Undo();
+                        detalle += "\nSe deshicieron los cambios de este intento.";
+                        }
                     }
                 catch (Exception rollback) { detalle += "\nNo se pudo revertir: " + rollback.Message; }
-                MostrarProgresoOperacion(prgEscalar, 0, 1);
+                MostrarProgresoOperacion(prgEscalar, actual, Math.Max(1, total));
+                informar("Detenido en: " + puntoFallo, true);
                 MessageBox.Show(this, detalle, "Curvas y separar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             finally
