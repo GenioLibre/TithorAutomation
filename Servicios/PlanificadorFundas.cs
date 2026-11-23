@@ -45,6 +45,14 @@ namespace TithorAutomation.Servicios
                 if (!linea.Procesable)
                     continue;
 
+                PersonalizacionFundas personalizacion;
+                try { personalizacion = PersonalizacionFundas.Leer(linea); }
+                catch (InvalidOperationException ex)
+                    {
+                    plan.Advertencias.Add(ex.Message);
+                    continue;
+                    }
+
                 string talla = NormalizarTalla(linea.Talla);
 
                 if (string.IsNullOrWhiteSpace(talla))
@@ -86,6 +94,7 @@ namespace TithorAutomation.Servicios
 
                     solicitud.PiezasIncluidas.AddRange(seleccion.Select(x => x.NombreObjeto));
                     CopiarCampos(linea, solicitud);
+                    personalizacion.AplicarUnidad(solicitud);
 
                     plan.Moldes.Add(solicitud);
                     }

@@ -27,6 +27,7 @@ internal static class PedidoTests
     {
         VariantesMockup();
         CantidadesExcel();
+        PersonalizacionFundasDesdeExcel();
         Identificadores();
         PlanesFundas();
         TallasFundasDesdeCatalogo();
@@ -100,6 +101,107 @@ internal static class PedidoTests
             CultureInfo.CurrentCulture = anterior;
             if (File.Exists(archivo)) File.Delete(archivo);
         }
+    }
+
+
+    private static void PersonalizacionFundasDesdeExcel()
+    {
+        string archivo = Path.Combine(Path.GetTempPath(), "tithor-personalizacion-" + Guid.NewGuid().ToString("N") + ".xlsx");
+        try
+        {
+            using (var libro = new XLWorkbook())
+            {
+                var hoja = libro.AddWorksheet("Detalle de Fundas");
+                string[] columnas = { "Diseño", "Talla", "Cantidad", "Nombre", "Números" };
+                for (int i = 0; i < columnas.Length; i++) hoja.Cell(1, i + 1).Value = columnas[i];
+                int[] cantidades = { 9, 2, 3, 2, 1, 2 };
+                string[] nombres = { "", "Test", " Ana, Luis ", "Uno,Dos", "", "Ana,Ana" };
+                string[] numeros = { "1,2,3,4,5,6,7,8,9", "", "07,008", "0,10", "", "5,6" };
+                for (int i = 0; i < cantidades.Length; i++)
+                {
+                    hoja.Cell(i + 2, 1).Value = "Alianza";
+                    hoja.Cell(i + 2, 2).Value = "S";
+                    hoja.Cell(i + 2, 3).Value = cantidades[i];
+                    hoja.Cell(i + 2, 4).Value = nombres[i];
+                    hoja.Cell(i + 2, 5).Value = numeros[i];
+                }
+                libro.SaveAs(archivo);
+            }
+            var lector = new LectorPedidoFundas();
+            var pedido = lector.Analizar(1, "FUNDAS", archivo);
+            var planificador = new PlanificadorFundas();
+            var plan = planificador.CrearPlan(pedido, CatalogoFundas());
+            Exigir(plan.EsValido && plan.TotalMoldes == 19, "La personalización alteró la cantidad de fundas.");
+            for (int i = 0; i < 9; i++)
+            {
+                Exigir(plan.Moldes[i].NumeroUnidad == i + 1, "Se alteró el orden de unidades.");
+                Exigir(plan.Moldes[i].ObtenerCampo("numero") == (i + 1).ToString(CultureInfo.InvariantCulture),
+                    "No asignó un número por unidad.");
+                Exigir(plan.Moldes[i].ObtenerCampo("nombre") == "", "Inventó nombres para la fila de solo números.");
+            }
+            Exigir(plan.Moldes[9].ObtenerCampo("nombre") == "Test" &&
+                plan.Moldes[10].ObtenerCampo("nombre") == "", "Repitió el único nombre en todas las unidades.");
+            var pares = plan.Moldes.Where(x => x.FilaExcel == 4).ToList();
+            Exigir(pares[0].ObtenerCampo("nombre") == "Ana" && pares[0].ObtenerCampo("numero") == "07",
+                "No emparejó nombre 1/número 1 o perdió ceros iniciales.");
+            Exigir(pares[1].ObtenerCampo("nombre") == "Luis" && pares[1].ObtenerCampo("numero") == "008",
+                "No emparejó nombre 2/número 2.");
+            Exigir(pares[2].ObtenerCampo("nombre") == "" && pares[2].ObtenerCampo("numero") == "",
+                "Las unidades restantes deben quedar en blanco.");
+            Exigir(plan.Moldes.Where(x => x.FilaExcel == 7).Select(x => x.ObtenerCampo("numero")).SequenceEqual(new[] { "5", "6" }),
+                "No se deben deduplicar nombres ni reordenar valores.");
+            Exigir(plan.Moldes.All(x => !x.Campos.ContainsKey("numeros") && !x.Campos.ContainsKey("nombres")),
+                "Quedaron listas plurales en los campos individuales.");
+
+            using (var libro = new XLWorkbook(archivo))
+            {
+                libro.Worksheet(1).Cell(1, 4).Value = "Nombres";
+                libro.Worksheet(1).Cell(1, 5).Value = "Número";
+                libro.Save();
+            }
+            Exigir(planificador.CrearPlan(lector.Analizar(1, "FUNDAS", archivo), CatalogoFundas()).EsValido,
+                "No reconoce los encabezados singular/plural con acentos.");
+
+            // Un error debe detener la lectura completa, no saltar la fila.
+            var casos = new[]
+            {
+                new[] { "1", "Ana,Luis", "" },
+                new[] { "1", "", "1,2" },
+                new[] { "3", "Ana,Luis", "1" },
+                new[] { "3", "Ana,,Luis", "" },
+                new[] { "3", "Ana,", "" },
+                new[] { "3", "", ",1" },
+                new[] { "3", "", "1, ,3" }
+            };
+            foreach (string[] caso in casos)
+            {
+                using (var libro = new XLWorkbook(archivo))
+                {
+                    var hoja = libro.Worksheet(1);
+                    hoja.Cell(2, 3).Value = int.Parse(caso[0], CultureInfo.InvariantCulture);
+                    hoja.Cell(2, 4).Value = caso[1];
+                    hoja.Cell(2, 5).Value = caso[2];
+                    libro.Save();
+                }
+                bool rechazado = false;
+                try { lector.Analizar(1, "FUNDAS", archivo); }
+                catch (InvalidOperationException ex)
+                {
+                    rechazado = ex.Message.Contains("Fila Excel 2");
+                }
+                Exigir(rechazado, "No rechazó la lista inválida indicando su fila.");
+            }
+
+            // El planificador también valida pedidos construidos sin el lector.
+            var incorrecto = new ResultadoAnalisisPedido { CodigoProducto = "FUNDAS" };
+            var linea = new LineaPedido { NumeroFila = 12, Diseno = "Equipo", Talla = "S", Cantidad = 1 };
+            linea.AgregarCampo("nombre", "Ana,Luis");
+            incorrecto.Lineas.Add(linea);
+            var planIncorrecto = planificador.CrearPlan(incorrecto, CatalogoFundas());
+            Exigir(!planIncorrecto.EsValido && planIncorrecto.Advertencias.Any(x => x.Contains("Fila Excel 12")),
+                "El planificador aceptó listas inválidas.");
+        }
+        finally { if (File.Exists(archivo)) File.Delete(archivo); }
     }
 
     private static void Identificadores()

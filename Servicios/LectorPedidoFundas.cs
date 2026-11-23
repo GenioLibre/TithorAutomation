@@ -135,6 +135,8 @@ namespace TithorAutomation.Servicios
                 {
                 string encabezado = NormalizarNombreCampo(celda.GetFormattedString());
 
+                if ((encabezado == "nombre" || encabezado == "numero") && columnas.ContainsKey(encabezado))
+                    throw new InvalidOperationException("La hoja contiene más de una columna para " + encabezado + ". Use solo una.");
                 if (!string.IsNullOrWhiteSpace(encabezado) && !columnas.ContainsKey(encabezado))
                     columnas.Add(encabezado, celda.Address.ColumnNumber);
                 }
@@ -152,7 +154,9 @@ namespace TithorAutomation.Servicios
             return string.IsNullOrWhiteSpace(diseno) &&
                    string.IsNullOrWhiteSpace(talla) &&
                    string.IsNullOrWhiteSpace(cantidad) &&
-                   string.IsNullOrWhiteSpace(notas);
+                   string.IsNullOrWhiteSpace(notas) &&
+                   string.IsNullOrWhiteSpace(ObtenerTexto(hoja, numeroFila, columnas, "nombre")) &&
+                   string.IsNullOrWhiteSpace(ObtenerTexto(hoja, numeroFila, columnas, "numero"));
             }
 
         private LineaPedido LeerLinea(IXLWorksheet hoja, int numeroFila, Dictionary<string, int> columnas)
@@ -188,6 +192,9 @@ namespace TithorAutomation.Servicios
                 {
                 linea.Cantidad = cantidad;
                 linea.AgregarCampo("cantidad", cantidad.ToString(CultureInfo.InvariantCulture));
+                // Un desajuste de personalización detiene el análisis completo;
+                // no omitir silenciosamente unidades de esta fila.
+                PersonalizacionFundas.Leer(linea);
                 }
 
             return linea;
@@ -260,7 +267,10 @@ namespace TithorAutomation.Servicios
                     }
                 }
 
-            return resultado.ToString().Trim('_');
+            string campo = resultado.ToString().Trim('_');
+            if (campo == "nombres") return "nombre";
+            if (campo == "numeros") return "numero";
+            return campo;
             }
         }
     }
