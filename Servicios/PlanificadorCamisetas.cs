@@ -225,7 +225,9 @@ namespace TithorAutomation.Servicios
                 return ContieneToken(capa, "varon") || ContieneToken(capa, "hombre") || ContieneToken(capa, "masculino");
             if (corte == "mujer")
                 return ContieneToken(capa, "mujer") || ContieneToken(capa, "dama") || ContieneToken(capa, "femenino");
-            return false;
+            // Otros cortes se identifican por su nombre en el master:
+            // ranglan + porrista corresponde a "Moldes Ranglan Porrista".
+            return ContieneToken(capa, corte);
             }
 
         private SeleccionMolde CrearSeleccion(string capa, string talla, List<Molde> moldes, List<List<string>> piezasRequeridas)

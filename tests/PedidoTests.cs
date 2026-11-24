@@ -32,6 +32,7 @@ internal static class PedidoTests
         PlanesFundas();
         TallasFundasDesdeCatalogo();
         PlanesCamisetas();
+        CortesCamisetasDesdeCatalogo();
         TiposShortDesdeCatalogo();
         Console.WriteLine("PASS: " + comprobaciones + " comprobaciones de pedidos, cantidades y nombres.");
     }
@@ -329,6 +330,79 @@ internal static class PedidoTests
             foreach (Molde molde in catalogo) molde.Capa = "Molde Short Basket";
             Exigir(!planificador.CrearPlan(pedido, catalogo).EsValido, "Confundió tipos distintos de short.");
         }
+    }
+
+
+    private static void CortesCamisetasDesdeCatalogo()
+    {
+        string archivo = Path.Combine(Path.GetTempPath(), "tithor-cortes-" + Guid.NewGuid().ToString("N") + ".xlsx");
+        try
+        {
+            string[] cortes = { "porrista", "varon", "dama", "entallado" };
+            string[] capas = { "Moldes Ranglan Porrista", "Moldes Ranglan Varon", "Moldes Ranglan Mujer", "Moldes Ranglan Entallado" };
+            string[] tallas = { "s", "m", "l", "16", "xs" };
+            var catalogo = new List<Molde>();
+            for (int i = 0; i < cortes.Length; i++)
+            foreach (string talla in tallas)
+            foreach (string pieza in new[] { "frente_cuello_v", "espalda", "manga_larga_izquierda", "manga_larga_derecha" })
+                catalogo.Add(new Molde { Codigo = capas[i] + "__molde_" + talla + "__" + pieza,
+                    NombreObjeto = pieza, Talla = talla.ToUpperInvariant(), Capa = capas[i], Estado = "Correcto" });
+            foreach (string talla in tallas)
+            foreach (string pieza in new[] { "falda_frente", "falda_espalda", "pretina" })
+                catalogo.Add(new Molde { Codigo = "molde_short_plizada__molde_" + talla + "__" + pieza,
+                    NombreObjeto = pieza, Talla = talla.ToUpperInvariant(), Capa = "Molde Short Plizada", Estado = "Correcto" });
+
+            using (var libro = new XLWorkbook())
+            {
+                var hoja = libro.AddWorksheet("Detalle de Camisetas");
+                string[] columnas = { "N°", "Diseño", "Prenda", "Nombre", "Numero", "Talla Camiseta",
+                    "Modelo", "Corte", "Manga", "Cuello", "Tipo Short", "Talla Short" };
+                for (int i = 0; i < columnas.Length; i++) hoja.Cell(1, i + 1).Value = columnas[i];
+                int fila = 2;
+                foreach (string corte in cortes)
+                foreach (string talla in tallas)
+                {
+                    hoja.Cell(fila, 1).Value = fila - 1;
+                    hoja.Cell(fila, 2).Value = "Azul";
+                    hoja.Cell(fila, 3).Value = "camiseta_short";
+                    hoja.Cell(fila, 4).Value = "FCEC";
+                    hoja.Cell(fila, 6).Value = talla;
+                    hoja.Cell(fila, 7).Value = "ranglan";
+                    hoja.Cell(fila, 8).Value = corte;
+                    hoja.Cell(fila, 9).Value = "larga";
+                    hoja.Cell(fila, 10).Value = "v";
+                    hoja.Cell(fila, 11).Value = "plizada";
+                    hoja.Cell(fila, 12).Value = talla;
+                    fila++;
+                }
+                libro.SaveAs(archivo);
+            }
+            var pedido = new LectorPedidoCamisetas().Analizar(1, "CAMISETAS", archivo);
+            Exigir(pedido.Lineas.Count == 20 && pedido.Lineas.All(x => x.Procesable),
+                "El lector debe aceptar Porrista y otros cortes; el número vacío es opcional.");
+            var planificador = new PlanificadorCamisetas();
+            var plan = planificador.CrearPlan(pedido, catalogo);
+            Exigir(plan.EsValido && plan.TotalMoldes == 40, "No generó camisetas y shorts para los nuevos cortes.");
+            for (int i = 0; i < pedido.Lineas.Count; i++)
+            {
+                var camiseta = plan.Moldes[i * 2];
+                var shortPedido = plan.Moldes[i * 2 + 1];
+                Exigir(camiseta.CapaMaster == capas[i / tallas.Length],
+                    "Mezcló cortes al buscar molde o al reutilizar la selección.");
+                Exigir(shortPedido.CapaMaster == "Molde Short Plizada", "El corte de camiseta alteró la selección del short.");
+                Exigir(camiseta.PiezasIncluidas.Count == 4 && camiseta.PiezasIncluidas.Contains("manga_larga_izquierda"),
+                    "El corte nuevo debe conservar las piezas de cuello V y manga larga.");
+            }
+            Exigir(EscaladorPowerClip.ObtenerCorteEscalar(plan.Moldes[0]) == "Porrista",
+                "El escalador debe agrupar Porrista separadamente.");
+            Exigir(EscaladorPowerClip.ObtenerCorteEscalar(plan.Moldes[10]) == "Varón" &&
+                EscaladorPowerClip.ObtenerCorteEscalar(plan.Moldes[20]) == "Mujer",
+                "Se alteraron los cortes existentes.");
+            var sinPorrista = catalogo.Where(x => x.Capa != "Moldes Ranglan Porrista").ToList();
+            Exigir(!planificador.CrearPlan(pedido, sinPorrista).EsValido,
+                "No debe sustituir Porrista por moldes de Mujer o Varón si falta su capa.");
+        }
+        finally { if (File.Exists(archivo)) File.Delete(archivo); }
     }
 
     private static void PlanesCamisetas()

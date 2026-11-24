@@ -252,6 +252,7 @@ namespace TithorAutomation.Servicios
                 case "short_falda":
                 case "falda_short": return "Falda short";
                 case "basket": return "Basket";
+                case "porrista": return "Porrista";
                 case "": return "General";
                 default: return corte.Replace('_', ' ');
             }
