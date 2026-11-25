@@ -22,6 +22,7 @@ namespace TithorAutomation.Servicios
         public int FilaExcel { get; set; }
         public string NombreVariable { get; set; }
         public string NumeroVariable { get; set; }
+        public bool AlinearBase { get; set; }
     }
 
     public sealed class EscaladorPowerClip
@@ -269,7 +270,10 @@ namespace TithorAutomation.Servicios
                 Talla = (solicitud.Talla ?? string.Empty).ToUpperInvariant(),
                 Pieza = NombrePiezaVisible(nombrePieza),
                 NombreVariable = solicitud.ObtenerCampo("nombre"),
-                NumeroVariable = solicitud.ObtenerCampo("numero")
+                NumeroVariable = solicitud.ObtenerCampo("numero"),
+                // Aplicar a todas las piezas de cualquier tipo de short,
+                // incluidas falda y pretina, sin depender del nombre de la pieza.
+                AlinearBase = string.Equals(solicitud.Pieza, "Short", StringComparison.OrdinalIgnoreCase)
             };
 
             if (grupo == null)
@@ -614,7 +618,7 @@ namespace TithorAutomation.Servicios
             double anchoDiseno = diseno.SizeWidth;
             double altoDiseno = diseno.SizeHeight;
             double centroDisenoX = diseno.CenterX;
-            double superiorDisenoY = diseno.CenterY + altoDiseno / 2.0;
+            double centroDisenoY = diseno.CenterY;
             bool disenoEsPowerClip = diseno.PowerClip != null;
 
             string etapa = "Preparando CorelDRAW";
@@ -657,7 +661,10 @@ namespace TithorAutomation.Servicios
                         double anchoContenedor = contenedor.SizeWidth;
                         double altoContenedor = contenedor.SizeHeight;
                         double centroX = contenedor.CenterX;
-                        double superiorContenedorY = contenedor.CenterY + altoContenedor / 2.0;
+                        double bordeContenedorY = contenedor.CenterY +
+                            (destino.AlinearBase ? -altoContenedor / 2.0 : altoContenedor / 2.0);
+                        double bordeDisenoY = centroDisenoY +
+                            (destino.AlinearBase ? -altoDiseno / 2.0 : altoDiseno / 2.0);
                         double anchoFinal;
                         double altoFinal;
 
@@ -672,11 +679,12 @@ namespace TithorAutomation.Servicios
                         // Conservar el desplazamiento del contenido respecto al marco de la plantilla.
                         double factorEscala = anchoFinal / anchoDiseno;
                         double centroFinalX = centroX;
-                        double centroFinalY = superiorContenedorY - altoFinal / 2.0;
+                        double centroFinalY = bordeContenedorY +
+                            (destino.AlinearBase ? altoFinal / 2.0 : -altoFinal / 2.0);
                         if (disenoEsPowerClip)
                             {
                             centroFinalX += (copia.CenterX - centroDisenoX) * factorEscala;
-                            centroFinalY = superiorContenedorY + (copia.CenterY - superiorDisenoY) * factorEscala;
+                            centroFinalY = bordeContenedorY + (copia.CenterY - bordeDisenoY) * factorEscala;
                             }
 
                         etapa = "Eliminando el diseño anterior";
